@@ -1,0 +1,11 @@
+# Ignore everything by default
+/*
+
+# Except _bmad-output/ (project artifacts)
+!_bmad-output/
+
+# Keep this .gitignore
+!.gitignore
+
+# Keep README if exists
+!README.md
