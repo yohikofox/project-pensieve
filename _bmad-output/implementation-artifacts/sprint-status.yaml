@@ -44,7 +44,7 @@ development_status:
   epic-1: in-progress
   1-1-project-foundation-infrastructure-setup: ready-for-dev
   1-2-user-registration: ready-for-dev
-  1-3-user-login: backlog
+  1-3-user-login: ready-for-dev
   1-4-user-logout: backlog
   1-5-password-recovery: backlog
   epic-1-retrospective: optional
