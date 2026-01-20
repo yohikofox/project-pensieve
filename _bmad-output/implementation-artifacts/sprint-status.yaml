@@ -42,7 +42,7 @@ story_location: _bmad-output/implementation-artifacts
 development_status:
   # Epic 1: Foundation & Authentification (3 stories - v2 Architecture Hybrid ADR-016)
   epic-1: in-progress
-  1-1-project-foundation-infrastructure-setup-v2: ready-for-dev
+  1-1-project-foundation-infrastructure-setup-v2: done
   1-2-auth-integration-supabase-v2: ready-for-dev
   1-3-rgpd-compliance-v2: ready-for-dev
   epic-1-retrospective: optional
