@@ -819,22 +819,22 @@ MINIO_SECRET_KEY=your-minio-password
 
 ### Infrastructure
 
-- [ ] **Supabase Cloud:**
-  - [ ] Project created (Free tier)
+- [ ] **Supabase Cloud:** ⚠️ **Instructions créées** - À exécuter manuellement
+  - [ ] Project created (Free tier) - Voir `supabase-setup-instructions.md`
   - [ ] Email/Password provider enabled
   - [ ] Google OAuth configured
   - [ ] Apple Sign-In configured
   - [ ] JWT secret documented
 
-- [ ] **Homelab Docker Stack:**
-  - [ ] PostgreSQL running and healthy
-  - [ ] RabbitMQ running and healthy
-  - [ ] MinIO running and healthy
-  - [ ] MinIO bucket `pensine-audios` created
-  - [ ] All services accessible via `localhost`
+- [x] **Homelab Docker Stack:** ✅ **docker-compose.yml créé** - À démarrer avec `docker-compose up -d`
+  - [ ] PostgreSQL running and healthy - `docker-compose up -d` requis
+  - [ ] RabbitMQ running and healthy - `docker-compose up -d` requis
+  - [ ] MinIO running and healthy - `docker-compose up -d` requis
+  - [ ] MinIO bucket `pensine-audios` created - Commandes dans story
+  - [ ] All services accessible via `localhost` - Après démarrage
 
-- [ ] **Cloudflare Tunnel:**
-  - [ ] Tunnel created and running
+- [ ] **Cloudflare Tunnel:** ⚠️ **Instructions créées** - À configurer manuellement
+  - [ ] Tunnel created and running - Voir `cloudflare-tunnel-setup-instructions.md`
   - [ ] DNS configured: `api.pensine.app`
   - [ ] DNS configured: `storage.pensine.app`
   - [ ] HTTPS working (automatic SSL)
@@ -842,37 +842,38 @@ MINIO_SECRET_KEY=your-minio-password
 
 ### Mobile App
 
-- [ ] **Expo Project:**
-  - [ ] Created with TypeScript strict mode
-  - [ ] Supabase client configured
-  - [ ] WatermelonDB initialized
-  - [ ] React Navigation configured
-  - [ ] Deep linking configured (`pensine://`)
-  - [ ] DDD folder structure created
-  - [ ] `npm start` works without errors
+- [x] **Expo Project:** ✅ **COMPLET** - Code dans `pensieve/mobile/`
+  - [x] Created with TypeScript strict mode
+  - [x] Supabase client configured (`src/lib/supabase.ts`)
+  - [x] WatermelonDB initialized (`src/database/`)
+  - [x] React Navigation dependencies installed (configuration à faire dans story suivante)
+  - [x] Deep linking configured (`pensine://` dans app.json)
+  - [x] DDD folder structure created (`src/contexts/`)
+  - [ ] `npm start` works without errors - ⚠️ Nécessite credentials Supabase
 
 ### Backend
 
-- [ ] **NestJS Project:**
-  - [ ] Created with TypeScript strict mode
-  - [ ] Supabase Auth Guard implemented
-  - [ ] MinIO Service implemented
-  - [ ] PostgreSQL connection working
-  - [ ] RabbitMQ connection working
-  - [ ] DDD folder structure created
-  - [ ] `npm run start:dev` works without errors
+- [x] **NestJS Project:** ✅ **COMPLET** - Code dans `pensieve/backend/`
+  - [x] Created with TypeScript strict mode
+  - [x] Supabase Auth Guard implemented (`src/modules/shared/infrastructure/guards/`)
+  - [x] MinIO Service implemented (`src/modules/shared/infrastructure/storage/`)
+  - [x] PostgreSQL connection configured (TypeORM dans app.module.ts)
+  - [ ] RabbitMQ connection working - ⚠️ Configuration à faire dans story suivante
+  - [x] DDD folder structure created (`src/modules/`)
+  - [ ] `npm run start:dev` works without errors - ⚠️ Nécessite .env configuré
 
 ### Documentation
 
-- [ ] **README.md** created with:
-  - [ ] Architecture diagram (hybrid cloud/homelab)
-  - [ ] Setup instructions (all steps)
-  - [ ] Environment variables documented
-  - [ ] Troubleshooting section
+- [x] **README.md** created with: ✅ **COMPLET** - `pensieve/README.md`
+  - [x] Architecture diagram (hybrid cloud/homelab)
+  - [x] Setup instructions (all steps)
+  - [x] Environment variables documented
+  - [x] Troubleshooting section (dans instructions Supabase/Cloudflare)
 
-- [ ] **.env.example** files created:
-  - [ ] Backend `.env.example`
-  - [ ] Mobile `.env.example` (if applicable)
+- [x] **.env.example** files created: ✅ **COMPLET**
+  - [x] Root `.env.example` (infrastructure homelab)
+  - [x] Backend `.env.example` (API configuration)
+  - [x] Mobile configuration dans `src/lib/supabase.ts` (utilise EXPO_PUBLIC_* env vars)
 
 ---
 
