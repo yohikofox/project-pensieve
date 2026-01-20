@@ -55,13 +55,13 @@ development_status:
   # 1-5-password-recovery: deprecated (consolidated into 1-2-v2)
 
   # Epic 2: Capture & Transcription de Pensées (6 stories)
-  epic-2: backlog
-  2-1-capture-audio-1-tap: backlog
-  2-2-capture-texte-rapide: backlog
-  2-3-annuler-capture-audio: backlog
-  2-4-stockage-offline-des-captures: backlog
-  2-5-transcription-on-device-avec-whisper: backlog
-  2-6-consultation-de-transcription: backlog
+  epic-2: in-progress
+  2-1-capture-audio-1-tap: ready-for-dev
+  2-2-capture-texte-rapide: ready-for-dev
+  2-3-annuler-capture-audio: ready-for-dev
+  2-4-stockage-offline-des-captures: ready-for-dev
+  2-5-transcription-on-device-avec-whisper: ready-for-dev
+  2-6-consultation-de-transcription: ready-for-dev
   epic-2-retrospective: optional
 
   # Epic 3: Consultation & Navigation des Captures (4 stories)
