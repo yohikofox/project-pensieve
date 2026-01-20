@@ -1,5 +1,8 @@
 # Pensine - Documentation & Planning
 
+[![CI](https://github.com/yohikofox/pensine/actions/workflows/ci.yml/badge.svg)](https://github.com/yohikofox/pensine/actions/workflows/ci.yml)
+[![Backend Coverage](https://codecov.io/gh/yohikofox/pensine/branch/main/graph/badge.svg?flag=backend)](https://codecov.io/gh/yohikofox/pensine)
+
 > **Pensine** : Votre jardin d'idées personnel. Capturez, transcrivez et digérez vos pensées avec l'aide de l'IA.
 
 ---
