@@ -9,3 +9,6 @@
 
 # Keep README if exists
 !README.md
+
+# Keep CONTRIBUTING guide
+!CONTRIBUTING.md
