@@ -1,0 +1,3 @@
+[submodule "pensieve"]
+	path = pensieve
+	url = https://github.com/yohikofox/pensieve.git
