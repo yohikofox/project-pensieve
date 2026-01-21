@@ -42,6 +42,533 @@ _bmad-output/
 - Ne pas recréer ce qui existe déjà, consulter d'abord la doc
 - Les mocks in-memory sont dans test-context.ts (1200+ lignes)
 
+## 🚨 ACTION REQUISE - Story 2.3
+
+### MockHaptics DOIT être ajouté à test-context.ts
+
+**Fichier:** `pensieve/mobile/tests/acceptance/support/test-context.ts`
+
+**Code à ajouter:**
+
+```typescript
+// ============================================================================
+// Mock Haptics (Story 2.3)
+// ============================================================================
+
+export class MockHaptics {
+  private _feedbackTriggered: boolean = false;
+  private _feedbackType: 'light' | 'medium' | 'heavy' | null = null;
+
+  triggerFeedback(type: 'light' | 'medium' | 'heavy'): void {
+    this._feedbackTriggered = true;
+    this._feedbackType = type;
+  }
+
+  wasFeedbackTriggered(): boolean {
+    return this._feedbackTriggered;
+  }
+
+  getFeedbackType(): 'light' | 'medium' | 'heavy' | null {
+    return this._feedbackType;
+  }
+
+  reset(): void {
+    this._feedbackTriggered = false;
+    this._feedbackType = null;
+  }
+}
+```
+
+**Ajouter dans TestContext:**
+
+```typescript
+export class TestContext {
+  // ... autres mocks ...
+  public haptics: MockHaptics; // <-- AJOUTER
+
+  constructor() {
+    // ... autres inits ...
+    this.haptics = new MockHaptics(); // <-- AJOUTER
+  }
+
+  reset(): void {
+    // ... autres resets ...
+    this.haptics.reset(); // <-- AJOUTER
+  }
+}
+```
+
+**Pourquoi c'est critique:**
+- Story 2.3 AC3 teste le haptic feedback lors de l'annulation
+- Sans ce mock, les tests vont échouer avec `undefined is not a function`
+- Pattern: Ne jamais créer MockHaptics dans les step definitions, toujours dans test-context.ts
+
+---
+
+## 🚨 ACTION REQUISE - Story 2.4
+
+### MockStorageManager et MockSyncQueue DOIVENT être ajoutés à test-context.ts
+
+**Fichier:** `pensieve/mobile/tests/acceptance/support/test-context.ts`
+
+**Code MockStorageManager à ajouter:**
+
+```typescript
+// ============================================================================
+// Mock Storage Manager (Story 2.4)
+// ============================================================================
+
+export class MockStorageManager {
+  private _availableSpace: number = 1000 * 1024 * 1024; // 1GB default
+  private _retentionDays: number = 90;
+  private _cleanupCallbacks: Array<() => void> = [];
+
+  setAvailableSpace(bytes: number): void {
+    this._availableSpace = bytes;
+  }
+
+  getAvailableSpace(): number {
+    return this._availableSpace;
+  }
+
+  isStorageLow(): boolean {
+    return this._availableSpace < 100 * 1024 * 1024; // < 100 MB
+  }
+
+  isStorageCritical(): boolean {
+    return this._availableSpace < 50 * 1024 * 1024; // < 50 MB
+  }
+
+  setRetentionPolicy(days: number): void {
+    this._retentionDays = days;
+  }
+
+  getRetentionPolicy(): number {
+    return this._retentionDays;
+  }
+
+  shouldCleanup(capturedAt: Date): boolean {
+    const ageInDays = (Date.now() - capturedAt.getTime()) / (1000 * 60 * 60 * 24);
+    return ageInDays > this._retentionDays;
+  }
+
+  onCleanup(callback: () => void): void {
+    this._cleanupCallbacks.push(callback);
+  }
+
+  triggerCleanup(): void {
+    this._cleanupCallbacks.forEach(cb => cb());
+  }
+
+  reset(): void {
+    this._availableSpace = 1000 * 1024 * 1024;
+    this._retentionDays = 90;
+    this._cleanupCallbacks = [];
+  }
+}
+```
+
+**Code MockSyncQueue à ajouter:**
+
+```typescript
+// ============================================================================
+// Mock Sync Queue (Story 2.4)
+// ============================================================================
+
+export class MockSyncQueue {
+  private _queue: string[] = []; // Capture IDs
+
+  addToQueue(captureId: string): void {
+    if (!this._queue.includes(captureId)) {
+      this._queue.push(captureId);
+    }
+  }
+
+  removeFromQueue(captureId: string): void {
+    this._queue = this._queue.filter(id => id !== captureId);
+  }
+
+  getQueue(): string[] {
+    return [...this._queue];
+  }
+
+  getQueueSize(): number {
+    return this._queue.length;
+  }
+
+  isEmpty(): boolean {
+    return this._queue.length === 0;
+  }
+
+  clear(): void {
+    this._queue = [];
+  }
+
+  reset(): void {
+    this._queue = [];
+  }
+}
+```
+
+**Ajouter dans TestContext:**
+
+```typescript
+export class TestContext {
+  // ... autres mocks ...
+  public haptics: MockHaptics; // <-- Story 2.3
+  public storageManager: MockStorageManager; // <-- Story 2.4
+  public syncQueue: MockSyncQueue; // <-- Story 2.4
+
+  constructor() {
+    // ... autres inits ...
+    this.haptics = new MockHaptics();
+    this.storageManager = new MockStorageManager(); // <-- AJOUTER
+    this.syncQueue = new MockSyncQueue(); // <-- AJOUTER
+  }
+
+  reset(): void {
+    // ... autres resets ...
+    this.haptics.reset();
+    this.storageManager.reset(); // <-- AJOUTER
+    this.syncQueue.reset(); // <-- AJOUTER
+  }
+}
+```
+
+**Pourquoi c'est critique:**
+- Story 2.4 AC2 teste le monitoring de l'espace de stockage
+- Story 2.4 AC1 teste la queue de synchronisation
+- Story 2.4 AC5 teste la retention policy (cleanup après 90 jours)
+- Sans ces mocks, les tests vont échouer avec `undefined is not a function`
+
+---
+
+## 🚨 ACTION REQUISE - Story 2.5
+
+### MockWhisperService et MockTranscriptionQueue DOIVENT être ajoutés à test-context.ts
+
+**Fichier:** `pensieve/mobile/tests/acceptance/support/test-context.ts`
+
+**Code MockWhisperService à ajouter:**
+
+```typescript
+// ============================================================================
+// Mock Whisper Service (Story 2.5)
+// ============================================================================
+
+export class MockWhisperService {
+  private _modelInstalled: boolean = true;
+  private _transcriptionResults: Map<string, string> = new Map();
+  private _failNextTranscription: boolean = false;
+  private _transcriptionDuration: number = 1000; // Default 1s
+
+  setModelInstalled(installed: boolean): void {
+    this._modelInstalled = installed;
+  }
+
+  isModelInstalled(): boolean {
+    return this._modelInstalled;
+  }
+
+  setTranscriptionDuration(ms: number): void {
+    this._transcriptionDuration = ms;
+  }
+
+  async transcribe(audioFilePath: string, audioDuration: number): Promise<string> {
+    if (!this._modelInstalled) {
+      throw new Error('WhisperModelNotInstalled');
+    }
+
+    if (this._failNextTranscription) {
+      this._failNextTranscription = false;
+      throw new Error('TranscriptionFailed: Corrupted audio');
+    }
+
+    // Simulate transcription time (should be < 2x audio duration for NFR2)
+    await this._simulateDelay(this._transcriptionDuration);
+
+    // Check NFR2 compliance
+    if (this._transcriptionDuration > audioDuration * 2) {
+      throw new Error(`NFR2 violation: Transcription took ${this._transcriptionDuration}ms but audio was ${audioDuration}ms`);
+    }
+
+    const transcription = `Transcription of ${audioFilePath}`;
+    this._transcriptionResults.set(audioFilePath, transcription);
+    return transcription;
+  }
+
+  triggerError(): void {
+    this._failNextTranscription = true;
+  }
+
+  getTranscriptionResult(audioFilePath: string): string | undefined {
+    return this._transcriptionResults.get(audioFilePath);
+  }
+
+  private async _simulateDelay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  reset(): void {
+    this._modelInstalled = true;
+    this._transcriptionResults.clear();
+    this._failNextTranscription = false;
+    this._transcriptionDuration = 1000;
+  }
+}
+```
+
+**Code MockTranscriptionQueue à ajouter:**
+
+```typescript
+// ============================================================================
+// Mock Transcription Queue (Story 2.5)
+// ============================================================================
+
+export interface TranscriptionJob {
+  captureId: string;
+  audioFilePath: string;
+  audioDuration: number;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+}
+
+export class MockTranscriptionQueue {
+  private _queue: TranscriptionJob[] = [];
+  private _processing: boolean = false;
+
+  addJob(captureId: string, audioFilePath: string, audioDuration: number): void {
+    this._queue.push({
+      captureId,
+      audioFilePath,
+      audioDuration,
+      status: 'pending',
+    });
+  }
+
+  getJobsCount(): number {
+    return this._queue.length;
+  }
+
+  getPendingJobsCount(): number {
+    return this._queue.filter(job => job.status === 'pending').length;
+  }
+
+  getNextJob(): TranscriptionJob | null {
+    const pendingJob = this._queue.find(job => job.status === 'pending');
+    if (pendingJob) {
+      pendingJob.status = 'processing';
+      return pendingJob;
+    }
+    return null;
+  }
+
+  markJobCompleted(captureId: string): void {
+    const job = this._queue.find(job => job.captureId === captureId);
+    if (job) {
+      job.status = 'completed';
+    }
+  }
+
+  markJobFailed(captureId: string): void {
+    const job = this._queue.find(job => job.captureId === captureId);
+    if (job) {
+      job.status = 'failed';
+    }
+  }
+
+  isProcessing(): boolean {
+    return this._processing;
+  }
+
+  setProcessing(processing: boolean): void {
+    this._processing = processing;
+  }
+
+  getJobs(): TranscriptionJob[] {
+    return [...this._queue];
+  }
+
+  clear(): void {
+    this._queue = [];
+    this._processing = false;
+  }
+
+  reset(): void {
+    this.clear();
+  }
+}
+```
+
+**Ajouter dans TestContext:**
+
+```typescript
+export class TestContext {
+  // ... autres mocks ...
+  public haptics: MockHaptics; // <-- Story 2.3
+  public storageManager: MockStorageManager; // <-- Story 2.4
+  public syncQueue: MockSyncQueue; // <-- Story 2.4
+  public whisper: MockWhisperService; // <-- Story 2.5
+  public transcriptionQueue: MockTranscriptionQueue; // <-- Story 2.5
+
+  constructor() {
+    // ... autres inits ...
+    this.haptics = new MockHaptics();
+    this.storageManager = new MockStorageManager();
+    this.syncQueue = new MockSyncQueue();
+    this.whisper = new MockWhisperService(); // <-- AJOUTER
+    this.transcriptionQueue = new MockTranscriptionQueue(); // <-- AJOUTER
+  }
+
+  reset(): void {
+    // ... autres resets ...
+    this.haptics.reset();
+    this.storageManager.reset();
+    this.syncQueue.reset();
+    this.whisper.reset(); // <-- AJOUTER
+    this.transcriptionQueue.reset(); // <-- AJOUTER
+  }
+}
+```
+
+**Pourquoi c'est critique:**
+- Story 2.5 AC2 teste la performance NFR2 (transcription < 2x audio duration)
+- Story 2.5 AC3 teste le fonctionnement offline (FR7: 100% local)
+- Story 2.5 AC4 teste le téléchargement du modèle Whisper (~500 MB)
+- Story 2.5 AC7 teste la queue FIFO (First In First Out processing)
+- Sans ces mocks, les tests vont échouer avec `undefined is not a function`
+
+---
+
+## 🚨 ACTION REQUISE - Story 2.6
+
+### MockAudioPlayer DOIT être ajouté à test-context.ts
+
+**Fichier:** `pensieve/mobile/tests/acceptance/support/test-context.ts`
+
+**Code MockAudioPlayer à ajouter:**
+
+```typescript
+// ============================================================================
+// Mock Audio Player (Story 2.6)
+// ============================================================================
+
+export class MockAudioPlayer {
+  private _isPlaying: boolean = false;
+  private _isPaused: boolean = false;
+  private _currentTime: number = 0;
+  private _duration: number = 0;
+  private _audioFilePath: string | null = null;
+
+  async loadAudio(filePath: string, duration: number): Promise<void> {
+    this._audioFilePath = filePath;
+    this._duration = duration;
+    this._currentTime = 0;
+    this._isPlaying = false;
+    this._isPaused = false;
+  }
+
+  async play(): Promise<void> {
+    if (!this._audioFilePath) {
+      throw new Error('No audio file loaded');
+    }
+    this._isPlaying = true;
+    this._isPaused = false;
+  }
+
+  async pause(): Promise<void> {
+    if (this._isPlaying) {
+      this._isPlaying = false;
+      this._isPaused = true;
+    }
+  }
+
+  async stop(): Promise<void> {
+    this._isPlaying = false;
+    this._isPaused = false;
+    this._currentTime = 0;
+  }
+
+  isPlaying(): boolean {
+    return this._isPlaying;
+  }
+
+  isPaused(): boolean {
+    return this._isPaused;
+  }
+
+  getCurrentTime(): number {
+    return this._currentTime;
+  }
+
+  getDuration(): number {
+    return this._duration;
+  }
+
+  setCurrentTime(time: number): void {
+    if (time >= 0 && time <= this._duration) {
+      this._currentTime = time;
+    }
+  }
+
+  getAudioFilePath(): string | null {
+    return this._audioFilePath;
+  }
+
+  canPlay(): boolean {
+    return this._audioFilePath !== null;
+  }
+
+  reset(): void {
+    this._isPlaying = false;
+    this._isPaused = false;
+    this._currentTime = 0;
+    this._duration = 0;
+    this._audioFilePath = null;
+  }
+}
+```
+
+**Ajouter dans TestContext:**
+
+```typescript
+export class TestContext {
+  // ... autres mocks ...
+  public haptics: MockHaptics; // <-- Story 2.3
+  public storageManager: MockStorageManager; // <-- Story 2.4
+  public syncQueue: MockSyncQueue; // <-- Story 2.4
+  public whisper: MockWhisperService; // <-- Story 2.5
+  public transcriptionQueue: MockTranscriptionQueue; // <-- Story 2.5
+  public audioPlayer: MockAudioPlayer; // <-- Story 2.6
+
+  constructor() {
+    // ... autres inits ...
+    this.haptics = new MockHaptics();
+    this.storageManager = new MockStorageManager();
+    this.syncQueue = new MockSyncQueue();
+    this.whisper = new MockWhisperService();
+    this.transcriptionQueue = new MockTranscriptionQueue();
+    this.audioPlayer = new MockAudioPlayer(); // <-- AJOUTER
+  }
+
+  reset(): void {
+    // ... autres resets ...
+    this.haptics.reset();
+    this.storageManager.reset();
+    this.syncQueue.reset();
+    this.whisper.reset();
+    this.transcriptionQueue.reset();
+    this.audioPlayer.reset(); // <-- AJOUTER
+  }
+}
+```
+
+**Pourquoi c'est critique:**
+- Story 2.6 AC2 teste les contrôles de lecture audio (play/pause, progress bar)
+- Story 2.6 AC3 teste l'audio disponible pendant transcription en cours
+- Story 2.6 AC4 teste l'audio lisible après échec de transcription
+- Story 2.6 AC5 teste la lecture audio offline (FR23 compliance)
+- Sans ce mock, les tests vont échouer avec `undefined is not a function`
+
 ## 🎯 Workflow Consultation
 
 ```mermaid
