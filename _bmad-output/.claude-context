@@ -1,0 +1,56 @@
+# IMPORTANT - Fichiers à TOUJOURS Consulter
+
+## 🔥 Documents Critiques TEA (Test Architecture)
+
+### AVANT DE GÉNÉRER UN RAPPORT SUR LES TESTS:
+
+1. **LIRE EN PRIORITÉ**: `_bmad-output/test-infrastructure-setup.md`
+   - Infrastructure complète TDD + BDD (Gherkin) + E2E
+   - Mocks in-memory documentés
+   - Pattern RED-GREEN-REFACTOR
+   - 15 scenarios Gherkin Story 2.1
+   - **NE JAMAIS OUBLIER CE FICHIER**
+
+2. **CONSULTER**: `_bmad-output/tea-artifacts-index.md`
+   - Index de tous les artefacts TEA créés
+   - Liste complète des .feature Gherkin
+   - Statistiques globales Epic 2
+
+3. **VÉRIFIER**: Fichiers .feature Gherkin
+   - `pensieve/mobile/tests/acceptance/features/story-2-1-capture-audio.feature`
+   - `pensieve/mobile/tests/acceptance/features/story-2-2-capture-texte.feature`
+
+4. **INSPECTER**: Mocks in-memory
+   - `pensieve/mobile/tests/acceptance/support/test-context.ts`
+
+## 📁 Structure Documentation Projet
+
+```
+_bmad-output/
+├── .claude-context                          ⭐ CE FICHIER (rappels)
+├── tea-artifacts-index.md                   📋 Index artefacts TEA
+├── test-infrastructure-setup.md             🔥 INFRASTRUCTURE GLOBALE
+├── test-design-epic-2.md                    📊 Plan de test Epic 2
+├── atdd-checklist-2-1-*.md                  📝 Checklist Story 2.1
+└── atdd-checklist-2-2-*.md                  📝 Checklist Story 2.2
+```
+
+## ⚠️ Rappels Importants
+
+- Toujours consulter `test-infrastructure-setup.md` AVANT de parler de framework de test
+- L'infrastructure BDD avec Gherkin existe déjà depuis Story 2.1
+- Ne pas recréer ce qui existe déjà, consulter d'abord la doc
+- Les mocks in-memory sont dans test-context.ts (1200+ lignes)
+
+## 🎯 Workflow Consultation
+
+```mermaid
+graph TD
+    A[Tâche TEA demandée] --> B{Type de tâche?}
+    B -->|Framework/Infrastructure| C[LIRE test-infrastructure-setup.md]
+    B -->|Nouvelle Story| D[LIRE tea-artifacts-index.md]
+    B -->|Tests existants| E[CONSULTER fichiers .feature]
+    C --> F[Générer rapport]
+    D --> F
+    E --> F
+```

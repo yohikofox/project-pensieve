@@ -38,4 +38,4 @@ workflow_status:
   implementation-readiness: "_bmad-output/planning-artifacts/implementation-readiness-report-2026-01-19.md"
 
   # Phase 4 - Implementation
-  sprint-planning: "required"
+  sprint-planning: "_bmad-output/implementation-artifacts/sprint-status.yaml"
