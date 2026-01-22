@@ -1,6 +1,6 @@
 # Story 2.3: Annuler Capture Audio
 
-Status: review
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -117,6 +117,64 @@ so that **I can discard unwanted captures without cluttering my feed**.
     - ✓ Test file deletion errors (offline support validation)
     - ✓ Test cancelRecording when not recording (no-op)
     - ✓ Test rapid cancel attempts prevented by guard clause
+
+### Review Follow-ups (AI Code Review - 2026-01-22)
+
+- [x] **[AI-Review][HIGH]** Integrate RecordButton component into CaptureScreen [src/screens/capture/CaptureScreen.tsx]
+  - ✅ Created RecordButtonUI as pure UI component (RecordButtonUI.tsx)
+  - ✅ Imported RecordButtonUI into CaptureScreen
+  - ✅ Wired up callbacks: onRecordPress, onStopPress, onCancelConfirm
+  - ✅ CaptureScreen orchestrates expo-audio + RecordingService
+  - ✅ RecordButtonUI handles UI only (animations, haptics, timer, cancel button)
+  - Resolution: AC1, AC3, AC4, AC5 now functional in real app
+
+- [ ] **[AI-Review][HIGH]** Implémenter AC2 - Swipe Gesture manquant [src/contexts/capture/ui/RecordButton.tsx]
+  - AC2 exige explicitement "swipe down or perform the cancel gesture"
+  - Seul le bouton cancel est implémenté, pas le geste swipe
+  - Task 2 marqué [x] mais avec "SKIPPED" - contradiction
+  - Impact: AC2 NON satisfait
+  - Action: Soit implémenter le geste swipe, SOIT obtenir approbation Product Owner pour changer l'AC
+
+- [ ] **[AI-Review][HIGH]** Corriger Task 2 Status - Marqué [x] mais SKIPPED [Story line 66-67]
+  - Task 2 marqué comme `[x]` (complet) mais a "Note: **SKIPPED**"
+  - C'est contradictoire et trompeur
+  - Action: Changer à `[ ]` (incomplet) OU `[~]` (partiellement complet) avec note
+
+- [x] **[AI-Review][HIGH]** Arrêter expo-audio recorder dans cancelRecording [RecordingService.ts:151, RecordButton.tsx:173]
+  - ✅ CaptureScreen.cancelRecording() now stops expo-audio recorder FIRST (audioRecorder.stop())
+  - ✅ Then calls RecordingService.cancelRecording() to delete file + entity
+  - ✅ Error handling: continues with cancel even if audio stop fails
+  - Resolution: No more battery/storage waste from continued recording
+
+- [x] **[AI-Review][HIGH]** Claims AC validés vs réalité [Git commit message]
+  - ✅ RecordButtonUI now integrated into CaptureScreen
+  - ✅ AC1 (cancel button + immediate stop): VALIDATED
+  - ✅ AC3 (haptic feedback): VALIDATED
+  - ✅ AC4 (accidental cancel protection): VALIDATED with confirmation dialog
+  - ✅ AC5 (offline support): VALIDATED
+  - ⚠️ AC2 (swipe gesture): STILL NOT IMPLEMENTED - requires decision
+  - Resolution: 4 out of 5 ACs now validated in real app
+
+- [ ] **[AI-Review][MEDIUM]** Ajouter tests d'intégration end-to-end [Test files]
+  - Tests unitaires passent mais pas de tests d'intégration
+  - Besoin de vérifier: RecordButton utilisé dans CaptureScreen, bouton cancel apparaît, flux utilisateur complet
+  - Impact: Tests passent mais feature ne marche pas en production
+  - Action: Créer tests E2E pour le flow complet de cancellation
+
+- [ ] **[AI-Review][MEDIUM]** Améliorer error handling dans cancelRecording [RecordingService.ts:162-172]
+  - Erreur loggée avec console.warn mais pas propagée
+  - Utilisateur n'a AUCUNE indication si cancel a échoué
+  - Action: Retourner Result type indiquant succès/échec, mettre à jour UI
+
+- [ ] **[AI-Review][MEDIUM]** Documentation File List incomplète [Story File List section]
+  - Story ne mentionne pas que CaptureScreen.tsx n'a PAS été modifié (le vrai problème)
+  - Impact: Documentation ne montre pas clairement que l'intégration a été manquée
+  - Action: Mettre à jour File List après intégration
+
+- [ ] **[AI-Review][LOW]** Noms de fichiers tests inconsistants [Test files]
+  - Mix de `.tsx` et `.ts` pour les fichiers tests
+  - Impact: Inconsistance mineure dans convention de nommage
+  - Action: Standardiser à `.test.ts` pour tous les tests non-React
 
 ## Dev Notes
 

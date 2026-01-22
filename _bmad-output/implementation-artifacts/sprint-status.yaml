@@ -58,7 +58,7 @@ development_status:
   epic-2: in-progress
   2-1-capture-audio-1-tap: done
   2-2-capture-texte-rapide: done
-  2-3-annuler-capture-audio: review
+  2-3-annuler-capture-audio: in-progress
   2-4-stockage-offline-des-captures: ready-for-dev
   2-5-transcription-on-device-avec-whisper: ready-for-dev
   2-6-consultation-de-transcription: ready-for-dev
