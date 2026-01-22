@@ -63,8 +63,9 @@ so that **I can discard unwanted captures without cluttering my feed**.
     - Triggers immediately on cancel confirmation
     - Provides distinct feel from Medium impact used for recording
 
-- [x] **Task 2: Implement Swipe-Down Cancel Gesture** (AC: 2, 4)
-  - Note: **SKIPPED** - Cancel button provides sufficient UX. Swipe gesture adds complexity without significant UX benefit. Button + confirmation dialog already prevents accidental cancellation (AC4).
+- [ ] **Task 2: Implement Swipe-Down Cancel Gesture** (AC: 2, 4)
+  - Status: **SKIPPED** - Cancel button provides sufficient UX. Swipe gesture adds complexity without significant UX benefit. Button + confirmation dialog already prevents accidental cancellation (AC4).
+  - ⚠️ **Requires PO Decision:** AC2 explicitly requires "swipe down or perform the cancel gesture". Current implementation only has button. Need PO approval to modify AC2 or implement swipe gesture.
 
 - [x] **Task 3: Implement Cancellation Logic in RecordingService** (AC: 1, 5)
   - [x] Subtask 3.1: Add cancelRecording() method
@@ -131,14 +132,15 @@ so that **I can discard unwanted captures without cluttering my feed**.
 - [ ] **[AI-Review][HIGH]** Implémenter AC2 - Swipe Gesture manquant [src/contexts/capture/ui/RecordButton.tsx]
   - AC2 exige explicitement "swipe down or perform the cancel gesture"
   - Seul le bouton cancel est implémenté, pas le geste swipe
-  - Task 2 marqué [x] mais avec "SKIPPED" - contradiction
   - Impact: AC2 NON satisfait
   - Action: Soit implémenter le geste swipe, SOIT obtenir approbation Product Owner pour changer l'AC
+  - ⚠️ **BLOCKED:** Awaiting PO decision on AC2 modification
 
-- [ ] **[AI-Review][HIGH]** Corriger Task 2 Status - Marqué [x] mais SKIPPED [Story line 66-67]
-  - Task 2 marqué comme `[x]` (complet) mais a "Note: **SKIPPED**"
-  - C'est contradictoire et trompeur
-  - Action: Changer à `[ ]` (incomplet) OU `[~]` (partiellement complet) avec note
+- [x] **[AI-Review][HIGH]** Corriger Task 2 Status - Marqué [x] mais SKIPPED [Story line 66-67]
+  - ✅ Changed Task 2 from [x] to [ ] (incomplete)
+  - ✅ Added "Status: SKIPPED" label for clarity
+  - ✅ Added "Requires PO Decision" warning
+  - Resolution: No more contradictory status, clear that PO approval needed
 
 - [x] **[AI-Review][HIGH]** Arrêter expo-audio recorder dans cancelRecording [RecordingService.ts:151, RecordButton.tsx:173]
   - ✅ CaptureScreen.cancelRecording() now stops expo-audio recorder FIRST (audioRecorder.stop())
@@ -166,10 +168,13 @@ so that **I can discard unwanted captures without cluttering my feed**.
   - Utilisateur n'a AUCUNE indication si cancel a échoué
   - Action: Retourner Result type indiquant succès/échec, mettre à jour UI
 
-- [ ] **[AI-Review][MEDIUM]** Documentation File List incomplète [Story File List section]
-  - Story ne mentionne pas que CaptureScreen.tsx n'a PAS été modifié (le vrai problème)
-  - Impact: Documentation ne montre pas clairement que l'intégration a été manquée
-  - Action: Mettre à jour File List après intégration
+- [x] **[AI-Review][MEDIUM]** Documentation File List incomplète [Story File List section]
+  - ✅ Updated File List with Integration Phase section
+  - ✅ Added RecordButtonUI.tsx as NEW file
+  - ✅ Added CaptureScreen.tsx as INTEGRATED (with detailed changes)
+  - ✅ Marked RecordButton.tsx as DEPRECATED (not integrated)
+  - ✅ Clear distinction between original implementation and integration
+  - Resolution: Documentation now accurately reflects integration status
 
 - [ ] **[AI-Review][LOW]** Noms de fichiers tests inconsistants [Test files]
   - Mix de `.tsx` et `.ts` pour les fichiers tests
@@ -335,29 +340,51 @@ No debug logs required - implementation was straightforward with all tests passi
 
 ### File List
 
-#### Modified Files
+#### New Files (Integration Phase)
 
-1. **src/contexts/capture/ui/RecordButton.tsx** (src/contexts/capture/ui/RecordButton.tsx:1-312)
-   - Added cancel button UI (absolutely positioned, 44x44 tap target)
-   - Added handleCancel function with Alert confirmation dialog
-   - Added discardAnim ref for fade-out animation
-   - Added onRecordingCancel callback prop
-   - Added cancel button styles (red border, translucent background)
+1. **src/contexts/capture/ui/RecordButtonUI.tsx** (NEW - 262 lines)
+   - Pure UI component for recording with cancel functionality
+   - Handles pulsing animation, timer display, haptic feedback
+   - Cancel button (44x44 tap target, positioned top-right)
+   - Confirmation dialog with "Keep Recording" / "Discard" options
+   - Discard animation (200ms fade + scale)
+   - NO business logic - all callbacks to parent (CaptureScreen)
 
-2. **src/contexts/capture/services/RecordingService.ts** (src/contexts/capture/services/RecordingService.ts:24-181)
+#### Modified Files (Integration Phase)
+
+2. **src/screens/capture/CaptureScreen.tsx** (INTEGRATED)
+   - Imported RecordButtonUI component
+   - Added recordingDuration state + timer useEffect
+   - Added cancelRecording() method that:
+     * Stops expo-audio recorder FIRST (audioRecorder.stop())
+     * Then calls RecordingService.cancelRecording()
+   - Replaced manual TouchableOpacity with RecordButtonUI
+   - Removed obsolete: handleTap(), getButtonText(), getButtonColor()
+   - Wired callbacks: onRecordPress → startRecording, onStopPress → stopRecording, onCancelConfirm → cancelRecording
+
+#### Original Implementation Files (Story 2.3 Initial)
+
+3. **src/contexts/capture/ui/RecordButton.tsx** (DEPRECATED - not integrated)
+   - Original component with internal RecordingService dependency
+   - NOT USED in CaptureScreen (architecture mismatch)
+   - Kept for reference, replaced by RecordButtonUI
+
+4. **src/contexts/capture/services/RecordingService.ts**
    - Added expo-file-system import for file deletion
    - Enhanced cancelRecording() method to delete audio files
    - Added getById call to retrieve file URI from capture entity
    - Added file existence check before deletion
    - Added graceful error handling for offline support
 
-3. **src/contexts/capture/ui/__tests__/RecordButton.test.tsx** (src/contexts/capture/ui/__tests__/RecordButton.test.tsx:21-410)
+#### Test Files
+
+5. **src/contexts/capture/ui/__tests__/RecordButton.test.tsx**
    - Added expo-file-system mock
    - Added Alert mock to React Native mock
    - Added "Story 2.3: Cancel Button" describe block with 5 tests
    - Tests cover: button visibility, confirmation dialog, haptic feedback, callbacks, "Keep Recording" flow
 
-4. **src/contexts/capture/services/__tests__/RecordingService.test.ts** (src/contexts/capture/services/__tests__/RecordingService.test.ts:20-357)
+6. **src/contexts/capture/services/__tests__/RecordingService.test.ts**
    - Added expo-file-system mock implementation
    - Fixed all existing tests to match actual service signatures
    - Removed PermissionService import (not used in service)
