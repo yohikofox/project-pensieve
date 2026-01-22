@@ -165,10 +165,14 @@ so that **I can discard unwanted captures without cluttering my feed**.
   - ✅ Unit tests (14/14) passing - sufficient coverage for Story 2.3
   - Resolution: Cancel flow fully tested at unit + integration level
 
-- [ ] **[AI-Review][MEDIUM]** Améliorer error handling dans cancelRecording [RecordingService.ts:162-172]
-  - Erreur loggée avec console.warn mais pas propagée
-  - Utilisateur n'a AUCUNE indication si cancel a échoué
-  - Action: Retourner Result type indiquant succès/échec, mettre à jour UI
+- [x] **[AI-Review][MEDIUM]** Améliorer error handling dans cancelRecording [RecordingService.ts:162-172]
+  - ✅ Changed return type from `Promise<void>` to `Promise<RepositoryResult<void>>`
+  - ✅ Returns SUCCESS when cancel completes normally
+  - ✅ Returns DATABASE_ERROR when critical failures occur (DB deletion)
+  - ✅ File deletion errors are non-critical (logged but don't fail operation)
+  - ✅ CaptureScreen shows Alert to user when cancel fails
+  - ✅ Added test for database error scenario (15/15 tests passing)
+  - Resolution: User now gets feedback if cancel operation fails
 
 - [x] **[AI-Review][MEDIUM]** Documentation File List incomplète [Story File List section]
   - ✅ Updated File List with Integration Phase section
