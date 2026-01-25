@@ -24,8 +24,12 @@ Ce dossier contient tous les ADRs (Architecture Decision Records) du projet Pens
 | [ADR-016](./ADR-016-hybrid-architecture.md) | Hybrid Architecture - Cloud Auth + Homelab Storage | ✅ Accepted | 2026-01-19 | yohikofox, Winston |
 | [ADR-017](./ADR-017-ioc-di-strategy.md) | Dependency Injection & IoC Container Strategy | ✅ Accepted | 2026-01-22 | yohikofox, Winston, Amelia, Murat |
 | [ADR-018](./ADR-018-migration-watermelondb-opsqlite.md) | Migration WatermelonDB → OP-SQLite | ✅ Accepted | 2026-01-22 | yohikofox, Winston, Amelia |
+| [ADR-019](./ADR-019-eventbus-domain-events.md) | EventBus Architecture - Domain Events avec RxJS | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
+| [ADR-020](./ADR-020-background-processing-strategy.md) | Background Processing Strategy - expo-task-manager | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
+| [ADR-021](./ADR-021-di-lifecycle-transient-first.md) | DI Lifecycle Strategy - Transient First (Révision ADR-017) | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
+| [ADR-022](./ADR-022-state-persistence-opsqlite.md) | State Persistence Strategy - OP-SQLite for All State | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
 
-**Total:** 18 ADRs documentés (29 sous-décisions architecturales)
+**Total:** 22 ADRs documentés (33+ sous-décisions architecturales)
 
 ---
 
@@ -225,5 +229,5 @@ Proposed (⏳) → Accepted (✅) → [Review après 1-3 mois] → Maintenu OU S
 
 ---
 
-**Dernière mise à jour :** 2026-01-22
+**Dernière mise à jour :** 2026-01-24
 **Maintenu par :** Winston (Architect) + yohikofox (Product Owner)

@@ -60,7 +60,7 @@ development_status:
   2-2-capture-texte-rapide: done
   2-3-annuler-capture-audio: done
   2-4-stockage-offline-des-captures: done
-  2-5-transcription-on-device-avec-whisper: ready-for-dev
+  2-5-transcription-on-device-avec-whisper: in-progress
   2-6-consultation-de-transcription: ready-for-dev
   epic-2-retrospective: optional
 
