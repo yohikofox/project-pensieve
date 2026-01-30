@@ -225,20 +225,43 @@ WatermelonDB Capture → CaptureDetailView → TranscriptionDisplay
 
 ### Reactive UI Updates
 
-**WatermelonDB observe():**
+**WatermelonDB observe() pattern (proven in Stories 2.1-2.5):**
 ```typescript
-const capture = useMemo(() =>
-  database.collections.get('captures').findAndObserve(captureId),
-  [captureId]
-)
+import { useDatabase } from '@nozbe/watermelondb/hooks'
+import { withObservables } from '@nozbe/watermelondb/react'
 
-// Automatically updates when transcription completes
+const CaptureDetailScreen = ({ captureId }) => {
+  const database = useDatabase()
+  const capture = useMemo(() =>
+    database.collections.get('captures').findAndObserve(captureId),
+    [captureId]
+  )
+
+  // UI automatically re-renders when capture.state changes
+  // No manual refresh needed!
+
+  return (
+    <View>
+      {capture.state === 'processing' && <Spinner text="Transcribing..." />}
+      {capture.state === 'ready' && <Text>{capture.normalizedText}</Text>}
+      {capture.state === 'failed' && <RetryButton onPress={() => retryTranscription(captureId)} />}
+    </View>
+  )
+}
+
+export default withObservables(['captureId'], ({ captureId }) => ({
+  capture: database.collections.get('captures').findAndObserve(captureId)
+}))(CaptureDetailScreen)
 ```
 
-**State transitions:**
-- "processing" → Show spinner
-- "ready" → Show transcription
-- "failed" → Show error + retry
+**Capture state machine (from Story 2.5):**
+```
+captured → processing → ready (success)
+                    ↓
+                  failed (error, can retry)
+```
+
+**Important:** Use `withObservables` HOC for automatic re-rendering when Capture changes. This pattern is proven in CapturesListScreen (Story 2.5).
 
 ### Reuse from Stories 2.1-2.5
 
@@ -256,15 +279,30 @@ const capture = useMemo(() =>
 ### File Structure
 
 ```
-apps/mobile/
+pensieve/mobile/
 ├── src/
+│   ├── screens/
+│   │   ├── CaptureDetailScreen.tsx        # NEW - Main detail view
+│   │   └── CapturesListScreen.tsx         # EXISTING - Navigate from here
+│   ├── components/
+│   │   └── AudioPlayer.tsx                # NEW - Audio playback component
+│   ├── repositories/
+│   │   └── CaptureRepository.ts           # EXISTING - findById(), observe()
+│   ├── models/
+│   │   └── Capture.model.ts               # EXISTING - normalizedText field
 │   ├── contexts/
-│   │   └── Capture/
-│   │       └── ui/
-│   │           ├── CaptureDetailView.tsx  # NEW (main screen)
-│   │           ├── TranscriptionDisplay.tsx  # NEW (text display)
-│   │           └── AudioPlayer.tsx  # NEW (optional)
+│   │   └── Normalization/
+│   │       └── services/
+│   │           └── TranscriptionQueueService.ts  # EXISTING - retryFailedByCaptureId()
+│   └── navigation/
+│       └── AppNavigator.tsx               # UPDATE - Add CaptureDetail route
 ```
+
+**Key Files from Story 2.5:**
+- `src/contexts/Normalization/services/TranscriptionService.ts` - Whisper integration
+- `src/contexts/Normalization/services/TranscriptionQueueService.ts` - Queue + retry
+- `src/contexts/Normalization/services/TranscriptionWorker.ts` - Background processing
+- `src/screens/CapturesListScreen.tsx` - Status badge patterns
 
 ### Navigation Setup
 
@@ -321,23 +359,75 @@ const copyTranscription = () => {
 
 ### Previous Story Intelligence (Stories 2.1-2.5)
 
-**Learnings:**
-- WatermelonDB observe() works great for reactive updates
-- Offline-first patterns well-established
-- Capture state machine reliable
-- Retry logic from 2.5 can be reused
+**Story 2.5 Learnings (Transcription):**
+- TranscriptionService integrated with Whisper.rn successfully
+- Capture.normalizedText field populated by transcription worker
+- Capture states: 'captured' → 'processing' → 'ready'/'failed'
+- TranscriptionQueueService.retryFailedByCaptureId() available for retry
+- CapturesListScreen shows status badges (⏳ pending, spinner processing, ✅ ready, ❌ failed)
+- Live updates via WatermelonDB observe() work perfectly
+- Performance tests validate NFR2 (transcription < 2x audio duration)
+- Edge case tests cover very short/long audio, rapid succession, backgrounding
+
+**Story 2.4 Learnings (Storage):**
+- Audio files stored in expo-file-system DocumentDirectory
+- Capture.audioPath contains full file URI
+- WatermelonDB persists metadata offline-first
+- Migration v6 added normalized_text column
+
+**Story 2.1-2.3 Learnings (Capture):**
+- 1-tap audio recording works reliably
+- Capture entity with type 'audio'/'text'
+- CaptureRepository.findById() and observe() patterns established
+- Offline-first architecture proven in all previous stories
 
 **Code patterns to reuse:**
-- WatermelonDB observe() for reactive UI
-- State-based rendering (switch on Capture.state)
+- WatermelonDB observe() for reactive UI (from all stories)
+- State-based rendering: switch (capture.state) { case 'processing'... }
 - Error handling with user-friendly messages
-- Offline-first data loading
+- TranscriptionQueueService retry pattern (from 2.5)
+- Status badge UI patterns from CapturesListScreen (from 2.5)
+- Offline-first data loading (proven across 2.1-2.5)
+
+### Critical Implementation Notes
+
+**DO:**
+- ✅ Use `withObservables` HOC for reactive updates (proven pattern)
+- ✅ Call `TranscriptionQueueService.retryFailedByCaptureId(captureId)` for retry
+- ✅ Check `capture.state` to determine UI state
+- ✅ Access transcription via `capture.normalizedText` field
+- ✅ Load audio from `capture.audioPath` (full file URI)
+- ✅ Test offline functionality (all data is local)
+- ✅ Follow status badge patterns from CapturesListScreen
+
+**DON'T:**
+- ❌ Make network calls (everything is local)
+- ❌ Manually poll for transcription updates (use observe())
+- ❌ Modify Capture state directly (only TranscriptionWorker does this)
+- ❌ Implement new retry logic (reuse TranscriptionQueueService)
+- ❌ Create custom audio format conversion (already handled by Story 2.5)
+
+### Git Intelligence (Recent Commits)
+
+Recent work on Story 2.5 (commits 3a43c0b - 51483a6):
+- Comprehensive test suite (37 tests): unit, integration, performance, edge cases
+- TranscriptionService with Whisper.rn integration complete
+- TranscriptionQueueService with FIFO queue and retry logic
+- TranscriptionWorker with background processing and exponential backoff
+- CapturesListScreen with status badges and auto-refresh
+- All tests passing: performance NFR tests, integration flow tests, edge case tests
+
+**Key takeaway:** Story 2.5 infrastructure is solid and fully tested. Story 2.6 should **consume** this infrastructure, not reimplement it.
 
 ### References
 
-- [Source: _bmad-output/planning-artifacts/epics.md#Story 2.6]
+- [Source: _bmad-output/planning-artifacts/epics.md#Story 2.6: Consultation de Transcription]
 - [Source: _bmad-output/planning-artifacts/architecture.md#Capture Context]
 - [Source: _bmad-output/implementation-artifacts/2-5-transcription-on-device-avec-whisper.md#TranscriptionService]
+- [Source: _bmad-output/implementation-artifacts/2-5-transcription-on-device-avec-whisper.md#Tasks/Subtasks]
+- [Source: pensieve/mobile/src/models/Capture.model.ts - Line 18-22: normalizedText field]
+- [Source: pensieve/mobile/src/contexts/Normalization/services/TranscriptionQueueService.ts - retryFailedByCaptureId()]
+- [Source: pensieve/mobile/src/screens/CapturesListScreen.tsx - withObservables pattern, status badges]
 
 ## Dev Agent Record
 
