@@ -1,6 +1,6 @@
 # Story 2.5: Transcription On-Device avec Whisper
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -184,7 +184,7 @@ so that **I can read my thoughts without relying on cloud services** (confidenti
     - ✅ Low-end device warnings on startup (TranscriptionWorker.start())
     - ✅ Tests: DeviceCapabilitiesService.test.ts (12/16 passing)
 
-- [x] **Task 8: Write Comprehensive Tests** (AC: All) - PARTIAL
+- [x] **Task 8: Write Comprehensive Tests** (AC: All) - COMPLETE
   - [x] Subtask 8.1: Unit tests for TranscriptionService
     - ✅ TranscriptionService.test.ts (14 tests)
     - ✅ TranscriptionService.performance.test.ts
@@ -207,11 +207,12 @@ so that **I can read my thoughts without relying on cloud services** (confidenti
     - ✅ Test memory usage during transcription (cleanup, multiple transcriptions, large files)
     - ✅ Test device responsiveness (async, concurrent ops, long transcription)
     - ✅ Tests: TranscriptionService.performance-nfr.test.ts (10/10 passing)
-  - [ ] Subtask 8.5: Edge case tests
-    - ❌ Test very short audio (< 1s)
-    - ❌ Test very long audio (> 10min)
-    - ❌ Test rapid successive transcriptions
-    - ❌ Test app backgrounding during transcription
+  - [x] Subtask 8.5: Edge case tests
+    - ✅ Test very short audio (<1s: 500ms, 100ms, 800ms)
+    - ✅ Test very long audio (>10min: 10min, 30min, 12min with performance)
+    - ✅ Test rapid successive transcriptions (5 rapid, concurrent, 10x stability)
+    - ✅ Test app backgrounding during transcription (continue, release, recovery, pause/resume)
+    - ✅ Tests: TranscriptionService.edge-cases.test.ts (13/13 passing)
 
 ## Dev Notes
 
