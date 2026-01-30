@@ -148,7 +148,7 @@ so that **I can read my thoughts without relying on cloud services** (confidenti
     - ✅ Permission request on app launch
     - ✅ Notification response handler setup (tap to navigate - TODO: implement navigation)
 
-- [ ] **Task 6: Implement Retry Logic for Failed Transcriptions** (AC: 5)
+- [x] **Task 6: Implement Retry Logic for Failed Transcriptions** (AC: 5)
   - [x] Subtask 6.1: Queue-level retry infrastructure
     - ✅ TranscriptionQueueService.retryFailed() exists
     - ✅ TranscriptionQueueService.markFailed() with retry count
@@ -166,7 +166,7 @@ so that **I can read my thoughts without relying on cloud services** (confidenti
     - ✅ Cleanup on stop()/pause() via cancelAllRetries()
     - ✅ Pure unit tests (TranscriptionWorker.backoff.test.ts): 12/12 passing
 
-- [ ] **Task 7: Optimize Whisper Performance** (AC: 3)
+- [x] **Task 7: Optimize Whisper Performance** (AC: 3)
   - [x] Subtask 7.1: Configure Whisper model size
     - ✅ Whisper "tiny" model selected for MVP (~40MB)
     - ✅ WhisperModelService supports tiny/base models
@@ -199,10 +199,11 @@ so that **I can read my thoughts without relying on cloud services** (confidenti
     - ✅ Event-Driven Architecture (event publishing)
     - ✅ Model Management Integration (architectural validation)
     - ✅ Tests: TranscriptionFlow.integration.test.ts (7/7 passing)
-  - [ ] Subtask 8.4: Performance tests
-    - ❌ Verify < 2x audio duration for various lengths
-    - ❌ Test memory usage during transcription
-    - ❌ Test device responsiveness
+  - [x] Subtask 8.4: Performance tests
+    - ✅ Verify < 2x audio duration for various lengths (short 5s, medium 30s, long 2min)
+    - ✅ Test memory usage during transcription (cleanup, multiple transcriptions, large files)
+    - ✅ Test device responsiveness (async, concurrent ops, long transcription)
+    - ✅ Tests: TranscriptionService.performance-nfr.test.ts (10/10 passing)
   - [ ] Subtask 8.5: Edge case tests
     - ❌ Test very short audio (< 1s)
     - ❌ Test very long audio (> 10min)
