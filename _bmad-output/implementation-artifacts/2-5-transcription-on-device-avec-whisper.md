@@ -194,11 +194,14 @@ so that **I can read my thoughts without relying on cloud services** (confidenti
     - ✅ TranscriptionWorker.test.ts
   - [x] Subtask 8.3: Integration tests for transcription flow
     - ✅ Queue → Processing Integration (FIFO order, duplicates)
-    - ✅ Retry Logic Integration (manual retry by capture ID)
+    - ✅ Retry Logic Integration (manual + automatic retry with exponential backoff)
     - ✅ Offline-First Architecture Validation (crash-proof persistence, no network)
+    - ✅ Offline Transcription Flow (100% local, airplane mode scenario)
+    - ✅ Model Download Flow (download integration, unavailable model handling)
+    - ✅ Automatic Retry Logic (exponential backoff 5s/30s/5min, max 3 attempts)
     - ✅ Event-Driven Architecture (event publishing)
     - ✅ Model Management Integration (architectural validation)
-    - ✅ Tests: TranscriptionFlow.integration.test.ts (7/7 passing)
+    - ✅ Tests: TranscriptionFlow.integration.test.ts (14/14 passing)
   - [x] Subtask 8.4: Performance tests
     - ✅ Verify < 2x audio duration for various lengths (short 5s, medium 30s, long 2min)
     - ✅ Test memory usage during transcription (cleanup, multiple transcriptions, large files)
