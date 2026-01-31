@@ -144,12 +144,12 @@ So that **I can manually retry the transcription without navigating to settings 
     - Use useEffect or interval to check if window expired
     - When expired, re-enable button (reactive update)
 
-- [ ] **Task 5: Show Progress Indicator During Retry** (AC: 5)
-  - [ ] Subtask 5.1: Replace "Retry" button with spinner when processing
+- [x] **Task 5: Show Progress Indicator During Retry** (AC: 5)
+  - [x] Subtask 5.1: Replace "Retry" button with spinner when processing
     - If capture.state === 'processing', show spinner
     - Spinner animates (rotate)
     - Text: "Transcribing..."
-  - [ ] Subtask 5.2: Use withObservables for reactive updates
+  - [x] Subtask 5.2: Use withObservables for reactive updates
     - Capture state changes trigger UI re-render
     - No manual refresh needed (proven pattern from Story 2.5/2.6)
 
@@ -814,6 +814,16 @@ N/A - Story not yet implemented
 - ✅ Tested on Android Pixel 10 Pro emulator - app runs without errors
 - 📝 Note: Button automatically re-enables when window resets (reactive via RetryLimitService.canRetry check)
 
+**2026-01-31 - Task 5 Completed (Already Implemented in Stories 2.5/2.6):**
+- ✅ Processing indicator (ActivityIndicator spinner) already shows when state === 'processing'
+- ✅ Badge variant="processing" with spinner and text displayed
+- ✅ Text shows t('capture.status.processing') - translates to "Transcribing..." or "En cours..."
+- ✅ Retry button automatically hidden when state is 'processing' (only shows when state === 'failed')
+- ✅ Reactive updates via capture state changes trigger UI re-render
+- ✅ Created 5 tests in CapturesListScreen.processing.test.tsx to document behavior
+- ✅ All 39 retry/processing tests passing
+- 📝 Note: No code changes needed - Task 5 requirements already satisfied by existing implementation
+
 ### File List
 
 **Modified:**
@@ -828,3 +838,4 @@ N/A - Story not yet implemented
 - `pensieve/mobile/src/contexts/Normalization/services/__tests__/RetryLimitService.test.ts` - Unit tests (9 tests)
 - `pensieve/mobile/src/contexts/capture/domain/__tests__/Capture.retry.test.ts` - Model tests (4 tests)
 - `pensieve/mobile/src/screens/captures/__tests__/CapturesListScreen.retry.test.tsx` - Integration tests (7 tests)
+- `pensieve/mobile/src/screens/captures/__tests__/CapturesListScreen.processing.test.tsx` - Processing indicator tests (5 tests)
