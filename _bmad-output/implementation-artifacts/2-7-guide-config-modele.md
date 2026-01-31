@@ -82,16 +82,16 @@ So that **I can download or configure a Whisper model instead of encountering si
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Create Model Detection Service** (AC: 1, 7)
-  - [ ] Subtask 1.1: Create ModelConfigurationService
+- [x] **Task 1: Create Model Detection Service** (AC: 1, 7)
+  - [x] Subtask 1.1: Create ModelConfigurationService
     - Singleton service to check model availability
     - Methods: `isModelAvailable()`, `getModelStatus()`, `getModelPath()`
-    - Uses AsyncStorage or OP-SQLite to persist model config
-  - [ ] Subtask 1.2: Implement model detection logic
+    - Uses AsyncStorage to persist model config
+  - [x] Subtask 1.2: Implement model detection logic
     - Check if model file exists at configured path
     - Validate model file integrity (file size, format)
     - Return status: 'available', 'downloading', 'not_configured'
-  - [ ] Subtask 1.3: Add model config persistence
+  - [x] Subtask 1.3: Add model config persistence
     - Store model path in AsyncStorage: key='whisper_model_path'
     - Store model status: 'available', 'downloading', 'not_configured'
     - Load config on service initialization
@@ -624,8 +624,19 @@ N/A - Story not yet implemented
 
 ### Completion Notes List
 
-*To be filled during implementation*
+**2026-01-31 - Task 1 Completed:**
+- ✅ Created ModelConfigurationService singleton with full persistence support
+- ✅ Implemented fast model detection (<100ms - NFR1 compliant)
+- ✅ AsyncStorage persistence for model configuration (AC7)
+- ✅ Event emitter pattern for model availability notifications (AC6)
+- ✅ Methods: isModelAvailable(), getModelStatus(), getModelPath(), setModelPath(), clearModel()
+- ✅ onModelAvailable() event listener for auto-resume transcription
+- ✅ 14 comprehensive unit tests covering all scenarios (all passing)
+- ✅ Performance test confirms <100ms model checks (cache-based)
+- 📝 Note: Service uses in-memory cache for fast repeated checks
 
 ### File List
 
-*To be filled during implementation*
+**Added:**
+- `pensieve/mobile/src/services/ModelConfigurationService.ts` - Model configuration singleton service
+- `pensieve/mobile/src/services/__tests__/ModelConfigurationService.test.ts` - Unit tests (14 tests)
