@@ -153,22 +153,22 @@ So that **I can manually retry the transcription without navigating to settings 
     - Capture state changes trigger UI re-render
     - No manual refresh needed (proven pattern from Story 2.5/2.6)
 
-- [ ] **Task 6: Handle Retry Success** (AC: 6)
-  - [ ] Subtask 6.1: Update capture on successful retry
+- [x] **Task 6: Handle Retry Success** (AC: 6)
+  - [x] Subtask 6.1: Update capture on successful retry
     - TranscriptionWorker marks capture as 'ready'
     - Capture card automatically updates (withObservables)
     - Show brief success animation (green checkmark, fade-in)
-  - [ ] Subtask 6.2: Remove retry button on success
+  - [x] Subtask 6.2: Remove retry button on success
     - Retry button only shows for state 'failed'
     - On 'ready', show normal transcription UI
 
-- [ ] **Task 7: Handle Retry Failure (Attempts Remaining)** (AC: 7)
-  - [ ] Subtask 7.1: Update capture on failed retry
+- [x] **Task 7: Handle Retry Failure (Attempts Remaining)** (AC: 7)
+  - [x] Subtask 7.1: Update capture on failed retry
     - TranscriptionWorker marks capture as 'failed'
     - Increment retryCount
     - Update lastRetryAt
     - Update transcriptionError with latest error message
-  - [ ] Subtask 7.2: Show retry button again (if attempts remaining)
+  - [x] Subtask 7.2: Show retry button again (if attempts remaining)
     - If retryCount < 3, show "Retry" button
     - If retryCount >= 3, disable button + show countdown
 
@@ -824,6 +824,19 @@ N/A - Story not yet implemented
 - ✅ All 39 retry/processing tests passing
 - 📝 Note: No code changes needed - Task 5 requirements already satisfied by existing implementation
 
+**2026-01-31 - Tasks 6-7 Completed:**
+- ✅ TranscriptionQueueService.retryFailedByCaptureId() updates captures table retry metadata
+- ✅ TranscriptionWorker success handler clears transcriptionError on success (Task 6)
+- ✅ TranscriptionWorker failure handler updates retry metadata on failure (Task 7)
+- ✅ Retry metadata synchronized between transcription_queue and captures tables
+- ✅ On success: state='ready', normalizedText filled, transcriptionError=null
+- ✅ On failure: state='failed', retryCount++, lastRetryAt updated, transcriptionError stored
+- ✅ retryWindowStartAt set on first retry, preserved on subsequent retries
+- ✅ Both foreground and background transcription handlers updated
+- ✅ Created 7 tests in TranscriptionWorker.retry.test.ts
+- ✅ All 46 retry/processing tests passing (39 + 7)
+- 📝 Note: Retry button visibility is automatic (only shows when state === 'failed', reactive UI)
+
 ### File List
 
 **Modified:**
@@ -831,7 +844,9 @@ N/A - Story not yet implemented
 - `pensieve/mobile/src/database/migrations.ts` - Added migration v14 with retry columns
 - `pensieve/mobile/src/contexts/capture/domain/Capture.model.ts` - Added retry fields to interfaces
 - `pensieve/mobile/src/screens/captures/CapturesListScreen.tsx` - Integrated RetryLimitService, updated retry button UI
-- `_bmad-output/implementation-artifacts/2-8-bouton-retry-transcription.md` - Marked Tasks 1-4 complete
+- `pensieve/mobile/src/contexts/Normalization/services/TranscriptionQueueService.ts` - Update captures retry metadata on manual retry
+- `pensieve/mobile/src/contexts/Normalization/workers/TranscriptionWorker.ts` - Update retry metadata on success/failure
+- `_bmad-output/implementation-artifacts/2-8-bouton-retry-transcription.md` - Marked Tasks 1-7 complete
 
 **Added:**
 - `pensieve/mobile/src/contexts/Normalization/services/RetryLimitService.ts` - Rate limiting service
@@ -839,3 +854,4 @@ N/A - Story not yet implemented
 - `pensieve/mobile/src/contexts/capture/domain/__tests__/Capture.retry.test.ts` - Model tests (4 tests)
 - `pensieve/mobile/src/screens/captures/__tests__/CapturesListScreen.retry.test.tsx` - Integration tests (7 tests)
 - `pensieve/mobile/src/screens/captures/__tests__/CapturesListScreen.processing.test.tsx` - Processing indicator tests (5 tests)
+- `pensieve/mobile/src/contexts/Normalization/__tests__/TranscriptionWorker.retry.test.ts` - Worker retry metadata tests (7 tests)
