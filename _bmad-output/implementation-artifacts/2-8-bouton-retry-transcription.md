@@ -115,32 +115,32 @@ So that **I can manually retry the transcription without navigating to settings 
     - Format as "Try again in X minutes"
     - Helper method: getRetryStatusMessage()
 
-- [ ] **Task 3: Add Retry Button to Capture Card Component** (AC: 1, 2)
-  - [ ] Subtask 3.1: Update CaptureCard component
+- [x] **Task 3: Add Retry Button to Capture Card Component** (AC: 1, 2)
+  - [x] Subtask 3.1: Update CaptureCard component
     - Identify where "Failed" status badge is shown
     - Add "Retry" button next to or replacing status badge
     - Button only visible if capture.state === 'failed'
-  - [ ] Subtask 3.2: Style Retry button (Liquid Glass design)
+  - [x] Subtask 3.2: Style Retry button (Liquid Glass design)
     - Prominent color (e.g., orange or blue, not red for error)
     - Icon: circular arrow or refresh icon
     - Text: "Retry" or just icon (depending on space)
     - Haptic feedback on press
-  - [ ] Subtask 3.3: Implement onRetry handler
+  - [x] Subtask 3.3: Implement onRetry handler
     - Call TranscriptionQueueService.retryFailedByCaptureId(captureId)
     - Update capture state to 'processing'
     - Increment retryCount
     - Update lastRetryAt to current timestamp
     - If retryCount === 1, set retryWindowStartAt to current timestamp
 
-- [ ] **Task 4: Disable Retry Button When Limit Reached** (AC: 3)
-  - [ ] Subtask 4.1: Check retry limit before rendering button
+- [x] **Task 4: Disable Retry Button When Limit Reached** (AC: 3)
+  - [x] Subtask 4.1: Check retry limit before rendering button
     - Call RetryLimitService.canRetry(capture)
     - If false, disable button (grey out, no interaction)
-  - [ ] Subtask 4.2: Show countdown message when disabled
+  - [x] Subtask 4.2: Show countdown message when disabled
     - Display "Retry limit reached. Try again in X minutes"
     - Calculate X from (retryWindowStartAt + 20 minutes) - now
     - Update every minute
-  - [ ] Subtask 4.3: Auto-enable button when window resets
+  - [x] Subtask 4.3: Auto-enable button when window resets
     - Use useEffect or interval to check if window expired
     - When expired, re-enable button (reactive update)
 
@@ -792,8 +792,39 @@ N/A - Story not yet implemented
 
 ### Completion Notes List
 
-*To be filled during implementation*
+**2026-01-31 - Tasks 1-2 Completed:**
+- ✅ Created migration v14 with retry tracking columns (retry_count, retry_window_start_at, last_retry_at, transcription_error)
+- ✅ Updated SCHEMA_VERSION to 14
+- ✅ Extended Capture model interface with retry fields
+- ✅ Extended CaptureRow interface with retry columns
+- ✅ Updated mapRowToCapture to map retry fields
+- ✅ Implemented RetryLimitService with 20-minute sliding window logic
+- ✅ All unit tests passing (13 tests: 9 RetryLimitService + 4 Capture model)
+- 📝 Note: Migration uses v14 (not v7 as initially mentioned in story - v13 was latest)
+
+**2026-01-31 - Tasks 3-4 Completed:**
+- ✅ Integrated RetryLimitService into CapturesListScreen
+- ✅ Modified handleRetry to check rate limit before retrying (returns early with toast if limit reached)
+- ✅ Updated retry button UI to show disabled state when 3 attempts exhausted
+- ✅ Added countdown message ("Limite atteinte. X min") below button when disabled
+- ✅ Changed button color from error-500 (red) to warning-500 (orange) when enabled
+- ✅ Button shows grey (neutral-300) when disabled with no interaction
+- ✅ Created 7 integration tests in CapturesListScreen.retry.test.tsx
+- ✅ All 20 retry-related tests passing (7 integration + 9 RetryLimitService + 4 Capture model)
+- ✅ Tested on Android Pixel 10 Pro emulator - app runs without errors
+- 📝 Note: Button automatically re-enables when window resets (reactive via RetryLimitService.canRetry check)
 
 ### File List
 
-*To be filled during implementation*
+**Modified:**
+- `pensieve/mobile/src/database/schema.ts` - Updated SCHEMA_VERSION to 14
+- `pensieve/mobile/src/database/migrations.ts` - Added migration v14 with retry columns
+- `pensieve/mobile/src/contexts/capture/domain/Capture.model.ts` - Added retry fields to interfaces
+- `pensieve/mobile/src/screens/captures/CapturesListScreen.tsx` - Integrated RetryLimitService, updated retry button UI
+- `_bmad-output/implementation-artifacts/2-8-bouton-retry-transcription.md` - Marked Tasks 1-4 complete
+
+**Added:**
+- `pensieve/mobile/src/contexts/Normalization/services/RetryLimitService.ts` - Rate limiting service
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/RetryLimitService.test.ts` - Unit tests (9 tests)
+- `pensieve/mobile/src/contexts/capture/domain/__tests__/Capture.retry.test.ts` - Model tests (4 tests)
+- `pensieve/mobile/src/screens/captures/__tests__/CapturesListScreen.retry.test.tsx` - Integration tests (7 tests)
