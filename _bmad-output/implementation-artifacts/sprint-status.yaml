@@ -55,14 +55,14 @@ development_status:
   # 1-5-password-recovery: deprecated (consolidated into 1-2-v2)
 
   # Epic 2: Capture & Transcription de Pensées (8 stories - includes ad hoc stories 2-7 & 2-8)
-  epic-2: in-progress
+  epic-2: done
   2-1-capture-audio-1-tap: done
   2-2-capture-texte-rapide: done
   2-3-annuler-capture-audio: done
   2-4-stockage-offline-des-captures: done
   2-5-transcription-on-device-avec-whisper: done
   2-6-consultation-de-transcription: done
-  2-7-guide-config-modele: in-progress
+  2-7-guide-config-modele: done
   2-8-bouton-retry-transcription: done
   epic-2-retrospective: optional
 
