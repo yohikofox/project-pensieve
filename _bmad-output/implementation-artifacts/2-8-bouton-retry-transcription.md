@@ -87,33 +87,33 @@ So that **I can manually retry the transcription without navigating to settings 
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Extend Capture Model with Retry Tracking** (AC: 3, 4, 9)
-  - [ ] Subtask 1.1: Add retry fields to Capture model
+- [x] **Task 1: Extend Capture Model with Retry Tracking** (AC: 3, 4, 9)
+  - [x] Subtask 1.1: Add retry fields to Capture model
     - `retryCount: number` (default 0)
     - `retryWindowStartAt: Date | null` (timestamp of first retry in current window)
     - `lastRetryAt: Date | null` (timestamp of most recent retry)
     - `transcriptionError: string | null` (error message from last failure)
-  - [ ] Subtask 1.2: Create OP-SQLite migration
+  - [x] Subtask 1.2: Create OP-SQLite migration
     - Add columns: retry_count, retry_window_start_at, last_retry_at, transcription_error
     - Default values: 0, null, null, null
-    - Migration version: v7 (after v6 from Story 2.4)
-  - [ ] Subtask 1.3: Update Capture TypeScript interface
+    - Migration version: v14 (schema version updated)
+  - [x] Subtask 1.3: Update Capture TypeScript interface
     - Add new fields with proper types
     - Update tests to include new fields
 
-- [ ] **Task 2: Implement Retry Rate Limiting Logic** (AC: 3, 4)
-  - [ ] Subtask 2.1: Create RetryLimitService
-    - Method: `canRetry(capture: Capture): boolean`
+- [x] **Task 2: Implement Retry Rate Limiting Logic** (AC: 3, 4)
+  - [x] Subtask 2.1: Create RetryLimitService
+    - Method: `canRetry(capture: Capture): RetryCheckResult`
     - Logic: Check if retryCount < 3 within 20-minute window
-    - Logic: If window expired (> 20 min since retryWindowStartAt), reset counter
-  - [ ] Subtask 2.2: Implement retry window reset
+    - Logic: If window expired (>= 20 min since retryWindowStartAt), allow retry
+  - [x] Subtask 2.2: Implement retry window reset
     - Calculate time elapsed since retryWindowStartAt
-    - If > 20 minutes, reset retryCount to 0 and retryWindowStartAt to null
+    - If >= 20 minutes, reset allowed
     - Return true (can retry)
-  - [ ] Subtask 2.3: Implement countdown timer for disabled retry
+  - [x] Subtask 2.3: Implement countdown timer for disabled retry
     - Calculate remaining time until window expires
     - Format as "Try again in X minutes"
-    - Update every minute (or real-time)
+    - Helper method: getRetryStatusMessage()
 
 - [ ] **Task 3: Add Retry Button to Capture Card Component** (AC: 1, 2)
   - [ ] Subtask 3.1: Update CaptureCard component
