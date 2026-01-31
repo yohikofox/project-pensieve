@@ -172,14 +172,14 @@ So that **I can manually retry the transcription without navigating to settings 
     - If retryCount < 3, show "Retry" button
     - If retryCount >= 3, disable button + show countdown
 
-- [ ] **Task 8: Implement Debug Mode for Error Messages** (AC: 8)
-  - [ ] Subtask 8.1: Add debug mode setting
+- [x] **Task 8: Implement Debug Mode for Error Messages** (AC: 8)
+  - [x] Subtask 8.1: Add debug mode setting
     - Create app setting in AsyncStorage: 'debug_mode' (boolean)
     - Add toggle in Settings screen (or developer menu)
-  - [ ] Subtask 8.2: Conditionally display error messages
+  - [x] Subtask 8.2: Conditionally display error messages
     - If debug_mode === true, show capture.transcriptionError (detailed)
     - If debug_mode === false, show generic: "Transcription failed"
-  - [ ] Subtask 8.3: Style error message display
+  - [x] Subtask 8.3: Style error message display
     - Small text below "Retry" button
     - Red color for error
     - Scrollable if very long (in detail view)
@@ -837,16 +837,28 @@ N/A - Story not yet implemented
 - ✅ All 46 retry/processing tests passing (39 + 7)
 - 📝 Note: Retry button visibility is automatic (only shows when state === 'failed', reactive UI)
 
+**2026-01-31 - Task 8 Completed:**
+- ✅ Debug mode already exists in useSettingsStore (no changes needed)
+- ✅ Simplified error display to use item.transcriptionError directly from Capture model
+- ✅ Removed errorMessages state (no longer needed)
+- ✅ Removed fetchErrorMessages useEffect (error now in Capture model from Tasks 6-7)
+- ✅ If debugMode=true AND transcriptionError exists: show detailed error
+- ✅ Otherwise: show generic "La transcription a échoué"
+- ✅ Error displayed with red color (text-status-error), small font (text-sm), italic
+- ✅ Created 5 tests in CapturesListScreen.debug.test.tsx
+- ✅ All 51 retry/processing/debug tests passing (46 + 5)
+- 📝 Note: Debug mode toggle already implemented in Settings screen (useSettingsStore)
+
 ### File List
 
 **Modified:**
 - `pensieve/mobile/src/database/schema.ts` - Updated SCHEMA_VERSION to 14
 - `pensieve/mobile/src/database/migrations.ts` - Added migration v14 with retry columns
 - `pensieve/mobile/src/contexts/capture/domain/Capture.model.ts` - Added retry fields to interfaces
-- `pensieve/mobile/src/screens/captures/CapturesListScreen.tsx` - Integrated RetryLimitService, updated retry button UI
+- `pensieve/mobile/src/screens/captures/CapturesListScreen.tsx` - Integrated RetryLimitService, retry button UI, debug mode error display
 - `pensieve/mobile/src/contexts/Normalization/services/TranscriptionQueueService.ts` - Update captures retry metadata on manual retry
 - `pensieve/mobile/src/contexts/Normalization/workers/TranscriptionWorker.ts` - Update retry metadata on success/failure
-- `_bmad-output/implementation-artifacts/2-8-bouton-retry-transcription.md` - Marked Tasks 1-7 complete
+- `_bmad-output/implementation-artifacts/2-8-bouton-retry-transcription.md` - Marked Tasks 1-8 complete
 
 **Added:**
 - `pensieve/mobile/src/contexts/Normalization/services/RetryLimitService.ts` - Rate limiting service
@@ -855,3 +867,4 @@ N/A - Story not yet implemented
 - `pensieve/mobile/src/screens/captures/__tests__/CapturesListScreen.retry.test.tsx` - Integration tests (7 tests)
 - `pensieve/mobile/src/screens/captures/__tests__/CapturesListScreen.processing.test.tsx` - Processing indicator tests (5 tests)
 - `pensieve/mobile/src/contexts/Normalization/__tests__/TranscriptionWorker.retry.test.ts` - Worker retry metadata tests (7 tests)
+- `pensieve/mobile/src/screens/captures/__tests__/CapturesListScreen.debug.test.tsx` - Debug mode error display tests (5 tests)
