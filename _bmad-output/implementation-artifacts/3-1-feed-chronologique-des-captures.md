@@ -1,6 +1,6 @@
 # Story 3.1: Liste Chronologique des Captures
 
-Status: review
+Status: in-progress
 
 ## Story
 
@@ -166,6 +166,26 @@ so that **I can quickly browse my recent thoughts and access them instantly, eve
     - Feed load < 1s (NFR4)
     - Scroll at 60fps with 100+ captures
     - Memory usage stable during scroll
+
+### Review Follow-ups (AI)
+
+Issues identifiés lors du code review adversarial (2026-02-02):
+
+**HIGH Priority:**
+- [x] [AI-Review][HIGH] Remplacer expo-file-system/legacy par expo-file-system moderne [CapturesListScreen.tsx:36]
+- [x] [AI-Review][HIGH] Corriger bug nullish coalescing dans NetworkContext - état initial offline non détecté [NetworkContext.tsx:39,49]
+
+**MEDIUM Priority:**
+- [x] [AI-Review][MEDIUM] Corriger getItemLayout avec hauteur fixe incorrecte - cards ont hauteur variable (debug mode, transcription) [CapturesListScreen.tsx:74,430-438]
+- [ ] [AI-Review][MEDIUM] Refactoriser CapturesListScreen (903 lignes) - extraire CaptureCard component, useAudioPlayer hook, useCaptureActions hook [CapturesListScreen.tsx]
+- [x] [AI-Review][MEDIUM] Ajouter tests unitaires pour NetworkContext et OfflineBanner (actuellement seulement tests BDD) [NetworkContext.tsx, OfflineBanner.tsx]
+- [ ] [AI-Review][MEDIUM] Documenter LIMIT+1 pagination trick avec lien vers référence technique [capturesStore.ts:67-82]
+- [ ] [AI-Review][MEDIUM] Ajouter tests de performance réels (frame rate, mémoire) via React Native Performance API ou Flipper [story-3-1-captures-list.test.ts]
+- [x] [AI-Review][MEDIUM] Uniformiser stratégie error handling (toast vs console) et ajouter error boundary React [CapturesListScreen.tsx:148,262,415]
+
+**LOW Priority:**
+- [ ] [AI-Review][LOW] Ajouter cleanup des animations Animated dans OfflineBanner pour éviter memory leak potentiel [OfflineBanner.tsx:30-61]
+- [ ] [AI-Review][LOW] Déplacer magic numbers (ITEM_HEIGHT=169, WINDOW_SIZE=5, etc.) vers constants/performance.ts avec documentation [CapturesListScreen.tsx:74-77]
 
 ## Dev Notes
 
@@ -403,7 +423,17 @@ N/A - Implementation completed without blocking issues.
 
 ### Completion Notes List
 
-1. **Pagination DB optimisée (AC4)**: Ajouté `findAllPaginated(limit, offset)` et `count()` au CaptureRepository pour remplacer la pagination en mémoire. Le store utilise maintenant directement les requêtes SQL avec LIMIT/OFFSET.
+1. ✅ **Resolved review finding [HIGH]**: Remplacé expo-file-system/legacy par expo-file-system moderne (CapturesListScreen.tsx:36,400). API compatible, 16 tests BDD passent.
+
+2. ✅ **Resolved review finding [HIGH]**: Corrigé bug nullish coalescing NetworkContext (NetworkContext.tsx:39,49). Changé `?? true` → `=== true` pour approche défensive (assume offline si état null/undefined). 16 tests BDD passent.
+
+3. ✅ **Resolved review finding [MEDIUM]**: Retiré getItemLayout (CapturesListScreen.tsx:74,429-437,839). Cards ont hauteur variable (debug mode, transcription length, conditional UI). FlatList mesure dynamiquement pour correctness. 16 tests BDD passent dont AC4 (60fps).
+
+4. ✅ **Resolved review finding [MEDIUM]**: Ajouté tests unitaires NetworkContext (10 tests) et OfflineBanner (8 tests). Couverture: initial state, network changes, cleanup, animations, theme support, defensive null handling. 18/18 tests passent.
+
+5. ✅ **Resolved review finding [MEDIUM]**: Uniformisé error handling (console.error + toast.error partout). Créé ErrorBoundary React component (9 tests) pour catcher erreurs non gérées. Toutes erreurs loggées ET notifiées à l'user.
+
+2. **Pagination DB optimisée (AC4)**: Ajouté `findAllPaginated(limit, offset)` et `count()` au CaptureRepository pour remplacer la pagination en mémoire. Le store utilise maintenant directement les requêtes SQL avec LIMIT/OFFSET.
 
 2. **NetworkContext & OfflineBanner (AC3)**: Créé un nouveau contexte React pour surveiller le statut réseau via `@react-native-community/netinfo`. Le banner s'affiche avec animation quand offline.
 
@@ -419,7 +449,11 @@ N/A - Implementation completed without blocking issues.
 
 **Nouveaux fichiers:**
 - `pensieve/mobile/src/contexts/NetworkContext.tsx` - Provider réseau React
+- `pensieve/mobile/src/contexts/__tests__/NetworkContext.test.tsx` - Tests unitaires NetworkContext (10 tests)
 - `pensieve/mobile/src/components/common/OfflineBanner.tsx` - Banner offline animé
+- `pensieve/mobile/src/components/common/__tests__/OfflineBanner.test.tsx` - Tests unitaires OfflineBanner (8 tests)
+- `pensieve/mobile/src/components/common/ErrorBoundary.tsx` - React Error Boundary
+- `pensieve/mobile/src/components/common/__tests__/ErrorBoundary.test.tsx` - Tests unitaires ErrorBoundary (9 tests)
 - `pensieve/mobile/tests/acceptance/features/story-3-1-captures-list.feature` - 16 scénarios BDD
 - `pensieve/mobile/tests/acceptance/story-3-1-captures-list.test.ts` - Step definitions
 
