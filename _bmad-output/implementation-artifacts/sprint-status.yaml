@@ -68,7 +68,7 @@ development_status:
 
   # Epic 3: Consultation & Navigation des Captures (4 stories)
   epic-3: in-progress
-  3-1-feed-chronologique-des-captures: in-progress
+  3-1-feed-chronologique-des-captures: review
   3-2-vue-detail-dune-capture: backlog
   3-3-distinction-visuelle-des-captures-en-attente: backlog
   3-4-navigation-et-interactions-dans-le-feed: backlog
