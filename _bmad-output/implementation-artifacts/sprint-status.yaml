@@ -73,7 +73,7 @@ development_status:
   3-2b-audio-player-et-waveform: done # Sub-story: Audio UI components (AC2 complete)
   3-2c-navigation-et-interactions: done # Sub-story: Swipe + context menu (AC6, AC7, AC8)
   3-3-distinction-visuelle-des-captures-en-attente: done
-  3-4-navigation-et-interactions-dans-le-feed: ready-for-dev
+  3-4-navigation-et-interactions-dans-le-feed: in-progress
   epic-3-retrospective: optional
 
   # Epic 4: Digestion IA & Extraction d'Insights (4 stories)
