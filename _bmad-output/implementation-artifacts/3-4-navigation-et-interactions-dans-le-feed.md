@@ -1,0 +1,581 @@
+# Story 3.4: Navigation et Interactions dans le Feed
+
+Status: ready-for-dev
+
+## Story
+
+As a **user**,
+I want **fluid, intuitive interactions and animations throughout the feed**,
+So that **the app feels responsive, delightful, and reflects the "Jardin d'idées" contemplative experience**.
+
+## Acceptance Criteria
+
+### AC1: 60fps Performance & Haptic Feedback
+**Given** I am interacting with the feed
+**When** I perform any gesture (tap, swipe, scroll)
+**Then** all animations run at 60fps (UX requirement)
+**And** haptic feedback is triggered for key actions (iOS/Android native)
+**And** the Liquid Glass design system is consistently applied
+
+### AC2: Hero Transition Animation
+**Given** I tap on a capture card
+**When** the detail view opens
+**Then** a smooth hero transition animation morphs the card into the detail view
+**And** the animation respects iOS/Android platform conventions
+**And** the transition completes in 250-350ms (feels instant)
+
+### AC3: Swipe Actions (PARTIALLY DONE)
+**Given** I swipe a capture card horizontally
+**When** the swipe gesture is detected
+**Then** contextual actions appear (archive, delete, share)
+**And** the swipe reveals options smoothly with spring physics
+**And** haptic feedback confirms the action threshold
+
+**Status**: ✅ SwipeableCard component exists with delete/share actions + haptic feedback
+
+### AC4: Scroll Animations
+**Given** I am scrolling through the feed
+**When** new captures appear during scroll
+**Then** they animate in with a subtle fade and slide (germination metaphor)
+**And** the animation is staggered for a natural organic feel
+**And** scroll performance never drops below 60fps
+
+### AC5: Long-Press Contextual Menu
+**Given** I perform a long-press on a capture card
+**When** the press is held for 300ms
+**Then** a contextual menu appears with smooth scale animation
+**And** haptic feedback signals menu activation
+**And** the background subtly blurs (Liquid Glass effect)
+**And** menu options are: Share, Delete, Pin, Mark as favorite
+
+### AC6: Platform-Specific Gestures
+**Given** I use platform-specific gestures
+**When** on iOS: I use edge swipe to go back
+**When** on Android: I use back button or swipe from edge
+**Then** the navigation respects platform conventions
+**And** the back transition is smooth and predictable
+
+### AC7: "Jardin d'idées" Visual Evolution
+**Given** visual elements reflect the "Jardin d'idées" metaphor
+**When** I view the feed over time
+**Then** captures visually "grow" or "mature" with subtle visual indicators
+**And** older captures may show growth rings or maturity badges
+**And** the overall aesthetic is calming and contemplative (not rushed or anxiety-inducing)
+
+### AC8: Animated Empty States (PARTIALLY DONE)
+**Given** I interact with empty states or placeholders
+**When** no captures exist or filters show no results
+**Then** illustrations are beautiful and on-brand (garden metaphor)
+**And** micro-animations add life (butterflies, gentle breeze effects)
+**And** the empty state guides me to take the next action
+
+**Status**: ✅ Empty state with "Jardin d'idées" metaphor exists in CapturesListScreen
+
+## Tasks / Subtasks
+
+### Already Implemented ✅
+- ✅ **SwipeableCard Component** (AC3) - Delete, Share actions with haptic feedback
+- ✅ **Empty State** (AC8) - "Jardin d'idées" metaphor in CapturesListScreen
+- ✅ **Basic Animations** (AC1) - PulsingBadge, GerminationBadge from Story 3.3
+
+### To Implement 🚧
+
+- [ ] **Task 1: Hero Transition Animation** (AC: 2)
+  - [ ] Subtask 1.1: Install react-native-shared-element (if needed)
+  - [ ] Subtask 1.2: Wrap CaptureCard with SharedElement
+  - [ ] Subtask 1.3: Configure shared element ID per capture
+  - [ ] Subtask 1.4: Add transition configuration in navigation
+  - [ ] Subtask 1.5: Ensure 250-350ms timing
+
+- [ ] **Task 2: Scroll Appearance Animations** (AC: 4)
+  - [ ] Subtask 2.1: Add LayoutAnimation to FlatList item rendering
+  - [ ] Subtask 2.2: Implement staggered fade-in for new items
+  - [ ] Subtask 2.3: Add subtle slide-up animation (germination metaphor)
+  - [ ] Subtask 2.4: Test scroll performance (ensure 60fps)
+  - [ ] Subtask 2.5: Use useNativeDriver for GPU acceleration
+
+- [ ] **Task 3: Long-Press Contextual Menu** (AC: 5)
+  - [ ] Subtask 3.1: Create ContextMenu component
+  - [ ] Subtask 3.2: Add LongPressGestureHandler to CaptureCard
+  - [ ] Subtask 3.3: Implement backdrop blur effect (Liquid Glass)
+  - [ ] Subtask 3.4: Add menu options: Share, Delete, Pin, Favorite
+  - [ ] Subtask 3.5: Trigger haptic feedback (300ms press)
+  - [ ] Subtask 3.6: Add smooth scale animation on appearance
+
+- [ ] **Task 4: Platform-Specific Navigation** (AC: 6)
+  - [ ] Subtask 4.1: Configure iOS edge swipe back (React Navigation)
+  - [ ] Subtask 4.2: Ensure Android back button handling
+  - [ ] Subtask 4.3: Test smooth back transition animation
+  - [ ] Subtask 4.4: Handle edge cases (nested navigation)
+
+- [ ] **Task 5: "Jardin d'idées" Visual Maturity** (AC: 7)
+  - [ ] Subtask 5.1: Define maturity levels (new, growing, mature)
+  - [ ] Subtask 5.2: Calculate age-based maturity from capturedAt
+  - [ ] Subtask 5.3: Add subtle visual indicators (border glow, icon badge)
+  - [ ] Subtask 5.4: Design contemplative color palette
+  - [ ] Subtask 5.5: Test aesthetic on real content
+
+- [ ] **Task 6: Enhance Empty State Animations** (AC: 8)
+  - [ ] Subtask 6.1: Add Lottie animations (optional butterflies, breeze)
+  - [ ] Subtask 6.2: Implement gentle floating/breathing animation
+  - [ ] Subtask 6.3: Ensure empty state is calming, not anxious
+  - [ ] Subtask 6.4: Test on various screen sizes
+
+- [ ] **Task 7: Performance Optimization** (AC: 1, 4)
+  - [ ] Subtask 7.1: Profile FlatList with React DevTools
+  - [ ] Subtask 7.2: Ensure all animations use useNativeDriver: true
+  - [ ] Subtask 7.3: Implement getItemLayout for FlatList (fixed heights)
+  - [ ] Subtask 7.4: Test on low-end devices (ensure 60fps)
+  - [ ] Subtask 7.5: Add performance monitoring logs
+
+- [ ] **Task 8: Write Comprehensive Tests** (AC: All)
+  - [ ] Subtask 8.1: BDD acceptance tests (jest-cucumber)
+  - [ ] Subtask 8.2: Component tests for ContextMenu
+  - [ ] Subtask 8.3: Animation performance tests
+  - [ ] Subtask 8.4: Platform-specific gesture tests
+  - [ ] Subtask 8.5: Integration tests for hero transition
+
+## Dev Notes
+
+### Architecture Context
+
+**Bounded Context:** Capture Context (UI layer - Consultation)
+
+**Existing Components (Story 3.1, 3.3):**
+- **CapturesListScreen** - Main feed screen (ENHANCE)
+- **SwipeableCard** - Swipe actions component (EXISTS ✅)
+- **PulsingBadge** - Pulsing animation for processing (EXISTS ✅)
+- **GerminationBadge** - Completion celebration (EXISTS ✅)
+- **OfflineBanner** - Network status (EXISTS ✅)
+- **EmptyState** - "Jardin d'idées" empty state (EXISTS ✅)
+
+**New Components Needed:**
+- **ContextMenu** - Long-press contextual menu (NEW)
+- **MaturityBadge** - Visual age/maturity indicator (NEW)
+
+**Data Flow:**
+```
+CapturesListScreen
+       ↓ [FlatList with animations]
+SwipeableCard (foreach capture)
+       ↓ [Tap with hero transition]
+CaptureDetailScreen (with shared element)
+
+Alternative:
+SwipeableCard
+       ↓ [Long press 300ms]
+ContextMenu (Share, Delete, Pin, Favorite)
+```
+
+### Technology Stack
+
+**Animations:**
+- **react-native-reanimated** - High-performance animations
+- **react-native-shared-element** - Hero transitions (optional)
+- **LayoutAnimation** (React Native) - Staggered appearance
+- **Lottie** (react-native-lottie) - Micro-animations (optional)
+
+**Gestures:**
+- **react-native-gesture-handler** - Long-press, swipe (ALREADY USED)
+- **Haptic feedback**: expo-haptics (ALREADY USED)
+
+**Performance:**
+- **FlatList optimizations**: getItemLayout, windowSize, removeClippedSubviews
+- **useNativeDriver: true** - GPU acceleration for animations
+
+### UX Requirements (Liquid Glass Design System)
+
+**Hero Transition Pattern:**
+```typescript
+// SharedElement configuration
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+
+// In CaptureCard
+<SharedElement id={`capture.${capture.id}.card`}>
+  <Card>...</Card>
+</SharedElement>
+
+// In CaptureDetailScreen
+<SharedElement id={`capture.${captureId}.card`}>
+  <Card>...</Card>
+</SharedElement>
+
+// Navigation transition config
+{
+  cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
+  transitionSpec: {
+    open: { animation: 'timing', config: { duration: 300 } },
+    close: { animation: 'timing', config: { duration: 250 } },
+  },
+}
+```
+
+**Scroll Appearance Animation:**
+```typescript
+// Staggered fade-in for new items
+const AnimatedCaptureCard = ({ item, index }) => {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 400,
+        delay: index * 50, // Stagger by 50ms
+        useNativeDriver: true,
+      }),
+      Animated.spring(translateY, {
+        toValue: 0,
+        delay: index * 50,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  return (
+    <Animated.View style={{ opacity, transform: [{ translateY }] }}>
+      <SwipeableCard {...props} />
+    </Animated.View>
+  );
+};
+```
+
+**Long-Press Contextual Menu:**
+```typescript
+// ContextMenu component structure
+import { LongPressGestureHandler } from 'react-native-gesture-handler';
+import { BlurView } from 'expo-blur';
+
+<LongPressGestureHandler
+  minDurationMs={300}
+  onActivated={handleLongPress}
+  onHandlerStateChange={({ nativeEvent }) => {
+    if (nativeEvent.state === State.ACTIVE) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      setMenuVisible(true);
+    }
+  }}
+>
+  <View>{children}</View>
+</LongPressGestureHandler>
+
+// Menu with backdrop blur
+{menuVisible && (
+  <Modal transparent>
+    <BlurView intensity={80} style={StyleSheet.absoluteFill}>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <MenuOption icon="share-2" label="Partager" onPress={onShare} />
+        <MenuOption icon="trash-2" label="Supprimer" onPress={onDelete} />
+        <MenuOption icon="bookmark" label="Épingler" onPress={onPin} />
+        <MenuOption icon="heart" label="Favoris" onPress={onFavorite} />
+      </Animated.View>
+    </BlurView>
+  </Modal>
+)}
+```
+
+**Maturity Visual Indicators:**
+```typescript
+// Calculate maturity level
+const getMaturityLevel = (capturedAt: Date): 'new' | 'growing' | 'mature' => {
+  const ageInDays = (Date.now() - capturedAt.getTime()) / (1000 * 60 * 60 * 24);
+  if (ageInDays < 1) return 'new';
+  if (ageInDays < 7) return 'growing';
+  return 'mature';
+};
+
+// Visual indicators
+const MaturityIndicator = ({ level }: { level: 'new' | 'growing' | 'mature' }) => {
+  const colors = {
+    new: colors.success[300],      // Fresh green glow
+    growing: colors.primary[300],  // Blue glow
+    mature: colors.warning[300],   // Warm amber glow
+  };
+
+  return (
+    <View style={{ borderColor: colors[level], borderWidth: 1, borderRadius: 8 }}>
+      {/* Subtle glow effect */}
+    </View>
+  );
+};
+```
+
+**Accessibility:**
+- ✅ Long-press has fallback: tap-and-hold icon button
+- ✅ Hero transition respects reduced motion settings
+- ✅ Haptic feedback respects system settings
+- ✅ Empty state animations respect reduced motion
+
+### Previous Story Intelligence (Story 3.1 & 3.3)
+
+**CapturesListScreen Structure (Story 3.1):**
+```typescript
+<GestureHandlerRootView>
+  <OfflineBanner /> {/* Network status */}
+  <FlatList
+    data={captures}
+    renderItem={({ item, index }) => (
+      <SwipeableCard  {/* Story 3.4 AC3 - DONE */}
+        onDelete={() => handleDelete(item.id)}
+        onShare={() => handleShare(item)}
+      >
+        <TouchableOpacity onPress={() => handleCapturePress(item.id)}>
+          {/* Hero transition anchor point needed here */}
+          <Card>
+            <PulsingBadge /> {/* Story 3.3 - DONE */}
+            <GerminationBadge /> {/* Story 3.3 - DONE */}
+            {/* Content */}
+          </Card>
+        </TouchableOpacity>
+      </SwipeableCard>
+    )}
+    ListEmptyComponent={<EmptyState />} {/* Story 3.1 AC6 - DONE */}
+    refreshControl={<RefreshControl />}
+    onEndReached={loadMoreCaptures}
+    // OPTIMIZATION NEEDED:
+    getItemLayout={(data, index) => ({ length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index })}
+    removeClippedSubviews={true}
+    windowSize={10}
+    maxToRenderPerBatch={10}
+  />
+</GestureHandlerRootView>
+```
+
+**Performance Constants (Story 3.1):**
+```typescript
+// From pensieve/mobile/src/constants/performance.ts
+export const FLATLIST_PERFORMANCE = {
+  windowSize: 10,
+  maxToRenderPerBatch: 10,
+  removeClippedSubviews: true,
+  initialNumToRender: 10,
+  updateCellsBatchingPeriod: 50,
+};
+```
+
+**Animations Pattern (Story 3.3):**
+- PulsingBadge uses Animated.loop with opacity pulse
+- GerminationBadge uses spring animation with scale
+- Both use useNativeDriver: true for 60fps
+
+### Critical Implementation Notes
+
+**DO:**
+- ✅ Use react-native-reanimated v2+ for all animations
+- ✅ Set useNativeDriver: true wherever possible
+- ✅ Implement getItemLayout for FlatList (known item heights)
+- ✅ Test hero transition on both iOS and Android
+- ✅ Make long-press accessible (fallback button)
+- ✅ Respect reduced motion accessibility setting
+- ✅ Keep "Jardin d'idées" aesthetic calm and contemplative
+- ✅ Profile performance on low-end devices
+
+**DON'T:**
+- ❌ Use Animated.Value in render (causes re-renders)
+- ❌ Forget to cleanup animation listeners on unmount
+- ❌ Block main thread with heavy computations during scroll
+- ❌ Add aggressive animations (subtle is key for contemplative UX)
+- ❌ Ignore platform conventions (iOS vs Android gestures)
+- ❌ Skip performance testing (60fps mandatory)
+
+### Hero Transition Implementation Options
+
+**Option A: react-native-shared-element (Recommended)**
+- Pros: Smooth morphing animation, platform-aware
+- Cons: Additional dependency, setup complexity
+- Best for: Complex card-to-detail transitions
+
+**Option B: Custom LayoutAnimation**
+- Pros: No extra deps, simpler
+- Cons: Less control, no true "hero" effect
+- Best for: Simple fade/slide transitions
+
+**Option C: react-native-reanimated Shared Values**
+- Pros: Full control, highly performant
+- Cons: More implementation work
+- Best for: Custom complex transitions
+
+**Recommendation**: Start with **Option B** (LayoutAnimation) for MVP, upgrade to **Option A** if user feedback demands smoother transition.
+
+### Empty State Animation Enhancement
+
+**Current State (Story 3.1):**
+- Static EmptyState component with "Jardin d'idées" text
+
+**Enhancement (AC8):**
+```typescript
+import LottieView from 'lottie-react-native';
+
+const EnhancedEmptyState = () => (
+  <View style={styles.emptyContainer}>
+    {/* Gentle breathing animation */}
+    <Animated.View style={{ transform: [{ scale: breathingScale }] }}>
+      <Feather name="sunrise" size={80} color={colors.primary[300]} />
+    </Animated.View>
+
+    {/* Optional: Lottie butterfly micro-animation */}
+    <LottieView
+      source={require('./animations/butterfly.json')}
+      autoPlay
+      loop
+      style={styles.lottie}
+    />
+
+    <Text style={styles.emptyTitle}>Votre jardin attend sa première graine</Text>
+    <Text style={styles.emptySubtitle}>Capturez une pensée pour commencer</Text>
+
+    <Button onPress={() => navigation.navigate('Capture')}>
+      Planter une idée
+    </Button>
+  </View>
+);
+```
+
+### Testing Strategy
+
+**BDD Tests (jest-cucumber):**
+Create `story-3-4-feed-interactions.feature`:
+```gherkin
+Fonctionnalité: Story 3.4 - Navigation et Interactions dans le Feed
+
+  Scénario: Performance 60fps et feedback haptique
+    Étant donné que j'interagis avec le feed
+    Quand je fais un geste (tap, swipe, scroll)
+    Alors toutes les animations tournent à 60fps
+    Et un feedback haptique est déclenché pour les actions clés
+
+  Scénario: Transition hero vers détail
+    Étant donné que je tape sur une carte de capture
+    Quand la vue détail s'ouvre
+    Alors une transition hero fluide transforme la carte en vue détail
+    Et la transition se termine en 250-350ms
+
+  Scénario: Actions contextuelles au swipe
+    Étant donné que je swipe une carte horizontalement
+    Quand le geste de swipe est détecté
+    Alors des actions contextuelles apparaissent (archiver, supprimer, partager)
+    Et le feedback haptique confirme le seuil d'action
+
+  Scénario: Animations de scroll
+    Étant donné que je fais défiler le feed
+    Quand de nouvelles captures apparaissent
+    Alors elles s'animent avec un fondu et glissement subtil
+    Et l'animation est décalée pour un effet organique
+
+  Scénario: Menu contextuel appui long
+    Étant donné que je fais un appui long sur une carte
+    Quand l'appui est maintenu 300ms
+    Alors un menu contextuel apparaît avec animation d'échelle
+    Et l'arrière-plan est légèrement flouté
+
+  Scénario: Gestes spécifiques à la plateforme
+    Étant donné que j'utilise iOS
+    Quand je fais un swipe depuis le bord gauche
+    Alors la navigation retour fonctionne selon les conventions iOS
+
+  Scénario: Évolution visuelle "Jardin d'idées"
+    Étant donné que je consulte le feed au fil du temps
+    Quand je vois des captures anciennes
+    Alors elles affichent des indicateurs de maturité subtils
+
+  Scénario: États vides animés
+    Étant donné qu'aucune capture n'existe
+    Quand j'ouvre le feed
+    Alors une illustration "Jardin d'idées" apparaît avec micro-animations
+```
+
+**Performance Tests:**
+```typescript
+import { measurePerformance } from '@shopify/react-native-performance';
+
+describe('Story 3.4 Performance', () => {
+  it('should maintain 60fps during scroll', async () => {
+    const { fps } = await measurePerformance(() => {
+      // Scroll through 100 items
+      for (let i = 0; i < 100; i++) {
+        scrollTo(i * ITEM_HEIGHT);
+      }
+    });
+    expect(fps).toBeGreaterThan(55); // Allow 5fps margin
+  });
+
+  it('should complete hero transition in < 350ms', async () => {
+    const start = Date.now();
+    await navigateToCaptureDetail(captureId);
+    const duration = Date.now() - start;
+    expect(duration).toBeLessThan(350);
+  });
+});
+```
+
+### Performance Optimization Checklist
+
+- [ ] All animations use `useNativeDriver: true`
+- [ ] FlatList has `getItemLayout` implemented
+- [ ] `removeClippedSubviews={true}` enabled
+- [ ] `windowSize` optimized (default: 10)
+- [ ] `maxToRenderPerBatch` set (default: 10)
+- [ ] Memoize renderItem with React.memo
+- [ ] Use keyExtractor with stable IDs
+- [ ] Avoid inline functions in renderItem
+- [ ] Profile with React DevTools Profiler
+- [ ] Test on low-end Android device (ensure 60fps)
+
+### File Structure
+
+```
+pensieve/mobile/
+├── src/
+│   ├── screens/
+│   │   └── captures/
+│   │       └── CapturesListScreen.tsx       # ENHANCE (hero transition, scroll animations)
+│   ├── components/
+│   │   ├── animations/
+│   │   │   ├── PulsingBadge.tsx            # Existing ✅
+│   │   │   ├── GerminationBadge.tsx        # Existing ✅
+│   │   │   └── MaturityBadge.tsx           # NEW (AC7)
+│   │   ├── cards/
+│   │   │   └── SwipeableCard.tsx           # Existing ✅
+│   │   ├── menus/
+│   │   │   └── ContextMenu.tsx             # NEW (AC5)
+│   │   └── common/
+│   │       ├── EmptyState.tsx              # ENHANCE (AC8 - add animations)
+│   │       └── OfflineBanner.tsx           # Existing ✅
+│   ├── design-system/components/
+│   │   └── Card.tsx                        # Existing
+│   └── constants/
+│       └── performance.ts                  # Existing (FLATLIST_PERFORMANCE)
+└── tests/
+    └── acceptance/
+        ├── features/
+        │   └── story-3-4-feed-interactions.feature  # NEW
+        └── story-3-4-feed-interactions.test.ts      # NEW
+```
+
+### References
+
+- [Source: _bmad-output/planning-artifacts/epics.md#Story 3.4: Navigation et Interactions dans le Feed]
+- [Source: _bmad-output/planning-artifacts/architecture.md#Capture Context]
+- [Source: _bmad-output/planning-artifacts/prd.md#FR21-FR24: Consultation captures]
+- [Source: _bmad-output/planning-artifacts/ux-design-specification.md#Liquid Glass Design System]
+- [Source: _bmad-output/planning-artifacts/ux-design-specification.md#"Jardin d'idées" Metaphor]
+- [Source: _bmad-output/implementation-artifacts/3-1-feed-chronologique-des-captures.md#CapturesListScreen Implementation]
+- [Source: _bmad-output/implementation-artifacts/3-3-distinction-visuelle-des-captures-en-attente.md#Status Badges & Animations]
+- [Source: pensieve/mobile/src/screens/captures/CapturesListScreen.tsx]
+- [Source: pensieve/mobile/src/components/cards/SwipeableCard.tsx]
+- [Source: pensieve/mobile/src/components/animations/PulsingBadge.tsx]
+- [Source: pensieve/mobile/src/components/animations/GerminationBadge.tsx]
+- [Source: pensieve/mobile/src/constants/performance.ts]
+
+## Dev Agent Record
+
+### Agent Model Used
+
+{{agent_model_name_version}}
+
+### Debug Log References
+
+### Completion Notes List
+
+### File List
