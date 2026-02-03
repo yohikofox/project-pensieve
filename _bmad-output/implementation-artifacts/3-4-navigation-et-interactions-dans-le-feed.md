@@ -1,6 +1,6 @@
 # Story 3.4: Navigation et Interactions dans le Feed
 
-Status: ready-for-dev
+Status: in-progress
 
 ## Story
 
@@ -108,12 +108,12 @@ So that **the app feels responsive, delightful, and reflects the "Jardin d'idée
   - [x] Subtask 4.3: Test smooth back transition animation (300ms horizontal transition)
   - [x] Subtask 4.4: Handle edge cases (gestureDirection: 'horizontal')
 
-- [ ] **Task 5: "Jardin d'idées" Visual Maturity** (AC: 7)
-  - [ ] Subtask 5.1: Define maturity levels (new, growing, mature)
-  - [ ] Subtask 5.2: Calculate age-based maturity from capturedAt
-  - [ ] Subtask 5.3: Add subtle visual indicators (border glow, icon badge)
-  - [ ] Subtask 5.4: Design contemplative color palette
-  - [ ] Subtask 5.5: Test aesthetic on real content
+- [x] **Task 5: "Jardin d'idées" Visual Maturity** (AC: 7)
+  - [x] Subtask 5.1: Define maturity levels (new, growing, mature)
+  - [x] Subtask 5.2: Calculate age-based maturity from capturedAt
+  - [x] Subtask 5.3: Add subtle visual indicators (border glow, icon badge)
+  - [x] Subtask 5.4: Design contemplative color palette
+  - [x] Subtask 5.5: Test aesthetic on real content
 
 - [ ] **Task 6: Enhance Empty State Animations** (AC: 8)
   - [ ] Subtask 6.1: Add Lottie animations (optional butterflies, breeze)
@@ -643,15 +643,39 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 - Test Results: ✅ All tests passing (AC1, AC2, AC6)
 - Notes: React Navigation native-stack handles platform conventions automatically, we just enabled and documented the configuration
 
+**Task 5: "Jardin d'idées" Visual Maturity (AC7) - COMPLETED**
+- Date: 2026-02-03
+- Implementation Approach: Created MaturityBadge component with age-based maturity levels and contemplative visual indicators
+- Key Decisions:
+  - **Maturity levels**: new (< 1 day), growing (1-7 days), mature (> 7 days)
+  - **Contemplative color palette**:
+    - new: Fresh green glow (success[300]/success[600]) with sunrise icon (germination metaphor)
+    - growing: Blue glow (primary[300]/primary[600]) with wind icon (growth metaphor)
+    - mature: Warm amber glow (warning[300]/warning[600]) with archive icon (wisdom metaphor)
+  - **Minimal variant chosen for CaptureCard**: Icon-only badge (28x28px) to avoid visual clutter
+  - **Full variant available**: Border glow + icon + optional label for future use
+  - **Dark mode support**: Different color intensities for light/dark themes
+  - **Placement**: Next to date in CaptureCard header for subtle presence
+- Files Created:
+  - `pensieve/mobile/src/components/animations/MaturityBadge.tsx`: Reusable maturity indicator component with getMaturityLevel() helper
+- Files Modified:
+  - `pensieve/mobile/src/screens/captures/CapturesListScreen.tsx`: Integrated MaturityBadge into CaptureCard header
+  - `pensieve/mobile/tests/acceptance/features/story-3-4-feed-interactions.feature`: Added AC7 scenario
+  - `pensieve/mobile/tests/acceptance/story-3-4-feed-interactions.test.ts`: Added AC7 step definitions with age-based maturity validation
+- Test Results: ✅ All tests passing (AC1, AC2, AC6, AC7)
+- Aesthetic Validation: Contemplative palette verified - soft glows, nature-inspired icons, calming colors (no anxiety-inducing red/urgent tones)
+- Notes: Used `capturedAt || createdAt` fallback for robustness. getMaturityLevel() exported for potential reuse in other components.
+
 ### File List
 
 **Modified:**
 - `pensieve/mobile/src/navigation/CapturesStackNavigator.tsx` (Task 1, 4)
-- `pensieve/mobile/src/screens/captures/CapturesListScreen.tsx` (Task 1, 2, 3)
+- `pensieve/mobile/src/screens/captures/CapturesListScreen.tsx` (Task 1, 2, 3, 5)
 - `pensieve/mobile/tests/acceptance/support/test-context.ts` (Task 1)
-- `pensieve/mobile/tests/acceptance/features/story-3-4-feed-interactions.feature` (Task 1, 4)
-- `pensieve/mobile/tests/acceptance/story-3-4-feed-interactions.test.ts` (Task 1, 4)
+- `pensieve/mobile/tests/acceptance/features/story-3-4-feed-interactions.feature` (Task 1, 4, 5)
+- `pensieve/mobile/tests/acceptance/story-3-4-feed-interactions.test.ts` (Task 1, 4, 5)
 
 **Created:**
 - `pensieve/mobile/src/components/animations/AnimatedCaptureCard.tsx` (Task 2)
 - `pensieve/mobile/src/components/menus/ContextMenu.tsx` (Task 3)
+- `pensieve/mobile/src/components/animations/MaturityBadge.tsx` (Task 5)
