@@ -1,6 +1,6 @@
 # Story 4.1: Queue Asynchrone pour Digestion IA
 
-Status: ready-for-review (8/8 tasks complete, 52/52 subtasks)
+Status: ready-for-review (8/8 tasks complete, 42/45 subtasks - 3 deferred to future stories)
 
 ## Story
 
