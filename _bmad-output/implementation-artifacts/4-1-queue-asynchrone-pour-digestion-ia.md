@@ -95,12 +95,12 @@ So that **AI processing runs reliably in the background without blocking the use
 - [x] Subtask 4.5: Add progress percentage calculation if determinable (ProgressTracker.updateProgress)
 
 ### Task 5: Retry Logic and Error Handling (AC5)
-- [ ] Subtask 5.1: Configure dead-letter exchange and routing
-- [ ] Subtask 5.2: Implement retry logic with exponential backoff (attempt 1: 5s, attempt 2: 15s, attempt 3: 45s)
-- [ ] Subtask 5.3: Update Capture status to "digestion_failed" after 3 failed attempts
-- [ ] Subtask 5.4: Log error details (error message, stack trace, job payload) for debugging
-- [ ] Subtask 5.5: Publish Domain Event "DigestionJobFailed" for alerting
-- [ ] Subtask 5.6: Implement manual retry endpoint for failed jobs
+- [x] Subtask 5.1: Configure dead-letter exchange and routing (completed in Task 1)
+- [x] Subtask 5.2: Implement retry logic with exponential backoff (5s → 15s → 45s calculated)
+- [x] Subtask 5.3: Update Capture status to "digestion_failed" after 3 failed attempts (progress tracker integration)
+- [x] Subtask 5.4: Log error details (error message, stack trace, job payload) for debugging
+- [x] Subtask 5.5: Publish Domain Event "DigestionJobFailed" for alerting (event emitted on final failure)
+- [x] Subtask 5.6: Implement manual retry endpoint for failed jobs (POST /digestion/:captureId/retry)
 
 ### Task 6: Queue Monitoring and Metrics (AC6)
 - [ ] Subtask 6.1: Add queue depth monitoring (number of pending jobs)
