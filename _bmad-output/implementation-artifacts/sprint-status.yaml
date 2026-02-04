@@ -78,7 +78,7 @@ development_status:
 
   # Epic 4: Digestion IA & Extraction d'Insights (4 stories)
   epic-4: in-progress
-  4-1-queue-asynchrone-pour-digestion-ia: in-progress
+  4-1-queue-asynchrone-pour-digestion-ia: done # Code review completed, 8/8 fixes applied (3 HIGH + 5 MEDIUM)
   4-2-digestion-ia-resume-et-idees-cles: backlog
   4-3-extraction-automatique-dactions: backlog
   4-4-notifications-de-progression-ia: backlog
