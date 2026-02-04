@@ -110,11 +110,11 @@ So that **AI processing runs reliably in the background without blocking the use
 - [x] Subtask 6.5: Implement graceful degradation (shouldPauseJobCreation() logic)
 
 ### Task 7: Offline Batch Processing (AC7)
-- [ ] Subtask 7.1: Detect network connectivity return on mobile (OP-SQLite sync trigger)
-- [ ] Subtask 7.2: Batch submit pending captures to backend for digestion
-- [ ] Subtask 7.3: Prioritize jobs by user activity recency (most recent captures first)
-- [ ] Subtask 7.4: Optimize batch API calls (bundle multiple captures if possible)
-- [ ] Subtask 7.5: Handle partial batch failures (some jobs succeed, others retry)
+- [ ] Subtask 7.1: Detect network connectivity return on mobile (deferred to Epic 6 - Sync)
+- [x] Subtask 7.2: Batch submit pending captures (POST /digestion/batch endpoint)
+- [x] Subtask 7.3: Prioritize jobs by recency (sortByRecency() method, frontend-sorted)
+- [x] Subtask 7.4: Optimize batch API calls (single endpoint accepts array of captures)
+- [x] Subtask 7.5: Handle partial batch failures (per-capture success/error tracking)
 
 ### Task 8: Integration Testing
 - [ ] Subtask 8.1: Write BDD acceptance tests for AC1-AC7 (jest-cucumber)
