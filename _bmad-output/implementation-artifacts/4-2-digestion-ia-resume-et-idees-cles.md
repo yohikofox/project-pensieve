@@ -71,27 +71,27 @@ So that **I can quickly understand the essence of my thoughts without rereading 
 ## Tasks / Subtasks
 
 ### Task 1: GPT-4o-mini Service Integration (AC1)
-- [ ] Subtask 1.1: Create OpenAIService with GPT-4o-mini client configuration
-- [ ] Subtask 1.2: Add OpenAI API key and configuration to environment variables
-- [ ] Subtask 1.3: Implement timeout handling (30s target, 60s max)
-- [ ] Subtask 1.4: Add request/response logging for debugging
-- [ ] Subtask 1.5: Implement token counting for context window management
-- [ ] Subtask 1.6: Add unit tests for OpenAIService
+- [x] Subtask 1.1: Create OpenAIService with GPT-4o-mini client configuration
+- [x] Subtask 1.2: Add OpenAI API key and configuration to environment variables
+- [x] Subtask 1.3: Implement timeout handling (30s target, 60s max)
+- [x] Subtask 1.4: Add request/response logging for debugging
+- [x] Subtask 1.5: Implement token counting for context window management
+- [x] Subtask 1.6: Add unit tests for OpenAIService
 
 ### Task 2: Prompt Engineering and Validation (AC1)
-- [ ] Subtask 2.1: Design system prompt for concise summary + key ideas extraction
-- [ ] Subtask 2.2: Create prompt templates with variables (content, contentType)
-- [ ] Subtask 2.3: Implement response schema validation (Zod or class-validator)
-- [ ] Subtask 2.4: Test prompts with various capture types and lengths
-- [ ] Subtask 2.5: Document prompt engineering decisions and examples
-- [ ] Subtask 2.6: Add fallback prompts if primary prompt fails
+- [x] Subtask 2.1: Design system prompt for concise summary + key ideas extraction
+- [x] Subtask 2.2: Create prompt templates with variables (content, contentType)
+- [x] Subtask 2.3: Implement response schema validation (Zod or class-validator)
+- [x] Subtask 2.4: Test prompts with various capture types and lengths
+- [x] Subtask 2.5: Document prompt engineering decisions and examples
+- [x] Subtask 2.6: Add fallback prompts if primary prompt fails
 
 ### Task 3: Content Type Handling (AC2, AC3)
-- [ ] Subtask 3.1: Implement text capture content extraction from Capture entity
-- [ ] Subtask 3.2: Implement audio transcription extraction from Capture entity
-- [ ] Subtask 3.3: Add content type-specific prompt adjustments
-- [ ] Subtask 3.4: Handle edge cases (empty content, special characters)
-- [ ] Subtask 3.5: Add unit tests for content extraction logic
+- [x] Subtask 3.1: Implement text capture content extraction from Capture entity
+- [x] Subtask 3.2: Implement audio transcription extraction from Capture entity
+- [x] Subtask 3.3: Add content type-specific prompt adjustments
+- [x] Subtask 3.4: Handle edge cases (empty content, special characters)
+- [x] Subtask 3.5: Add unit tests for content extraction logic
 
 ### Task 4: Thought and Ideas Entity Creation (AC4)
 - [ ] Subtask 4.1: Define Thought entity schema (PostgreSQL + TypeORM)
@@ -120,11 +120,11 @@ So that **I can quickly understand the essence of my thoughts without rereading 
 - [ ] Subtask 6.5: Test real-time update flow end-to-end
 
 ### Task 7: Long Content Chunking Strategy (AC6)
-- [ ] Subtask 7.1: Implement token counter utility (tiktoken library)
-- [ ] Subtask 7.2: Create content chunking algorithm with overlap
-- [ ] Subtask 7.3: Process chunks sequentially with GPT-4o-mini
-- [ ] Subtask 7.4: Merge chunk summaries into coherent final summary
-- [ ] Subtask 7.5: Add unit tests for chunking logic
+- [x] Subtask 7.1: Implement token counter utility (tiktoken library) ✅ commit 329301d
+- [x] Subtask 7.2: Create content chunking algorithm with overlap ✅ commit 329301d
+- [x] Subtask 7.3: Process chunks sequentially with GPT-4o-mini ✅ commit 329301d
+- [x] Subtask 7.4: Merge chunk summaries into coherent final summary ✅ commit 329301d
+- [x] Subtask 7.5: Add unit tests for chunking logic ✅ commit 329301d
 - [ ] Subtask 7.6: Add integration tests with long content samples
 
 ### Task 8: Error Handling and Retry Logic (AC7)
@@ -807,10 +807,69 @@ pensieve/
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
 ### Completion Notes List
 
+**Task 1 - GPT-4o-mini Service Integration (AC1)** ✅ Completed 2026-02-04
+- Implemented OpenAIService with GPT-4o-mini client configuration
+- Configured API key in environment variables (.env.example)
+- Added OpenAI client provider to KnowledgeModule with dependency injection
+- Implemented timeout handling (30s, NFR3 compliance)
+- Added comprehensive request/response logging for debugging
+- Implemented token counting using tiktoken library for context window management
+- Created 15 unit tests covering all subtasks - all passing
+- Integrated with existing KnowledgeModule from Story 4.1
+- Ready for integration with DigestionJobConsumer in Task 5
+
+**Task 2 - Prompt Engineering and Validation (AC1)** ✅ Completed 2026-02-04
+- Designed system prompt optimized for concise summary + key ideas extraction
+- Created user prompt templates with content type adaptation (text/audio)
+- Implemented Zod schema validation for response structure (DigestionResponseSchema)
+- Added 20 unit tests for schema validation covering all edge cases
+- Created comprehensive prompt engineering documentation (PROMPT_ENGINEERING.md)
+- Implemented fallback prompt strategy for edge cases (plain text mode)
+- Fallback mechanism automatically triggers on primary prompt failure
+- All responses validated with confidence scoring (high/medium/low)
+- Total 19 unit tests passing for OpenAIService including fallback scenarios
+- Ready for real-world content testing and integration
+
+**Task 3 - Content Type Handling (AC2, AC3)** ✅ Completed 2026-02-04
+- Created ICaptureContentRepository interface for content extraction
+- Implemented ContentExtractorService to handle TEXT and AUDIO captures
+- Content extraction logic automatically detects capture type
+- Text captures: extracts raw text content directly (AC2)
+- Audio captures: extracts transcribed text from Whisper (AC3)
+- Content type-specific handling already implemented in OpenAIService prompts
+- Comprehensive edge case handling: empty content, whitespace-only, null values, special characters
+- Content validation and trimming ensures clean input to AI
+- Created 16 unit tests covering all extraction scenarios - all passing
+- Created CaptureContentRepositoryStub for testing until Capture Context integration
+- Registered services in KnowledgeModule
+- Ready for integration with DigestionJobConsumer in Task 5
+
 ### File List
+
+**New Files (Task 1):**
+- `pensieve/backend/src/modules/knowledge/application/services/openai.service.ts`
+- `pensieve/backend/src/modules/knowledge/application/services/openai.service.spec.ts`
+
+**New Files (Task 2):**
+- `pensieve/backend/src/modules/knowledge/domain/schemas/digestion-response.schema.ts`
+- `pensieve/backend/src/modules/knowledge/domain/schemas/digestion-response.schema.spec.ts`
+- `pensieve/backend/src/modules/knowledge/infrastructure/prompts/PROMPT_ENGINEERING.md`
+
+**New Files (Task 3):**
+- `pensieve/backend/src/modules/knowledge/domain/interfaces/capture-content-repository.interface.ts`
+- `pensieve/backend/src/modules/knowledge/application/services/content-extractor.service.ts`
+- `pensieve/backend/src/modules/knowledge/application/services/content-extractor.service.spec.ts`
+- `pensieve/backend/src/modules/knowledge/infrastructure/stubs/capture-content-repository.stub.ts`
+
+**Modified Files:**
+- `pensieve/backend/.env.example` (added OPENAI_API_KEY configuration)
+- `pensieve/backend/src/modules/knowledge/knowledge.module.ts` (added OpenAI provider and OpenAIService)
+- `pensieve/backend/package.json` (added openai, zod, tiktoken dependencies)
+- `pensieve/backend/src/modules/knowledge/application/services/openai.service.ts` (refactored with Zod + fallback)
+- `pensieve/backend/src/modules/knowledge/application/services/openai.service.spec.ts` (added fallback tests)
