@@ -80,7 +80,7 @@ development_status:
   epic-4: in-progress
   4-1-queue-asynchrone-pour-digestion-ia: done # Code review completed, 8/8 fixes applied (3 HIGH + 5 MEDIUM)
   4-2-digestion-ia-resume-et-idees-cles: done # Code review completed: 8/8 fixes (3 CRITICAL + 5 MEDIUM). Migration created, CORS secured, PII logging removed. Backend + tests complete. Mobile AC5 deferred.
-  4-3-extraction-automatique-dactions: backlog
+  4-3-extraction-automatique-dactions: ready-for-dev
   4-4-notifications-de-progression-ia: backlog
   epic-4-retrospective: optional
 
