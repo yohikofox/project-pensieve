@@ -103,11 +103,11 @@ So that **AI processing runs reliably in the background without blocking the use
 - [x] Subtask 5.6: Implement manual retry endpoint for failed jobs (POST /digestion/:captureId/retry)
 
 ### Task 6: Queue Monitoring and Metrics (AC6)
-- [ ] Subtask 6.1: Add queue depth monitoring (number of pending jobs)
-- [ ] Subtask 6.2: Set alert threshold (e.g., > 100 pending jobs)
-- [ ] Subtask 6.3: Calculate and expose estimated processing time based on current queue depth
-- [ ] Subtask 6.4: Add Prometheus metrics for queue performance (jobs processed, failures, latency)
-- [ ] Subtask 6.5: Implement graceful degradation (pause new job creation if queue overloaded)
+- [x] Subtask 6.1: Add queue depth monitoring (getQueueDepth() method)
+- [x] Subtask 6.2: Set alert threshold (isQueueOverloaded() with 100 job threshold)
+- [x] Subtask 6.3: Calculate and expose estimated processing time (calculateEstimatedWaitTime())
+- [x] Subtask 6.4: Add Prometheus metrics (GET /metrics endpoint, jobs/failures/latency tracking)
+- [x] Subtask 6.5: Implement graceful degradation (shouldPauseJobCreation() logic)
 
 ### Task 7: Offline Batch Processing (AC7)
 - [ ] Subtask 7.1: Detect network connectivity return on mobile (OP-SQLite sync trigger)
