@@ -88,11 +88,11 @@ So that **AI processing runs reliably in the background without blocking the use
 - [x] Subtask 3.5: Add graceful shutdown handling for in-progress jobs
 
 ### Task 4: Progress Tracking and Real-Time Updates (AC4)
-- [ ] Subtask 4.1: Update Capture status to "digesting" when worker picks up job
-- [ ] Subtask 4.2: Add processing_started_at timestamp to Capture entity
-- [ ] Subtask 4.3: Configure WebSocket channel for real-time progress updates
-- [ ] Subtask 4.4: Publish progress events to mobile clients (optional: via socket.io or polling)
-- [ ] Subtask 4.5: Add progress percentage calculation if determinable
+- [x] Subtask 4.1: Update Capture status to "digesting" when worker picks up job (ProgressTracker.startTracking)
+- [x] Subtask 4.2: Add processing_started_at timestamp to Capture entity (tracked in JobProgress)
+- [ ] Subtask 4.3: Configure WebSocket channel for real-time progress updates (deferred to Story 4.4)
+- [ ] Subtask 4.4: Publish progress events to mobile clients (deferred to Story 4.4)
+- [x] Subtask 4.5: Add progress percentage calculation if determinable (ProgressTracker.updateProgress)
 
 ### Task 5: Retry Logic and Error Handling (AC5)
 - [ ] Subtask 5.1: Configure dead-letter exchange and routing
