@@ -81,11 +81,11 @@ So that **AI processing runs reliably in the background without blocking the use
 - [x] Subtask 2.6: Handle text captures (bypass transcription, direct to digestion)
 
 ### Task 3: Job Consumer/Worker Module (AC3)
-- [ ] Subtask 3.1: Create DigestionJobConsumer service in Knowledge Context
-- [ ] Subtask 3.2: Configure prefetch count for concurrent job processing (max 3)
-- [ ] Subtask 3.3: Implement priority-based job ordering (high priority first)
-- [ ] Subtask 3.4: Set job timeout to 60 seconds (2x NFR3 target)
-- [ ] Subtask 3.5: Add graceful shutdown handling for in-progress jobs
+- [x] Subtask 3.1: Create DigestionJobConsumer service in Knowledge Context
+- [x] Subtask 3.2: Configure prefetch count for concurrent job processing (max 3)
+- [x] Subtask 3.3: Implement priority-based job ordering (high priority first)
+- [x] Subtask 3.4: Set job timeout to 60 seconds (2x NFR3 target)
+- [x] Subtask 3.5: Add graceful shutdown handling for in-progress jobs
 
 ### Task 4: Progress Tracking and Real-Time Updates (AC4)
 - [ ] Subtask 4.1: Update Capture status to "digesting" when worker picks up job
@@ -583,8 +583,18 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 - ContentType mapping: AUDIO → "audio_transcribed", TEXT → "text"
 - Domain Events: DigestionJobQueued, DigestionJobStarted, DigestionJobFailed
 - Integration example: CaptureEventsHandler stub (awaits Capture module in backend)
-- Documentation: CAPTURE_STATUSES.md with new statuses (queued_for_digestion, digesting, digestion_failed)
+- Documentation: CAPTURE_STATUSES.md with new statuses (queued_for_digestion, digesting, digesting_failed)
 - Tests: All unit tests pass using mocks (no RabbitMQ dependency)
+
+**Task 3: Job Consumer/Worker Module (AC3)** - 2026-02-04
+- Implemented DigestionJobConsumer service with full unit test coverage (10/10 tests passing)
+- Configured prefetch count = 3 (max concurrent GPT API calls to prevent rate limiting)
+- Priority-based job processing via RabbitMQ x-max-priority queue argument
+- Job timeout enforcement: 60 seconds (2x NFR3 target of 30s)
+- Graceful shutdown: waits for active jobs to finish, rejects new jobs during shutdown
+- Hybrid microservice: HTTP API + RabbitMQ consumer (main.ts updated)
+- @MessagePattern decorator for event-driven job consumption
+- Tests: All unit tests pass with mocks, simulated timeouts and error handling
 
 ### File List
 
@@ -599,10 +609,13 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 - backend/src/modules/knowledge/domain/events/DigestionJobFailed.event.ts
 - backend/src/modules/knowledge/application/publishers/digestion-job-publisher.service.ts
 - backend/src/modules/knowledge/application/publishers/digestion-job-publisher.service.spec.ts
+- backend/src/modules/knowledge/application/consumers/digestion-job-consumer.service.ts (Task 3)
+- backend/src/modules/knowledge/application/consumers/digestion-job-consumer.service.spec.ts (Task 3)
 - backend/src/modules/knowledge/application/handlers/transcription-completed.handler.ts
 - backend/src/modules/knowledge/docs/CAPTURE_STATUSES.md
 - backend/test/story-4-1-digestion-queue.e2e-spec.ts
 
 **Modified:**
 - backend/src/app.module.ts (added KnowledgeModule import)
+- backend/src/main.ts (hybrid microservice: HTTP + RabbitMQ consumer)
 - backend/package.json (added @types/amqplib dev dependency)
