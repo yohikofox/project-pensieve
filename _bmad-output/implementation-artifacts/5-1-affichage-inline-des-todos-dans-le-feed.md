@@ -172,16 +172,16 @@ So that **I can immediately see what needs to be done without navigating to a se
 - [ ] Subtask 10.7: Test with mixed captures (some with todos, some without)
 
 ### Task 11: BDD Integration Tests (AC1-AC8)
-- [ ] Subtask 11.1: Write BDD acceptance tests for AC1-AC8 (jest-cucumber)
-- [ ] Subtask 11.2: Create test fixtures (sample captures, ideas, todos)
-- [ ] Subtask 11.3: Test inline todo display (AC1)
-- [ ] Subtask 11.4: Test multiple todos sorted by priority (AC2)
-- [ ] Subtask 11.5: Test no actions clean display (AC3)
-- [ ] Subtask 11.6: Test todo detail with deadline and priority (AC4)
-- [ ] Subtask 11.7: Test completed todo visual state (AC5)
-- [ ] Subtask 11.8: Test todo interaction and navigation (AC6, FR20)
-- [ ] Subtask 11.9: Test consistent styling across feed (AC7)
-- [ ] Subtask 11.10: Test checkbox toggle (AC8, FR19)
+- [x] Subtask 11.1: Write BDD acceptance tests for AC1-AC8 (jest-cucumber)
+- [x] Subtask 11.2: Create test fixtures (sample captures, ideas, todos)
+- [x] Subtask 11.3: Test inline todo display (AC1)
+- [x] Subtask 11.4: Test multiple todos sorted by priority (AC2)
+- [x] Subtask 11.5: Test no actions clean display (AC3)
+- [x] Subtask 11.6: Test todo detail with deadline and priority (AC4)
+- [x] Subtask 11.7: Test completed todo visual state (AC5)
+- [x] Subtask 11.8: Test todo interaction and navigation (AC6, FR20)
+- [ ] Subtask 11.9: Test consistent styling across feed (AC7) - DEFERRED (scenario mismatch)
+- [x] Subtask 11.10: Test checkbox toggle (AC8, FR19)
 
 ## Dev Notes
 
