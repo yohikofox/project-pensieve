@@ -85,8 +85,8 @@ development_status:
   epic-4-retrospective: optional
 
   # Epic 5: Gestion des Actions (Tab Actions) (4 stories)
-  epic-5: backlog
-  5-1-affichage-inline-des-todos-dans-le-feed: backlog
+  epic-5: in-progress
+  5-1-affichage-inline-des-todos-dans-le-feed: in-progress
   5-2-tab-actions-centralise: backlog
   5-3-filtres-et-tri-des-actions: backlog
   5-4-completion-et-navigation-des-actions: backlog
