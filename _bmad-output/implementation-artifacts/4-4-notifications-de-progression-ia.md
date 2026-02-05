@@ -1,6 +1,6 @@
 # Story 4.4: Notifications de Progression IA
 
-Status: in-progress
+Status: done
 
 ## Story
 
@@ -155,7 +155,7 @@ So that **I'm never left waiting without feedback and know when my insights are 
 - [x] Subtask 9.2: Display list of captures in queue with position, estimated time
 - [x] Subtask 9.3: Show currently processing capture with elapsed time
 - [x] Subtask 9.4: Add refresh/pull-to-refresh for real-time queue status
-- [ ] Subtask 9.5: Allow user to cancel queued jobs (optional, future enhancement)
+- [ ] Subtask 9.5: Allow user to cancel queued jobs (deferred - future enhancement post-MVP, AC6 core functionality complete without this)
 - [x] Subtask 9.6: Add unit tests for QueueDetailsScreen
 - [x] Subtask 9.7: Test with empty queue, single job, many jobs (20+)
 
@@ -1433,3 +1433,27 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 **Task 13 - Modified:**
 - pensieve/mobile/tests/acceptance/support/test-context.ts (added MockNotificationService, MockWebSocket, MockHapticService)
+
+**Code Review Fixes (2026-02-05 - 8 issues resolved):**
+
+**CRITICAL Fixes:**
+1. ✅ Added NotificationModule to AppModule imports (AC1-AC9 now functional)
+2. ✅ Registered DigestionCompletedListener and DigestionFailedListener in NotificationModule providers (AC3, AC5 now functional)
+3. ✅ Tracked notification.module.ts in git (`git add`)
+4. ✅ Replaced dynamic require() with static import + forwardRef (TypeScript type safety)
+
+**Code Quality Improvements:**
+5. ✅ Fixed UserRepository pushToken type safety (null → undefined coalescing required for TypeScript)
+6. ✅ Fixed PushNotificationService error handling (proper type guard for ExpoPushTicket union type)
+
+**Documentation:**
+7. ✅ Updated Story File List with all modified files from git status
+8. ✅ Documented Subtask 9.5 as deferred future enhancement (AC6 core complete)
+
+**Modified Files:**
+- pensieve/backend/src/app.module.ts (added NotificationModule import)
+- pensieve/backend/src/modules/notification/notification.module.ts (added event listeners, replaced require() with import)
+- pensieve/backend/src/modules/knowledge/knowledge.module.ts (added NotificationModule forwardRef)
+- pensieve/backend/src/modules/notification/application/repositories/UserRepository.ts (simplified null coalescing)
+- pensieve/backend/src/modules/notification/application/services/PushNotificationService.ts (simplified error handling)
+- pensieve/backend/src/modules/knowledge/application/consumers/digestion-job-consumer.service.ts (removed unused parameters from notification calls)

@@ -77,11 +77,11 @@ development_status:
   epic-3-retrospective: optional
 
   # Epic 4: Digestion IA & Extraction d'Insights (4 stories)
-  epic-4: in-progress
+  epic-4: done # All 4 stories completed (2026-02-05)
   4-1-queue-asynchrone-pour-digestion-ia: done # Code review completed, 8/8 fixes applied (3 HIGH + 5 MEDIUM)
   4-2-digestion-ia-resume-et-idees-cles: done # Code review completed: 8/8 fixes (3 CRITICAL + 5 MEDIUM). Migration created, CORS secured, PII logging removed. Backend + tests complete. Mobile AC5 deferred.
   4-3-extraction-automatique-dactions: done # Code review completed: 8/8 fixes (3 CRITICAL + 5 MEDIUM). Atomic transaction implemented, auth guards added, TodosExtracted event created.
-  4-4-notifications-de-progression-ia: in-progress # Story created with comprehensive context. All AC1-AC9 documented. Notification Context (Generic Subdomain) implementation. Extends Story 4.1 ProgressTracker + Story 4.2 WebSocket. expo-notifications + expo-server-sdk.
+  4-4-notifications-de-progression-ia: done # Code review completed: 8/8 fixes (4 CRITICAL + 2 MEDIUM + 2 LOW). NotificationModule integrated to AppModule, event listeners registered, all AC1-AC9 implemented and tested.
   epic-4-retrospective: optional
 
   # Epic 5: Gestion des Actions (Tab Actions) (4 stories)
