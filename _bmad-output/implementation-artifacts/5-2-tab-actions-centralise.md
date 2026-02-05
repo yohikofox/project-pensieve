@@ -124,11 +124,11 @@ So that **I can manage all my tasks in one place without having to scroll throug
 - [x] Subtask 6.10: Add unit tests for ActionsTodoCard
 
 ### Task 7: Source Capture/Idea Preview (AC6)
-- [ ] Subtask 7.1: Fetch source Thought and Idea when displaying todo
-- [ ] Subtask 7.2: Extract first line or truncate to 50 chars for preview
-- [ ] Subtask 7.3: Handle edge case: source capture deleted or not found
-- [ ] Subtask 7.4: Show placeholder text if source unavailable
-- [ ] Subtask 7.5: Optimize query to join todos + thoughts + ideas (performance)
+- [x] Subtask 7.1: Fetch source Thought and Idea when displaying todo
+- [x] Subtask 7.2: Extract first line or truncate to 50 chars for preview
+- [x] Subtask 7.3: Handle edge case: source capture deleted or not found
+- [x] Subtask 7.4: Show placeholder text if source unavailable
+- [x] Subtask 7.5: Optimize query to join todos + thoughts + ideas (performance)
 
 ### Task 8: Real-Time Badge Count (AC1)
 - [x] Subtask 8.1: Create useActiveTodoCount hook
@@ -159,16 +159,16 @@ So that **I can manage all my tasks in one place without having to scroll throug
 - [x] Subtask 11.5: Test on iOS and Android for platform-specific differences
 
 ### Task 12: BDD Integration Tests (AC1-AC8)
-- [ ] Subtask 12.1: Write BDD acceptance tests for AC1-AC8 (jest-cucumber)
-- [ ] Subtask 12.2: Create test fixtures (sample todos with various deadlines)
-- [ ] Subtask 12.3: Test bottom navigation tab display (AC1)
-- [ ] Subtask 12.4: Test navigation to Actions screen (AC2)
-- [ ] Subtask 12.5: Test default grouping and sorting (AC3)
-- [ ] Subtask 12.6: Test efficient rendering (AC4) - performance test
-- [ ] Subtask 12.7: Test empty state display (AC5)
-- [ ] Subtask 12.8: Test todo card preview with source context (AC6)
-- [ ] Subtask 12.9: Test pull-to-refresh functionality (AC7)
-- [ ] Subtask 12.10: Test scroll position persistence (AC8)
+- [x] Subtask 12.1: Write BDD acceptance tests for AC1-AC8 (jest-cucumber)
+- [x] Subtask 12.2: Create test fixtures (sample todos with various deadlines)
+- [x] Subtask 12.3: Test bottom navigation tab display (AC1)
+- [x] Subtask 12.4: Test navigation to Actions screen (AC2)
+- [x] Subtask 12.5: Test default grouping and sorting (AC3)
+- [x] Subtask 12.6: Test efficient rendering (AC4) - performance test
+- [x] Subtask 12.7: Test empty state display (AC5)
+- [x] Subtask 12.8: Test todo card preview with source context (AC6)
+- [x] Subtask 12.9: Test pull-to-refresh functionality (AC7)
+- [x] Subtask 12.10: Test scroll position persistence (AC8)
 
 ## Dev Notes
 
@@ -708,7 +708,7 @@ Phase 5: UX Features (Tasks 8-11) ✅
 - Smooth transitions (Liquid Glass design)
 - Haptic feedback on interactions
 
-Remaining: Task 7 (Source Preview - Thought/Idea fetch), Task 12 (BDD Tests)
+**COMPLETED:** All 12 tasks finished! ✅
 
 ### Debug Log References
 
@@ -728,11 +728,8 @@ Remaining: Task 7 (Source Preview - Thought/Idea fetch), Task 12 (BDD Tests)
 ✅ Task 8: Real-Time Badge Count - Completed in Task 1
 ✅ Tasks 9-11: UX Features - Pull-to-refresh, animations, haptics implemented
 
-**Partially Complete:**
-⏳ Task 7: Source Preview - Placeholder ready, needs Thought/Idea repository integration
-
-**Pending:**
-⏱️ Task 12: BDD Integration Tests - Not started yet
+✅ Task 7: Source Preview - COMPLETED with optimized LEFT JOIN query
+✅ Task 12: BDD Integration Tests - COMPLETED with 8 passing scenarios
 
 ### File List
 
@@ -741,14 +738,17 @@ Remaining: Task 7 (Source Preview - Thought/Idea fetch), Task 12 (BDD Tests)
 - `mobile/src/contexts/action/hooks/useActiveTodoCount.ts`
 - `mobile/src/contexts/action/hooks/__tests__/useActiveTodoCount.test.tsx`
 - `mobile/src/contexts/action/hooks/useAllTodos.ts`
+- `mobile/src/contexts/action/hooks/useAllTodosWithSource.ts` (Task 7)
 - `mobile/src/contexts/action/ui/EmptyState.tsx`
 - `mobile/src/contexts/action/ui/ActionsTodoCard.tsx`
 - `mobile/src/contexts/action/utils/groupTodosByDeadline.ts`
 - `mobile/src/contexts/action/utils/__tests__/groupTodosByDeadline.test.ts`
+- `mobile/tests/acceptance/features/story-5-2-tab-actions-centralise.feature` (Task 12)
+- `mobile/tests/acceptance/story-5-2.test.ts` (Task 12)
 
 **Modified Files:**
 - `mobile/src/i18n/locales/fr.ts` (added actions translations)
 - `mobile/src/navigation/MainNavigator.tsx` (added Actions tab with badge)
 - `mobile/src/navigation/components/TabBarIcon.tsx` (added actions icon)
-- `mobile/src/contexts/action/domain/ITodoRepository.ts` (added findAll, countActive)
-- `mobile/src/contexts/action/data/TodoRepository.ts` (implemented findAll, countActive)
+- `mobile/src/contexts/action/domain/ITodoRepository.ts` (added findAll, countActive, findAllWithSource, TodoWithSource)
+- `mobile/src/contexts/action/data/TodoRepository.ts` (implemented findAll, countActive, findAllWithSource, mapRowToTodoWithSource)
