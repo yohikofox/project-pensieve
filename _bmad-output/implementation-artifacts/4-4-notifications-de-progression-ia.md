@@ -187,16 +187,16 @@ So that **I'm never left waiting without feedback and know when my insights are 
 - [x] Subtask 12.7: Test edge case: job completes before first progress update
 
 ### Task 13: BDD Integration Tests
-- [ ] Subtask 13.1: Write BDD acceptance tests for AC1-AC9 (jest-cucumber)
-- [ ] Subtask 13.2: Create test fixtures (sample captures, mock notification delivery)
-- [ ] Subtask 13.3: Test queue notification (AC1)
-- [ ] Subtask 13.4: Test processing indicator (AC2)
-- [ ] Subtask 13.5: Test completion notification with deep link (AC3, AC4)
-- [ ] Subtask 13.6: Test failure notification with retry (AC5)
-- [ ] Subtask 13.7: Test multi-capture progress tracking (AC6)
-- [ ] Subtask 13.8: Test notification settings respect (AC7)
-- [ ] Subtask 13.9: Test offline queue notification (AC8)
-- [ ] Subtask 13.10: Test timeout warning (AC9)
+- [x] Subtask 13.1: Write BDD acceptance tests for AC1-AC9 (jest-cucumber)
+- [x] Subtask 13.2: Create test fixtures (sample captures, mock notification delivery)
+- [x] Subtask 13.3: Test queue notification (AC1)
+- [x] Subtask 13.4: Test processing indicator (AC2)
+- [x] Subtask 13.5: Test completion notification with deep link (AC3, AC4)
+- [x] Subtask 13.6: Test failure notification with retry (AC5)
+- [x] Subtask 13.7: Test multi-capture progress tracking (AC6)
+- [x] Subtask 13.8: Test notification settings respect (AC7)
+- [x] Subtask 13.9: Test offline queue notification (AC8)
+- [x] Subtask 13.10: Test timeout warning (AC9)
 
 ## Dev Notes
 
@@ -1410,3 +1410,26 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 **Task 11 - Created:**
 - pensieve/mobile/src/hooks/useTimeoutWarning.ts
 - pensieve/mobile/src/hooks/__tests__/useTimeoutWarning.test.ts
+
+**Task 13: BDD Integration Tests (AC1-AC9)** (Completed)
+- ✅ Created Gherkin feature file with 10 scenarios covering all ACs (Subtask 13.1)
+- ✅ Added MockNotificationService, MockWebSocket, MockHapticService to TestContext (Subtask 13.2)
+- ✅ Implemented step definitions for AC1: Queue notification (Subtask 13.3)
+- ✅ Implemented step definitions for AC2: Processing indicator with "Still processing..." (Subtask 13.4)
+- ✅ Implemented step definitions for AC3+AC4: Completion notification with deep link (Subtask 13.5)
+- ✅ Implemented step definitions for AC5: Failure notification with retry (Subtask 13.6)
+- ✅ Implemented step definitions for AC6: Multi-capture progress tracking (Subtask 13.7)
+- ✅ Implemented step definitions for AC7: Notification settings respect (Subtask 13.8)
+- ✅ Implemented step definitions for AC8: Offline queue notification (Subtask 13.9)
+- ✅ Implemented step definitions for AC9: Timeout warning (Subtask 13.10)
+- ✅ Added haptic feedback preferences test scenario
+- ✅ Fixed step definition matching with background context steps
+- ✅ Updated WebSocket listener assertions to focus on observable behavior
+- ✅ All tests GREEN: story-4-4.test.ts (10/10 scenarios passing)
+
+**Task 13 - Created:**
+- pensieve/mobile/tests/acceptance/features/story-4-4-notifications-de-progression-ia.feature
+- pensieve/mobile/tests/acceptance/story-4-4.test.ts
+
+**Task 13 - Modified:**
+- pensieve/mobile/tests/acceptance/support/test-context.ts (added MockNotificationService, MockWebSocket, MockHapticService)
