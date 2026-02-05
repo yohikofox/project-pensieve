@@ -151,10 +151,10 @@ So that **I'm never left waiting without feedback and know when my insights are 
 - [x] Subtask 8.7: Test edge case: haptic disabled in user settings
 
 ### Task 9: Queue Details Screen (AC6)
-- [ ] Subtask 9.1: Create QueueDetailsScreen (modal or bottom sheet)
-- [ ] Subtask 9.2: Display list of captures in queue with position, estimated time
-- [ ] Subtask 9.3: Show currently processing capture with elapsed time
-- [ ] Subtask 9.4: Add refresh/pull-to-refresh for real-time queue status
+- [x] Subtask 9.1: Create QueueDetailsScreen (modal or bottom sheet)
+- [x] Subtask 9.2: Display list of captures in queue with position, estimated time
+- [x] Subtask 9.3: Show currently processing capture with elapsed time
+- [x] Subtask 9.4: Add refresh/pull-to-refresh for real-time queue status
 - [ ] Subtask 9.5: Allow user to cancel queued jobs (optional, future enhancement)
 - [ ] Subtask 9.6: Add unit tests for QueueDetailsScreen
 - [ ] Subtask 9.7: Test with empty queue, single job, many jobs (20+)
