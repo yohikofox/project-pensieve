@@ -1,6 +1,6 @@
 # Story 4.4: Notifications de Progression IA
 
-Status: ready-for-dev
+Status: in-progress
 
 ## Story
 
@@ -96,12 +96,12 @@ So that **I'm never left waiting without feedback and know when my insights are 
 - [x] Subtask 2.7: Test edge case: rapid queue changes (many jobs queued/completed)
 
 ### Task 3: WebSocket Real-Time Progress Updates (AC2, AC6)
-- [ ] Subtask 3.1: Extend KnowledgeEventsGateway from Story 4.2 for progress events
-- [ ] Subtask 3.2: Create ProgressUpdate WebSocket event (status, elapsed, queuePosition)
-- [ ] Subtask 3.3: Emit progress updates every 5 seconds while processing (AC2)
-- [ ] Subtask 3.4: Emit global queue status updates (AC6)
-- [ ] Subtask 3.5: Add unit tests for WebSocket progress emissions
-- [ ] Subtask 3.6: Test reconnection handling (resume progress after disconnect)
+- [x] Subtask 3.1: Extend KnowledgeEventsGateway from Story 4.2 for progress events
+- [x] Subtask 3.2: Create ProgressUpdate WebSocket event (status, elapsed, queuePosition)
+- [x] Subtask 3.3: Emit progress updates every 5 seconds while processing (AC2)
+- [x] Subtask 3.4: Emit global queue status updates (AC6)
+- [x] Subtask 3.5: Add unit tests for WebSocket progress emissions
+- [x] Subtask 3.6: Test reconnection handling (resume progress after disconnect)
 
 ### Task 4: Local Notification Service (AC1, AC2, AC3, AC5, AC9 - Mobile)
 - [x] Subtask 4.1: Create LocalNotificationService (expo-notifications)
@@ -115,31 +115,31 @@ So that **I'm never left waiting without feedback and know when my insights are 
 - [x] Subtask 4.9: Add unit tests for LocalNotificationService
 
 ### Task 5: Push Notification Backend Service (AC3 - Backend)
-- [ ] Subtask 5.1: Create PushNotificationService (expo-push-notifications SDK)
-- [ ] Subtask 5.2: Store user device push tokens in User entity
-- [ ] Subtask 5.3: Create endpoint POST /api/users/push-token (register token)
-- [ ] Subtask 5.4: Implement sendDigestionCompleteNotification (AC3)
-- [ ] Subtask 5.5: Add notification batching if multiple completions (optimize API calls)
-- [ ] Subtask 5.6: Handle Expo push errors (invalid tokens, rate limits)
-- [ ] Subtask 5.7: Add unit tests for PushNotificationService
-- [ ] Subtask 5.8: Test push delivery on background/foreground app states
+- [x] Subtask 5.1: Create PushNotificationService (expo-push-notifications SDK)
+- [x] Subtask 5.2: Store user device push tokens in User entity (Task 1 migration)
+- [x] Subtask 5.3: Create endpoint POST /api/users/push-token (register token)
+- [x] Subtask 5.4: Implement sendDigestionCompleteNotification (AC3)
+- [x] Subtask 5.5: Add notification batching if multiple completions (optimize API calls)
+- [x] Subtask 5.6: Handle Expo push errors (invalid tokens, rate limits)
+- [x] Subtask 5.7: Add unit tests for PushNotificationService
+- [ ] Subtask 5.8: Test push delivery on background/foreground app states - E2E test
 
 ### Task 6: Notification Settings & Preferences (AC7)
-- [ ] Subtask 6.1: Add notification preferences to User entity (pushEnabled, localEnabled, hapticEnabled)
-- [ ] Subtask 6.2: Create endpoint PATCH /api/users/notification-settings
-- [ ] Subtask 6.3: Create mobile Settings screen with notification toggles
-- [ ] Subtask 6.4: Check user preferences before sending notifications (AC7)
+- [x] Subtask 6.1: Add notification preferences to User entity (pushEnabled, localEnabled, hapticEnabled) - Done in Task 1
+- [x] Subtask 6.2: Create endpoint PATCH /api/users/notification-settings
+- [x] Subtask 6.3: Create mobile Settings screen with notification toggles
+- [x] Subtask 6.4: Check user preferences before sending notifications (AC7)
 - [ ] Subtask 6.5: Persist settings locally (OP-SQLite) for offline access
-- [ ] Subtask 6.6: Add unit tests for notification preference enforcement
+- [x] Subtask 6.6: Add unit tests for notification preference enforcement
 - [ ] Subtask 6.7: Test edge case: disabled push but enabled local (and vice versa)
 
 ### Task 7: Deep Link Handling (AC4)
-- [ ] Subtask 7.1: Configure deep link URL scheme (pensieve:// or custom)
-- [ ] Subtask 7.2: Implement notification deep link handler (capture/:id)
-- [ ] Subtask 7.3: Navigate to CaptureDetailScreen with highlight animation (AC4)
-- [ ] Subtask 7.4: Handle deep link when app is closed, background, or foreground
-- [ ] Subtask 7.5: Add unit tests for deep link navigation
-- [ ] Subtask 7.6: Test edge case: deep link to non-existent capture (404 handling)
+- [x] Subtask 7.1: Configure deep link URL scheme (pensieve:// or custom)
+- [x] Subtask 7.2: Implement notification deep link handler (capture/:id)
+- [x] Subtask 7.3: Navigate to CaptureDetailScreen with highlight animation (AC4)
+- [x] Subtask 7.4: Handle deep link when app is closed, background, or foreground
+- [x] Subtask 7.5: Add unit tests for deep link navigation
+- [x] Subtask 7.6: Test edge case: deep link to non-existent capture (404 handling)
 
 ### Task 8: Haptic Feedback Integration (AC2, AC3)
 - [x] Subtask 8.1: Install expo-haptics module
@@ -178,13 +178,13 @@ So that **I'm never left waiting without feedback and know when my insights are 
 - [ ] Subtask 11.8: Test edge case: timeout warning while job completes
 
 ### Task 12: Integration with Existing Digestion Flow (Story 4.2)
-- [ ] Subtask 12.1: Enhance DigestionJobConsumer to emit progress events
-- [ ] Subtask 12.2: Publish ProgressUpdate events at key milestones (queued, started, 50%, 90%, completed)
-- [ ] Subtask 12.3: Call NotificationService on DigestionCompleted event (AC3)
-- [ ] Subtask 12.4: Call NotificationService on DigestionFailed event (AC5)
-- [ ] Subtask 12.5: Update WebSocket gateway to broadcast progress to user-specific room
-- [ ] Subtask 12.6: Add integration tests for full notification flow (queue → process → notify)
-- [ ] Subtask 12.7: Test edge case: job completes before first progress update
+- [x] Subtask 12.1: Enhance DigestionJobConsumer to emit progress events
+- [x] Subtask 12.2: Publish ProgressUpdate events at key milestones (queued, started, 50%, 90%, completed)
+- [x] Subtask 12.3: Call NotificationService on DigestionCompleted event (AC3)
+- [x] Subtask 12.4: Call NotificationService on DigestionFailed event (AC5)
+- [x] Subtask 12.5: Update WebSocket gateway to broadcast progress to user-specific room
+- [x] Subtask 12.6: Add integration tests for full notification flow (queue → process → notify)
+- [x] Subtask 12.7: Test edge case: job completes before first progress update
 
 ### Task 13: BDD Integration Tests
 - [ ] Subtask 13.1: Write BDD acceptance tests for AC1-AC9 (jest-cucumber)
@@ -1211,6 +1211,68 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 - pensieve/mobile/src/services/notifications/LocalNotificationService.ts
 - pensieve/mobile/src/services/notifications/__tests__/LocalNotificationService.test.ts
 
+**Task 5: Push Notification Backend Service** (Completed)
+- ✅ Installed expo-server-sdk for backend push notifications
+- ✅ Created PushNotificationService with Expo SDK integration
+- ✅ Implemented sendDigestionCompleteNotification with preview (AC3)
+- ✅ Implemented sendErrorNotification with retry action (AC5)
+- ✅ Added notification batching for multiple completions (100 per batch)
+- ✅ Implemented checkPushNotificationReceipts for delivery confirmation
+- ✅ Added push token validation with Expo.isExpoPushToken
+- ✅ Handled Expo push errors (DeviceNotRegistered, rate limits, network errors)
+- ✅ All tests GREEN: PushNotificationService.spec.ts (15/15 tests passing)
+
 **Task 8 - Created (Mobile):**
 - pensieve/mobile/src/services/notifications/HapticService.ts
 - pensieve/mobile/src/services/notifications/__tests__/HapticService.test.ts
+
+**Task 5 - Created (Backend):**
+- pensieve/backend/src/modules/notification/application/services/PushNotificationService.ts
+- pensieve/backend/src/modules/notification/application/services/PushNotificationService.spec.ts
+
+**Task 12: Integration with DigestionJobConsumer** (Completed)
+- ✅ Injected ProgressNotificationService into DigestionJobConsumer constructor
+- ✅ Replaced progressTracker calls with progressNotificationService calls
+- ✅ Integrated startTrackingWithNotifications at job start with queue position
+- ✅ Added updateProgressWithNotifications at key milestones (10%, 20%, 40%, 70%, 90%, 100%)
+- ✅ Integrated completeTrackingWithNotifications on successful digestion (AC3)
+- ✅ Integrated failTrackingWithNotifications after max retries (AC5)
+- ✅ WebSocket events automatically emitted via ProgressNotificationService (AC4)
+- ✅ All tests GREEN: digestion-job-consumer-notifications.spec.ts (7/7 tests passing)
+
+**Task 12 - Modified:**
+- pensieve/backend/src/modules/knowledge/application/consumers/digestion-job-consumer.service.ts (integrated notifications)
+
+**Task 12 - Created:**
+- pensieve/backend/src/modules/knowledge/application/consumers/digestion-job-consumer-notifications.spec.ts
+
+**Task 5, Subtask 5.3 & Task 6, Subtask 6.2: Notification API Endpoints** (Completed)
+- ✅ Created UserRepository for notification-specific user operations
+- ✅ Implemented updatePushToken method (Subtask 5.3)
+- ✅ Implemented updateNotificationPreferences method (Subtask 6.2)
+- ✅ Implemented getUserNotificationSettings for preference checking
+- ✅ Created NotificationsController with SupabaseAuthGuard protection
+- ✅ Implemented POST /api/users/push-token endpoint (validates and stores Expo token)
+- ✅ Implemented PATCH /api/users/notification-settings endpoint (updates preferences)
+- ✅ All tests GREEN: UserRepository.spec.ts (6/6) + NotificationsController.spec.ts (5/5) = 11/11 passing
+
+**Task 5.3 & 6.2 - Created:**
+- pensieve/backend/src/modules/notification/application/repositories/UserRepository.ts
+- pensieve/backend/src/modules/notification/application/repositories/UserRepository.spec.ts
+- pensieve/backend/src/modules/notification/application/controllers/NotificationsController.ts
+- pensieve/backend/src/modules/notification/application/controllers/NotificationsController.spec.ts
+
+**Task 6, Subtasks 6.4 & 6.6: Notification Preference Enforcement (AC7)** (Completed)
+- ✅ Created DigestionCompletedListener to handle digestion.completed events
+- ✅ Checks pushNotificationsEnabled before sending completion notifications (AC7)
+- ✅ Validates user has push token before attempting notification
+- ✅ Created DigestionFailedListener to handle digestion.job.failed events
+- ✅ Checks pushNotificationsEnabled before sending error notifications (AC7)
+- ✅ Graceful error handling for missing user settings
+- ✅ All tests GREEN: DigestionCompletedListener.spec.ts (6/6) + DigestionFailedListener.spec.ts (6/6) = 12/12 passing
+
+**Task 6.4 & 6.6 - Created:**
+- pensieve/backend/src/modules/notification/application/listeners/DigestionCompletedListener.ts
+- pensieve/backend/src/modules/notification/application/listeners/DigestionCompletedListener.spec.ts
+- pensieve/backend/src/modules/notification/application/listeners/DigestionFailedListener.ts
+- pensieve/backend/src/modules/notification/application/listeners/DigestionFailedListener.spec.ts
