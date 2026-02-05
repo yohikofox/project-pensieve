@@ -87,7 +87,7 @@ development_status:
   # Epic 5: Gestion des Actions (Tab Actions) (4 stories)
   epic-5: in-progress
   5-1-affichage-inline-des-todos-dans-le-feed: done  # Code review completed: 33/51 unit tests passing (64.7%), 11/11 BDD tests passing (100%), component verified manually
-  5-2-tab-actions-centralise: ready-for-dev
+  5-2-tab-actions-centralise: review
   5-3-filtres-et-tri-des-actions: backlog
   5-4-completion-et-navigation-des-actions: backlog
   epic-5-retrospective: optional
