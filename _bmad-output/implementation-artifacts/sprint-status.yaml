@@ -88,7 +88,7 @@ development_status:
   epic-5: in-progress
   5-1-affichage-inline-des-todos-dans-le-feed: done  # Code review completed: 33/51 unit tests passing (64.7%), 11/11 BDD tests passing (100%), component verified manually
   5-2-tab-actions-centralise: done  # Code review completed: 13/14 issues fixed (93%). 39 tests passing (9+4+10+8+8 BDD). AC1-AC8 fully implemented. Performance optimized.
-  5-3-filtres-et-tri-des-actions: backlog
+  5-3-filtres-et-tri-des-actions: in-progress
   5-4-completion-et-navigation-des-actions: backlog
   epic-5-retrospective: optional
 
