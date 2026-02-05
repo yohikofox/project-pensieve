@@ -131,7 +131,7 @@ So that **I'm never left waiting without feedback and know when my insights are 
 - [x] Subtask 6.4: Check user preferences before sending notifications (AC7)
 - [x] Subtask 6.5: Persist settings locally (OP-SQLite) for offline access
 - [x] Subtask 6.6: Add unit tests for notification preference enforcement
-- [ ] Subtask 6.7: Test edge case: disabled push but enabled local (and vice versa)
+- [x] Subtask 6.7: Test edge case: disabled push but enabled local (and vice versa)
 
 ### Task 7: Deep Link Handling (AC4)
 - [x] Subtask 7.1: Configure deep link URL scheme (pensieve:// or custom)
