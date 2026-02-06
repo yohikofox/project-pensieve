@@ -89,7 +89,7 @@ development_status:
   5-1-affichage-inline-des-todos-dans-le-feed: done  # Code review completed: 33/51 unit tests passing (64.7%), 11/11 BDD tests passing (100%), component verified manually
   5-2-tab-actions-centralise: done  # Code review completed: 13/14 issues fixed (93%). 39 tests passing (9+4+10+8+8 BDD). AC1-AC8 fully implemented. Performance optimized.
   5-3-filtres-et-tri-des-actions: done  # Code review completed: 13 issues found (4 HIGH + 6 MEDIUM + 3 LOW), 10/10 HIGH+MEDIUM fixed. 71 unit tests + 10 BDD scenarios. All AC1-AC10 implemented. Critical bugs fixed: findAllWithSource, AsyncStorage rollback, performance optimization.
-  5-4-completion-et-navigation-des-actions: backlog
+  5-4-completion-et-navigation-des-actions: review
   epic-5-retrospective: optional
 
   # Epic 6: Synchronisation Multi-Device (4 stories)
