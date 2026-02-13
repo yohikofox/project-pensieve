@@ -4,22 +4,29 @@ currentStep: completed
 workflowStatus: completed
 currentEpic: completed
 epicsCompleted:
-  - epic1: 5 stories (Story 1.1 - 1.5)
-  - epic2: 6 stories (Story 2.1 - 2.6)
-  - epic3: 4 stories (Story 3.1 - 3.4)
+  - epic1: 3 stories (Story 1.1 - 1.3) [v2 Architecture]
+  - epic2: 8 stories (Story 2.1 - 2.8)
+  - epic3: 6 stories (Story 3.1 - 3.4 + 2 sub-stories)
   - epic4: 4 stories (Story 4.1 - 4.4)
   - epic5: 4 stories (Story 5.1 - 5.4)
-  - epic6: 4 stories (Story 6.1 - 6.4)
-epicsPending: []
-totalStories: 27
+epicsPending:
+  - epic6: 4 stories (Story 6.1 - 6.4) [Synchronisation]
+  - epic7: 3 stories (Story 7.1 - 7.3) [Support & Observability]
+  - epic8: 12 stories (Story 8.1 - 8.12) [GitHub Issues Resolution]
+  - epic9: 1 story (Story 9.1) [Advanced Notifications]
+  - epic10: 1 story (Story 10.1) [Monetization]
+totalStories: 46
 totalFRsCovered: 31
+githubIssuesIntegrated: 23
 coveragePercentage: 100
 inputDocuments:
   - "_bmad-output/planning-artifacts/prd.md"
   - "_bmad-output/planning-artifacts/architecture.md"
   - "_bmad-output/planning-artifacts/ux-design-specification.md"
+  - "https://github.com/yohikofox/pensieve/issues (23 issues ouvertes)"
 workflow: "create-epics-and-stories"
-agent: "pm"
+agent: "pm + sm"
+lastUpdate: "2026-02-13"
 ---
 
 # Pensine - Epic Breakdown
@@ -201,7 +208,10 @@ This document provides the complete epic and story breakdown for Pensine, decomp
 - FR30 → Epic 6 (Sync cloud → local)
 - FR31 → Epic 6 (Informer statut sync)
 
-**Coverage Summary:** All 31 FRs are mapped to the 6 epics.
+**Coverage Summary:** All 31 FRs are mapped to Epics 1-6.
+
+**Additional Epics:**
+- Epic 7 → Support & Observability (feature transverse, non liée à un FR spécifique du PRD)
 
 ## Epic List
 
@@ -1698,3 +1708,319 @@ So that **I always know if my data is synced, syncing, or pending** (FR31).
 **Then** a gentle reminder appears "You have unsynced changes. Connect to sync."
 **And** the reminder is dismissible
 **And** it doesn't block app usage
+
+---
+
+## Epic 7: Support & Observability
+
+Les utilisateurs bénéficient d'outils de support et de débogage contrôlés par des permissions backend, permettant un support technique rapide et flexible sans nécessiter de nouvelles publications d'application.
+
+**FRs couverts:** Aucun FR du PRD initial (feature transverse de support)
+
+**Notes d'implémentation:**
+- Système de permissions backend extensible (feature flags)
+- Double niveau de contrôle : permission d'accès (backend) + activation locale (settings)
+- Cache des permissions avec expiration à minuit
+- Interface admin pour gérer les permissions utilisateur
+- Support pour debugging en production sans republication app
+
+---
+
+### Story 7.1: Support Mode avec Permissions Backend
+
+As a **user ayant besoin de support technique**,
+I want **un système de permissions backend qui contrôle l'accès au mode debug de l'app**,
+So that **je puisse activer/désactiver le mode debug sans republier l'app, permettant un support rapide et flexible pour les power users et early adopters**.
+
+**Context:** Cette story permet de gérer l'accès au mode debug depuis l'interface admin backend, avec un système à double niveau (permission d'accès + activation locale). Cas d'usage principal : déboguer des problèmes utilisateurs en production (ex: logs locaux, retry transcription, rapport d'erreur) sans attendre de publication App Store/Play Store.
+
+**Voir fichier de story complet:** `_bmad-output/implementation-artifacts/7-1-support-mode-avec-permissions-backend.md`
+
+**Acceptance Criteria Summary:**
+- AC1: Backend API endpoint pour récupération des permissions utilisateur
+- AC2: Interface admin avec toggle pour activer/désactiver permission debug
+- AC3: Mobile fetch des permissions au démarrage
+- AC4: Gestion du cache offline jusqu'à minuit
+- AC5: Refresh manuel des permissions sans reconnexion
+- AC6: Affichage conditionnel du switch debug dans settings
+- AC7: Masquage du switch si permission refusée
+- AC8: Vérification permission dans settingsStore avant activation
+- AC9: Intégration avec features debug existantes
+- AC10: Persistance et synchronisation de l'état
+- AC11: Scénario de support end-to-end validé
+
+**Tasks Summary:**
+- Backend: Endpoint API + interface admin + tests
+- Mobile: UserFeaturesService + cache + intégration settingsStore + UI
+- Testing: Tests unitaires + E2E + validation scénario support
+
+**Definition of Done:**
+- Tous les AC implémentés et testés
+- Tests backend et mobile à 100%
+- Interface admin opérationnelle
+- Documentation support créée
+- Code review approuvé
+
+---
+
+## Epic 8: GitHub Issues Resolution
+
+Les développeurs peuvent corriger les bugs et implémenter les fonctionnalités identifiées dans les issues GitHub, assurant la qualité du code et l'amélioration continue du produit.
+
+**FRs couverts:** Aucun FR du PRD initial (corrections techniques et améliorations qualité)
+
+**Notes d'implémentation:**
+- Résolution des bugs TypeScript critiques bloquant la compilation
+- Standardisation des patterns de code pour améliorer la maintenabilité
+- Corrections de bugs UX identifiés par les utilisateurs
+- Extensions fonctionnelles basées sur les retours terrain
+
+**Source:** Issues GitHub du repository yohikofox/pensieve
+
+**Référence issues fermées:** `_bmad-output/implementation-artifacts/github-issues-closed-reference.md`
+
+---
+
+### Story 8.1: Fix TypeScript Compilation Errors
+
+As a **developer**,
+I want **to fix all critical TypeScript compilation errors in the codebase**,
+So that **the application compiles without errors and type safety is guaranteed**.
+
+**GitHub Issues:** #22, #21, #20, #19
+
+**Context:** Plusieurs erreurs TypeScript bloquent la compilation et réduisent la fiabilité du code. Ces erreurs concernent principalement les types de retour des hooks React Query et les événements du système de capture.
+
+**Acceptance Criteria:**
+
+**AC1: Fix CaptureRepository Event Type Mismatches (#22)**
+
+**Given** the CaptureRepository publishes events
+**When** constructing event payloads for CaptureRecordedEvent and CaptureDeletedEvent
+**Then** the `captureType` field uses type assertion `as 'audio' | 'text'` (lines 154, 281, 420)
+**And** the `audioDuration` field uses nullish coalescing `?? undefined` to convert null to undefined (lines 157, 284)
+**And** all event payloads compile without TypeScript errors
+**And** runtime validation ensures only 'audio' or 'text' captures trigger events
+
+**AC2: Fix useUpdateTodo Return Type Mismatch (#21)**
+
+**Given** the useUpdateTodo hook is defined
+**When** declaring the hook's return type
+**Then** the return type is `UseMutationResult<boolean, Error, UpdateTodoParams>` (not void)
+**And** the boolean return value from todoRepository.update is preserved
+**And** consumers can check if the update was actually applied
+**And** the hook compiles without TypeScript errors
+
+**AC3: Fix useToggleTodoStatus QueryFilters Syntax (#20)**
+
+**Given** the useToggleTodoStatus hook handles errors
+**When** rolling back optimistic updates in the onError callback
+**Then** `setQueriesData` is called with `{ queryKey: ["todos"] }` (QueryFilters object)
+**And** the rollback syntax matches the optimistic update pattern (line 48)
+**And** the error handler compiles without TypeScript errors
+**And** rollback functionality works correctly when mutations fail
+
+**AC4: Fix NPUDetectionService Platform.constants Access (#19)**
+
+**Given** NPUDetectionService needs to access device model information
+**When** accessing Platform.constants properties
+**Then** a type assertion pattern is used: `Platform.constants as Record<string, unknown>`
+**And** the deviceModel is safely extracted with fallback: `(platformConsts?.Model || 'iPhone') as string`
+**And** the pattern is consistent with existing code (line 160)
+**And** the service compiles without TS2339 errors
+
+**AC5: Verification and Testing**
+
+**Given** all TypeScript fixes are applied
+**When** running `tsc --noEmit`
+**Then** zero TypeScript compilation errors are reported
+**And** all affected features continue to work correctly
+**And** existing tests pass without regression
+**And** code review confirms type safety improvements
+
+**Tasks:**
+1. Fix CaptureRepository event payload construction (3 locations)
+2. Update useUpdateTodo return type declaration
+3. Fix useToggleTodoStatus setQueriesData syntax
+4. Add type assertion for Platform.constants access
+5. Run full TypeScript compilation check
+6. Verify runtime behavior unchanged
+7. Update tests if needed
+
+**Definition of Done:**
+- All 4 TypeScript errors fixed
+- `tsc --noEmit` passes without errors
+- All existing tests pass
+- Code review approved
+- No runtime regressions
+
+---
+
+### Story 8.2: Standardize Type Constants Pattern
+
+As a **developer**,
+I want **all type constants to follow the `as const` object pattern consistently**,
+So that **the codebase has uniform type definitions with autocomplete and refactor safety**.
+
+**GitHub Issue:** #24
+
+**Context:** Le projet utilise actuellement trois patterns différents pour les constantes de types, créant de l'inconsistance. Le pattern `as const` object est déjà utilisé pour `ANALYSIS_TYPES` et `METADATA_KEYS`, mais `captureType` utilise encore des unions littérales inline.
+
+**Acceptance Criteria:**
+
+**AC1: Create CAPTURE_TYPES Constant**
+
+**Given** I am defining capture type constants
+**When** adding the constant to Capture.model.ts
+**Then** a constant `CAPTURE_TYPES` is defined as:
+```typescript
+export const CAPTURE_TYPES = {
+  AUDIO: "audio",
+  TEXT: "text",
+  IMAGE: "image",
+  URL: "url",
+} as const;
+
+export type CaptureType = (typeof CAPTURE_TYPES)[keyof typeof CAPTURE_TYPES];
+```
+**And** the constant is exported for use across the codebase
+
+**AC2: Update Capture Interface**
+
+**Given** the CAPTURE_TYPES constant is defined
+**When** defining the Capture interface
+**Then** the `type` field uses `CaptureType` instead of `string`
+**And** TypeScript enforces only valid capture types
+**And** the interface remains backward compatible
+
+**AC3: Update CaptureEvents**
+
+**Given** the CaptureType is exported
+**When** defining event interfaces in CaptureEvents.ts
+**Then** `captureType` properties use the `CaptureType` type (not inline unions)
+**And** the import statement includes: `import { CAPTURE_TYPES, CaptureType } from '../domain/Capture.model'`
+**And** all event interfaces compile without errors
+
+**AC4: Replace Hardcoded Strings in Repository**
+
+**Given** I am using capture types in the repository
+**When** assigning or comparing capture types
+**Then** hardcoded strings ('audio', 'text', 'image', 'url') are replaced with `CAPTURE_TYPES.AUDIO`, etc.
+**And** IDE autocomplete suggests available types
+**And** refactoring a constant updates all usages
+
+**AC5: Update Tests**
+
+**Given** tests use capture type literals
+**When** updating test files
+**Then** all string literals are replaced with constants from `CAPTURE_TYPES`
+**And** tests remain readable and maintainable
+**And** all tests pass after the change
+
+**AC6: Consistency Verification**
+
+**Given** the pattern is applied
+**When** reviewing the codebase
+**Then** all type constants use the `as const` object pattern
+**And** no inline literal unions remain for capture types
+**And** the pattern is consistent with `ANALYSIS_TYPES` and `METADATA_KEYS`
+
+**Tasks:**
+1. Define CAPTURE_TYPES constant in Capture.model.ts
+2. Update Capture interface to use CaptureType
+3. Update CaptureEvents.ts imports and types
+4. Search and replace hardcoded strings in CaptureRepository
+5. Update all test files to use constants
+6. Verify TypeScript compilation
+7. Document pattern in coding guidelines
+
+**Definition of Done:**
+- CAPTURE_TYPES constant defined and exported
+- All interfaces use CaptureType
+- No hardcoded capture type strings remain
+- All tests pass
+- Pattern consistent across codebase
+- Code review approved
+
+---
+
+### Story 8.3: Fix Audio Trim Truncating Transcriptions
+
+As a **user**,
+I want **my audio recordings to preserve the complete content without aggressive silence trimming**,
+So that **transcriptions include all my spoken words, especially at the end of recordings**.
+
+**GitHub Issue:** #16
+
+**Context:** Les transcriptions audio perdent les derniers mots/phrases car le traitement post-enregistrement trim les silences de manière trop agressive. Cette perte de contenu dégrade l'expérience utilisateur et la qualité des transcriptions.
+
+**Acceptance Criteria:**
+
+**AC1: Disable Audio Trim by Default**
+
+**Given** I am recording audio
+**When** the recording completes and is saved
+**Then** no automatic silence trimming is applied to the audio file
+**And** the complete audio content is preserved as recorded
+**And** transcriptions include all spoken content from start to end
+
+**AC2: Add Settings Toggle**
+
+**Given** I am in the app settings
+**When** I navigate to audio recording settings
+**Then** I see a toggle option "Supprimer les silences automatiquement"
+**And** the toggle is OFF by default
+**And** the setting is clearly labeled and explained
+
+**AC3: Configurable Trim Behavior**
+
+**Given** I have enabled "Supprimer les silences automatiquement" in settings
+**When** I record audio
+**Then** silence trimming is applied after recording
+**And** the trimming level is conservative (preserves more content than before)
+**And** an optional aggressiveness level can be configured (if feasible)
+
+**AC4: Settings Persistence**
+
+**Given** I change the silence trimming setting
+**When** I restart the app
+**Then** my preference is preserved
+**And** future recordings respect my chosen setting
+**And** the setting is synced if multi-device sync is enabled
+
+**AC5: Validate Transcription Completeness**
+
+**Given** I have trim disabled (default)
+**When** I record audio with content near the end
+**Then** the transcription includes the final words/phrases
+**And** no content is lost compared to the original recording
+**And** previously truncated transcriptions are now complete
+
+**AC6: File Size Impact Communication**
+
+**Given** trim is disabled
+**When** viewing recording details
+**Then** I am informed that files may be slightly larger
+**And** the trade-off (completeness vs. size) is explained
+**And** storage usage remains acceptable
+
+**Tasks:**
+1. Identify audio trim logic in post-recording processing
+2. Disable trim by default in recording pipeline
+3. Add "Supprimer les silences automatiquement" toggle in settings UI
+4. Implement settings persistence (AsyncStorage/Secure Store)
+5. Apply conditional trim logic based on user preference
+6. Test with recordings of various lengths
+7. Validate transcription completeness before/after
+8. Update storage monitoring if needed
+
+**Definition of Done:**
+- Audio trim disabled by default
+- Settings toggle implemented and functional
+- User preference persisted across sessions
+- Transcriptions include full content (especially endings)
+- Tests validate completeness
+- Storage impact acceptable
+- Code review approved
+
+---

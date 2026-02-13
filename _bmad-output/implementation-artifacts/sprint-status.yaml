@@ -93,9 +93,44 @@ development_status:
   epic-5-retrospective: optional
 
   # Epic 6: Synchronisation Multi-Device (4 stories)
-  epic-6: backlog
-  6-1-infrastructure-de-synchronisation-watermelondb: backlog
+  epic-6: in-progress
+  6-1-infrastructure-de-synchronisation-watermelondb: in-progress
   6-2-synchronisation-local-cloud: backlog
   6-3-synchronisation-cloud-local: backlog
   6-4-indicateurs-de-statut-de-synchronisation: backlog
   epic-6-retrospective: optional
+
+  # Epic 7: Support & Observability (3 stories - Support tools + DevTools)
+  epic-7: backlog
+  7-1-support-mode-avec-permissions-backend: ready-for-dev
+  7-2-logs-devtools-rotation-fifo: backlog  # Issue GitHub #10
+  7-3-llm-logs-analysis-github-issues: backlog  # Issue GitHub #17
+  epic-7-retrospective: optional
+
+  # Epic 8: GitHub Issues Resolution (12 stories - Bug fixes + features from GitHub issues)
+  # Source: https://github.com/yohikofox/pensieve/issues
+  # Référence issues fermées: _bmad-output/implementation-artifacts/github-issues-closed-reference.md
+  epic-8: backlog  # Sprint immédiat: stories 8-1, 8-2, 8-3
+  8-1-fix-typescript-compilation-errors: backlog  # Issues #22, #21, #20, #19 - CRITIQUE
+  8-2-standardize-type-constants-pattern: backlog  # Issue #24 - HAUTE
+  8-3-fix-audio-trim-truncating-transcriptions: backlog  # Issue #16 - BLOQUANT UX
+  8-4-transcription-native-par-defaut: backlog  # Issue #12 - Sprint suivant
+  8-5-guide-config-modele-si-absent: backlog  # Issue #2 - Sprint suivant
+  8-6-transcription-live-avec-waveform: backlog  # Issue #11 - Backlog
+  8-7-download-modeles-en-background: backlog  # Issue #18 - Backlog
+  8-8-suggestion-suppression-modeles-inutilises: backlog  # Issue #8 - Backlog
+  8-9-verification-maj-modeles: backlog  # Issue #6 - Backlog
+  8-10-ocr-manuscrit-capture-photo: backlog  # Issue #7 - Backlog
+  8-11-suppression-compte-avec-anonymisation: backlog  # Issue #5 - Backlog
+  8-12-export-rgpd-asynchrone: backlog  # Issue #4 - Backlog
+  epic-8-retrospective: optional
+
+  # Epic 9: Advanced Notifications & UX (1 story)
+  epic-9: backlog
+  9-1-notifications-clarification-audio-texte: backlog  # Issue GitHub #3
+  epic-9-retrospective: optional
+
+  # Epic 10: Monetization Strategy (1 story)
+  epic-10: backlog
+  10-1-paywall-de-test-avec-tracking: backlog  # Issue GitHub #9
+  epic-10-retrospective: optional
