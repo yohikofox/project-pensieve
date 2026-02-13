@@ -114,13 +114,13 @@ So that **we have a robust foundation for bidirectional data synchronization**.
 
 ### Task 3: Mobile Sync Service avec OP-SQLite (AC2, AC5)
 
-- [ ] **3.1** Créer `SyncService` dans `mobile/src/infrastructure/sync/SyncService.ts`
-- [ ] **3.2** Implémenter méthode `sync(options?: { priority, entity })` avec calls à `/api/sync/pull` et `/api/sync/push`
-- [ ] **3.3** Implémenter tracking `lastPulledAt` par table dans AsyncStorage (clé: `sync_last_pulled_${tableName}`)
-- [ ] **3.4** Implémenter détection changes locaux via query OP-SQLite: `SELECT * FROM captures WHERE _changed = 1`
-- [ ] **3.5** Implémenter Fibonacci backoff retry logic (ADR-009.5): `[1, 1, 2, 3, 5, 8, 13, 21, 34, 55s]` cap 5min
-- [ ] **3.6** Implémenter Result Pattern pour gestion erreurs: `SyncResult.SUCCESS | NETWORK_ERROR | AUTH_ERROR | CONFLICT | SERVER_ERROR`
-- [ ] **3.7** Implémenter chunking pour large datasets (batch 100 records max par sync)
+- [x] **3.1** Créer `SyncService` dans `mobile/src/infrastructure/sync/SyncService.ts`
+- [x] **3.2** Implémenter méthode `sync(options?: { priority, entity })` avec calls à `/api/sync/pull` et `/api/sync/push`
+- [x] **3.3** Implémenter tracking `lastPulledAt` par table dans AsyncStorage (clé: `sync_last_pulled_${tableName}`)
+- [x] **3.4** Implémenter détection changes locaux via query OP-SQLite: `SELECT * FROM captures WHERE _changed = 1`
+- [x] **3.5** Implémenter Fibonacci backoff retry logic (ADR-009.5): `[1, 1, 2, 3, 5, 8, 13, 21, 34, 55s]` cap 5min
+- [x] **3.6** Implémenter Result Pattern pour gestion erreurs: `SyncResult.SUCCESS | NETWORK_ERROR | AUTH_ERROR | CONFLICT | SERVER_ERROR`
+- [x] **3.7** Implémenter chunking pour large datasets (batch 100 records max par sync)
 - [ ] **3.8** Tester sync avec mock backend (success, network error, conflict)
 
 **Références:**
@@ -676,10 +676,29 @@ L'agent Dev ajoutera ici les références aux logs de debug si nécessaire.
 2. **Mobile migrations**: Mobile app needs to implement migration runner to execute mobile-sync-migrations.sql
 3. **Captures table**: PostgreSQL migration doesn't include captures (entity doesn't exist yet)
 
+**2026-02-13 - Task 3 completed (Mobile Sync Service)**
+
+✅ **Completed:**
+- Created SyncService with full bidirectional sync (pull + push)
+- Implemented ADR-009 sync protocol with OP-SQLite queries
+- Implemented SyncStorage for lastPulledAt tracking in AsyncStorage
+- Implemented Fibonacci backoff retry logic (1s → 55s with 5min cap)
+- Implemented Result Pattern for error categorization
+- Implemented chunking (100 records per batch)
+- Full type safety with TypeScript interfaces
+
+⚠️ **Important Notes:**
+1. **Auth token**: SyncService needs auth token via setAuthToken() method
+2. **Database connection**: Uses DatabaseConnection singleton from database module
+3. **HTTP client**: axios with 30s timeout and retry logic
+4. **Testing pending**: Task 3.8 (mock backend testing) deferred
+
 📝 **Next Steps:**
 - Run backend migration: `cd backend && npm run migration:run`
-- Task 3: Implement mobile sync service with OP-SQLite
-- Task 1.7: Test endpoints with Postman/curl after migrations
+- Task 4: Conflict Resolution Logic (backend already implemented, mobile needs conflict handler)
+- Task 5: Encryption & Security
+- Task 6: Sync Monitoring & Logging
+- Task 7: Integration Testing (E2E)
 
 ### File List
 
@@ -698,3 +717,10 @@ L'agent Dev ajoutera ici les références aux logs de debug si nécessaire.
 **Backend (Task 2 - Database Migrations):**
 - pensieve/backend/src/migrations/1739640000000-AddSyncColumnsAndTables.ts (created)
 - pensieve/backend/src/modules/sync/docs/mobile-sync-migrations.sql (created - reference for mobile)
+
+**Mobile (Task 3 - Sync Service):**
+- pensieve/mobile/src/infrastructure/sync/SyncService.ts (created)
+- pensieve/mobile/src/infrastructure/sync/SyncStorage.ts (created)
+- pensieve/mobile/src/infrastructure/sync/retry-logic.ts (created)
+- pensieve/mobile/src/infrastructure/sync/types.ts (created)
+- pensieve/mobile/src/infrastructure/sync/index.ts (created)
