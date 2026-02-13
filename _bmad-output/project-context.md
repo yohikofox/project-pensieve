@@ -319,7 +319,7 @@ export default tseslint.config(
   eslintPluginPrettierRecommended,
   {
     languageOptions: {
-      sourceType: 'commonjs',  // NestJS convention
+      sourceType: 'module',  // ESM (tsconfig uses "nodenext")
       parserOptions: {
         projectService: true,
       }
@@ -383,9 +383,10 @@ git commit -m "refactor(authorization): extract multi-level permission resolver"
 
 **Module System Conventions:**
 
-- **Backend**: CommonJS (`module.exports`, `require`) - NestJS convention
+- **Backend**: ESM (`import/export`) - NestJS 11 with TypeScript nodenext
 - **Mobile**: ESM (`import/export`) - React Native convention
 - **Web**: ESM (`import/export`) - Next.js 15 App Router
+- **All packages use modern ESM** - No CommonJS in this project
 
 **Code Organization Patterns:**
 
@@ -684,10 +685,11 @@ git add .env.example
 
 **⚠️ BONUS CRITICAL RULES:**
 
-**11. Module System Mixing (Backend)**
-- Backend = CommonJS (`require`, `module.exports`)
-- Mobile/Web = ESM (`import`, `export`)
-- NEVER mix within same package
+**11. Module System Consistency**
+- **ALL packages use ESM** (`import`, `export`)
+- Backend tsconfig: `"module": "nodenext"`
+- NEVER mix CommonJS with ESM within same package
+- NEVER use `require()` in TypeScript files
 
 **12. Expo SDK Version Lock**
 - Node 22 + Expo SDK 54 + React Native 0.81.5
