@@ -565,6 +565,398 @@ pensieve/
 
 ---
 
+### Bug Fix Workflow - TDD Pattern
+
+**🐛 Principe fondamental** : Chaque bug corrigé DOIT avoir un test de régression associé.
+
+Ce workflow garantit que :
+- Le bug est reproductible de manière fiable
+- La correction est vérifiable automatiquement
+- Le bug ne peut pas réapparaître sans être détecté
+- La documentation du bug reste synchronisée avec le code
+
+**Workflow général (RED-GREEN-REFACTOR)** :
+
+1. **🔴 RED** - Créer un test qui reproduit le bug (le test échoue)
+2. **🟢 GREEN** - Corriger le code jusqu'à ce que le test passe
+3. **🔵 REFACTOR** - Améliorer le code si nécessaire (tests restent verts)
+4. **✅ VERIFY** - Exécuter toute la suite de tests pour éviter les régressions
+
+---
+
+#### Option 1 : Bug de comportement utilisateur (BDD/Gherkin)
+
+**Quand utiliser** : Bug affectant un comportement utilisateur, une interaction UI, ou un acceptance criteria.
+
+**Procédure** :
+
+**1. Ajouter un scénario Gherkin dans le fichier `.feature` existant**
+
+```gherkin
+# mobile/tests/acceptance/features/story-2-1.feature
+
+@edge-case @bug-fix
+Plan du scénario: Gérer les enregistrements très courts (Bug #123)
+  Contexte: Un bug empêchait de sauvegarder les enregistrements < 1s
+  Quand l'utilisateur enregistre pendant <durée> millisecondes
+  Et l'utilisateur arrête l'enregistrement
+  Alors la Capture est créée malgré la courte durée
+  Et la Capture a un statut "CAPTURED"
+
+  Exemples:
+    | durée |
+    | 100   |  # ← Bug reproduit ici
+    | 500   |
+    | 999   |
+```
+
+**Tags à utiliser** :
+- `@bug-fix` - Scénario reproduisant un bug spécifique
+- `@edge-case` - Cas limite qui n'était pas géré
+- `@regression` - Test de non-régression d'un bug ancien
+
+**2. Exécuter les tests (RED phase)**
+
+```bash
+# Mobile
+cd mobile
+npm run test:acceptance:story-2-1
+
+# Backend
+cd backend
+npm run test:acceptance -- story-4-1
+
+# ❌ Expected capture to exist but got 0 captures
+```
+
+**3. Corriger le code (GREEN phase)**
+
+```typescript
+// AVANT (bug) :
+async stopRecording(): Promise<void> {
+  const { duration } = await this.audioRecorder.stopRecording();
+
+  // ❌ BUG: Rejette les enregistrements < 1s
+  if (duration < 1000) {
+    throw new Error('Recording too short');
+  }
+
+  await this.captureRepo.update(this.currentCaptureId!, {
+    state: 'CAPTURED',
+    duration,
+  });
+}
+
+// APRÈS (corrigé) :
+async stopRecording(): Promise<void> {
+  const { duration } = await this.audioRecorder.stopRecording();
+
+  // ✅ FIX: Accepter tous les enregistrements, warning si court
+  if (duration < 100) {
+    console.warn('Recording is very short:', duration);
+  }
+
+  // Sauvegarder dans tous les cas
+  await this.captureRepo.update(this.currentCaptureId!, {
+    state: 'CAPTURED',
+    duration,
+  });
+}
+```
+
+**4. Vérifier que les tests passent (GREEN)**
+
+```bash
+npm run test:acceptance:story-2-1
+# ✅ All tests pass including new edge case
+```
+
+**5. Vérifier la non-régression (VERIFY)**
+
+```bash
+# Exécuter TOUS les tests d'acceptance de la story
+npm run test:acceptance
+
+# Vérifier qu'aucun autre test n'a été cassé
+```
+
+---
+
+#### Option 2 : Bug de fonction isolée (Test unitaire)
+
+**Quand utiliser** : Bug dans une fonction pure, un helper, un utilitaire, ou une logique métier isolée.
+
+**Procédure** :
+
+**1. Créer un test unitaire qui reproduit le bug**
+
+```typescript
+// mobile/src/contexts/capture/services/__tests__/audio-trimmer.test.ts
+
+describe('AudioTrimmer', () => {
+  describe('Bug #456: Trim truncates last word', () => {
+    it('should preserve full transcription when trimming silence', () => {
+      // ARRANGE - Setup bug scenario
+      const transcription = 'Bonjour le monde';
+      const audioBuffer = createMockAudioWithSilence(5000); // 5s audio, 2s silence at end
+
+      // ACT - Execute code that has the bug
+      const result = AudioTrimmer.trimSilence(audioBuffer, transcription);
+
+      // ASSERT - Bug: transcription was truncated to "Bonjour le"
+      expect(result.transcription).toBe('Bonjour le monde'); // ❌ FAILS (RED)
+      expect(result.duration).toBeLessThan(4000); // Silence trimmed
+    });
+  });
+});
+```
+
+**2. Exécuter le test (RED phase)**
+
+```bash
+cd mobile
+npx jest src/contexts/capture/services/__tests__/audio-trimmer.test.ts
+
+# ❌ Expected: "Bonjour le monde"
+# ❌ Received: "Bonjour le"
+```
+
+**3. Corriger la fonction (GREEN phase)**
+
+```typescript
+// AVANT (bug) :
+export class AudioTrimmer {
+  static trimSilence(
+    audioBuffer: AudioBuffer,
+    transcription: string
+  ): { buffer: AudioBuffer; transcription: string; duration: number } {
+    const trimmedBuffer = this.detectAndTrimSilence(audioBuffer);
+
+    // ❌ BUG: Truncate transcription proportionally to audio trim
+    const ratio = trimmedBuffer.duration / audioBuffer.duration;
+    const charCount = Math.floor(transcription.length * ratio);
+    const trimmedText = transcription.substring(0, charCount);
+
+    return {
+      buffer: trimmedBuffer,
+      transcription: trimmedText,
+      duration: trimmedBuffer.duration,
+    };
+  }
+}
+
+// APRÈS (corrigé) :
+export class AudioTrimmer {
+  static trimSilence(
+    audioBuffer: AudioBuffer,
+    transcription: string
+  ): { buffer: AudioBuffer; transcription: string; duration: number } {
+    const trimmedBuffer = this.detectAndTrimSilence(audioBuffer);
+
+    // ✅ FIX: Only trim audio buffer, keep full transcription
+    // Silence trimming doesn't affect speech content
+    return {
+      buffer: trimmedBuffer,
+      transcription, // ← Keep original transcription intact
+      duration: trimmedBuffer.duration,
+    };
+  }
+}
+```
+
+**4. Vérifier que le test passe (GREEN)**
+
+```bash
+npx jest src/contexts/capture/services/__tests__/audio-trimmer.test.ts
+
+# ✅ PASS  audio-trimmer.test.ts
+```
+
+**5. Refactoriser si nécessaire (REFACTOR)**
+
+```typescript
+// Améliorer la clarté du code
+export class AudioTrimmer {
+  static trimSilence(
+    audioBuffer: AudioBuffer,
+    transcription: string
+  ): TrimResult {
+    // Trim only the audio buffer, not the transcription
+    // Rationale: Silence detection is audio-level, transcription is already accurate
+    const trimmedBuffer = this.detectAndTrimSilence(audioBuffer);
+
+    return {
+      buffer: trimmedBuffer,
+      transcription, // Preserve full transcription (silence already excluded by ASR)
+      duration: trimmedBuffer.duration,
+    };
+  }
+}
+```
+
+**6. Vérifier la non-régression (VERIFY)**
+
+```bash
+# Exécuter tous les tests unitaires du contexte
+npx jest src/contexts/capture
+
+# ✅ All tests pass
+```
+
+---
+
+#### Commandes de test utiles
+
+**Mobile** :
+
+```bash
+# Tests d'acceptance (BDD/Gherkin)
+npm run test:acceptance                          # Tous les tests
+npm run test:acceptance:story-2-1                # Story spécifique
+npm run test:acceptance:watch                    # Mode watch
+npm run test:acceptance -- --testNamePattern="@bug-fix"  # Filtrer par tag
+
+# Tests unitaires
+npm run test:unit                                # Tous les tests
+npx jest src/path/to/file.test.ts                # Fichier spécifique
+npm run test:unit:watch                          # Mode watch
+npm run test:coverage                            # Rapport de couverture
+
+# Tests E2E
+npm run test:e2e                                 # Detox (iOS)
+```
+
+**Backend** :
+
+```bash
+# Tests d'acceptance (BDD/Gherkin)
+npm run test:acceptance                          # Tous les tests
+npm run test:acceptance -- story-4-1             # Story spécifique
+npm run test:acceptance -- --testNamePattern="@bug-fix"  # Filtrer par tag
+
+# Tests unitaires
+npm run test                                     # Tous les tests
+npx jest src/path/to/file.spec.ts                # Fichier spécifique
+npm run test:watch                               # Mode watch
+npm run test:cov                                 # Rapport de couverture
+
+# Tests E2E
+npm run test:e2e                                 # Tests E2E
+```
+
+---
+
+#### Anti-patterns - NEVER ❌
+
+**❌ Corriger un bug sans ajouter de test**
+```typescript
+// ❌ WRONG: Fix without test
+async stopRecording(): Promise<void> {
+  const { duration } = await this.audioRecorder.stopRecording();
+
+  // Fixed bug but no test to prevent regression
+  if (duration < 100) console.warn('Short recording');
+
+  await this.captureRepo.update(this.currentCaptureId!, { state: 'CAPTURED' });
+}
+```
+**Impact** : Le bug peut réapparaître lors d'un refactoring futur, aucune traçabilité.
+
+**❌ Modifier le code AVANT d'écrire le test**
+```typescript
+// ❌ WRONG: Fix first, test later
+// 1. Fix the code
+// 2. Run app manually
+// 3. "Looks good, ship it"
+// 4. (Never write test)
+```
+**Impact** : Pas de garantie que le test reproduit vraiment le bug, test peut être faux positif.
+
+**❌ Supprimer les tests de régression "qui passent déjà"**
+```typescript
+// ❌ WRONG: Clean up "useless" tests
+// "This test always passes, let's remove it"
+git rm tests/acceptance/features/story-2-1-edge-cases.feature
+```
+**Impact** : Protection contre les régressions perdue, bug peut revenir sans détection.
+
+**❌ Ne pas tagger les tests de bug fixes**
+```gherkin
+# ❌ WRONG: Missing tags
+Scénario: Gérer les enregistrements courts
+  # No @bug-fix tag, hard to find later
+```
+**Impact** : Impossible de filtrer les tests de régression, perte de traçabilité.
+
+**❌ Tester manuellement au lieu d'automatiser**
+```bash
+# ❌ WRONG: Manual verification only
+# 1. Start app
+# 2. Click record
+# 3. Stop after 100ms
+# 4. "Works for me ✓"
+# (No automated test)
+```
+**Impact** : Test non reproductible, dépendant de l'opérateur, impossible à exécuter en CI/CD.
+
+**❌ Fixer plusieurs bugs dans un seul commit/test**
+```gherkin
+# ❌ WRONG: Multiple bugs in one scenario
+Scénario: Fix audio bugs
+  Quand l'utilisateur enregistre un audio court
+  Et l'utilisateur a peu de stockage
+  Et le microphone perd la permission
+  # Too many bugs mixed together
+```
+**Impact** : Difficile de debugger si le test échoue, perte de granularité.
+
+---
+
+**✅ Bonne pratique - Workflow complet exemple** :
+
+```bash
+# 1. Identifier le bug (via rapport utilisateur, log, etc.)
+# Bug #789: L'app crash si l'enregistrement dépasse 60 minutes
+
+# 2. Créer une branche
+git checkout -b fix/bug-789-recording-timeout
+
+# 3. Ajouter un test Gherkin (RED)
+# mobile/tests/acceptance/features/story-2-1.feature
+@edge-case @bug-fix @bug-789
+Scénario: Gérer les enregistrements de longue durée
+  Quand l'utilisateur enregistre pendant 3600 secondes
+  Et l'utilisateur arrête l'enregistrement
+  Alors la Capture est créée sans crash
+  Et la durée est 3600000ms
+
+# 4. Exécuter le test (doit échouer - RED)
+npm run test:acceptance:story-2-1
+# ❌ Timeout after 60000ms
+
+# 5. Corriger le code (GREEN)
+# src/services/recording.service.ts
+- const MAX_RECORDING_DURATION = 60 * 1000; // ❌ 60s
++ const MAX_RECORDING_DURATION = 24 * 60 * 60 * 1000; // ✅ 24h
+
+# 6. Vérifier que le test passe (GREEN)
+npm run test:acceptance:story-2-1
+# ✅ All tests pass
+
+# 7. Vérifier la non-régression
+npm run test:acceptance
+# ✅ All acceptance tests pass
+
+# 8. Commit avec message conventionnel
+git add .
+git commit -m "fix(audio): support recordings up to 24 hours (Bug #789)"
+
+# 9. Push et PR
+git push origin fix/bug-789-recording-timeout
+```
+
+---
+
 ### Critical Don't-Miss Rules
 
 **🚨 TOP 10 RÈGLES ABSOLUES - VIOLATIONS = BUGS MAJEURS 🚨**
