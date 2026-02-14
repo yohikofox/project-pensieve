@@ -94,15 +94,15 @@ development_status:
 
   # Epic 6: Synchronisation Multi-Device (4 stories)
   epic-6: in-progress
-  6-1-infrastructure-de-synchronisation-watermelondb: in-progress
+  6-1-infrastructure-de-synchronisation-watermelondb: done
   6-2-synchronisation-local-cloud: backlog
   6-3-synchronisation-cloud-local: backlog
   6-4-indicateurs-de-statut-de-synchronisation: backlog
   epic-6-retrospective: optional
 
   # Epic 7: Support & Observability (3 stories - Support tools + DevTools)
-  epic-7: backlog
-  7-1-support-mode-avec-permissions-backend: ready-for-dev
+  epic-7: in-progress
+  7-1-support-mode-avec-permissions-backend: done  # Backend: 13 unit tests, BDD tests created. Mobile: 35 unit tests (repository, service, store). UI Settings conditional display implemented.
   7-2-logs-devtools-rotation-fifo: backlog  # Issue GitHub #10
   7-3-llm-logs-analysis-github-issues: backlog  # Issue GitHub #17
   epic-7-retrospective: optional
