@@ -15,7 +15,8 @@ epicsPending:
   - epic8: 12 stories (Story 8.1 - 8.12) [GitHub Issues Resolution]
   - epic9: 1 story (Story 9.1) [Advanced Notifications]
   - epic10: 1 story (Story 10.1) [Monetization]
-totalStories: 46
+  - epic11: 2 stories (Story 11.1 - 11.2) [Clean Code Enforcement]
+totalStories: 48
 totalFRsCovered: 31
 githubIssuesIntegrated: 23
 coveragePercentage: 100
@@ -2022,5 +2023,201 @@ So that **transcriptions include all my spoken words, especially at the end of r
 - Tests validate completeness
 - Storage impact acceptable
 - Code review approved
+
+---
+---
+
+## Epic 11: Clean Code Enforcement (ADR-024)
+
+Les développeurs bénéficient d'outils automatisés et de standards clairs pour maintenir une qualité de code élevée et cohérente à travers tout le projet.
+
+**ADR de référence:** ADR-024 - Standards Clean Code Appliqués au Projet Pensieve
+
+**Objectifs:**
+- Implémenter outillage automatisé pour enforcer Clean Code standards
+- Migrer progressivement le codebase existant vers les standards définis
+- Accélérer code reviews (objectif: 50% plus rapide)
+- Réduire onboarding time (6-8 semaines → 2-3 semaines)
+
+**Valeur métier:**
+- Qualité code mesurable et maintenable
+- Dette technique contrôlée
+- Productivité développeur améliorée
+- Réduction bugs liés à code quality
+
+---
+
+### Story 11.1: Setup Clean Code Enforcement Tooling
+
+As a **developer**,
+I want **automated tooling to enforce Clean Code standards (ADR-024)**,
+So that **code quality is validated automatically and code reviews focus on logic rather than style**.
+
+**Context:** ADR-024 définit les standards Clean Code du projet. Cette story implémente l'outillage automatisé pour enforcer ces règles via ESLint, pre-commit hooks, et CI/CD.
+
+**Acceptance Criteria:**
+
+**AC1: ESLint Strict Configuration**
+
+**Given** je suis un développeur travaillant sur le projet
+**When** je lance ESLint sur le code
+**Then** les règles strictes suivantes sont enforced :
+- Noms révélateurs d'intention (no single-letter variables sauf i, j, k en loops)
+- No magic numbers (constantes nommées obligatoires)
+- Max 3 function parameters (sinon options object requis)
+- Single Responsibility Principle checks
+- No dead code
+- No commented code
+**And** les règles TypeScript strict mode sont activées
+**And** Prettier integration fonctionne sans conflit
+**And** tous les fichiers TypeScript passent linting
+
+**AC2: Pre-commit Hook - TODO Check**
+
+**Given** je commite du code
+**When** le code contient `// TODO` sans ticket référence
+**Then** le commit est bloqué avec message explicite
+**And** le format accepté est: `// TODO(TICKET-ID): description`
+**And** le hook fonctionne sur mobile/, backend/, web/, admin/
+**And** la documentation explique comment bypasser si nécessaire (cas exceptionnels)
+
+**AC3: CI/CD Linting Enforcement**
+
+**Given** je pousse du code sur une branche
+**When** la CI/CD pipeline s'exécute
+**Then** ESLint est exécuté sur tous les packages (mobile, backend, web, admin)
+**And** le build échoue si violations ESLint détectées
+**And** le rapport de violations est clair et actionnable
+**And** les développeurs reçoivent feedback immédiat
+
+**AC4: Documentation & Onboarding**
+
+**Given** je suis un nouveau développeur
+**When** je lis CONTRIBUTING.md
+**Then** je trouve une section "Clean Code Standards"
+**And** les règles non-négociables sont listées clairement
+**And** des exemples good/bad sont fournis
+**And** le lien vers ADR-024 est présent
+**And** les instructions pour setup ESLint localement sont claires
+
+**AC5: Migration Guide**
+
+**Given** je dois migrer du code existant
+**When** je consulte la documentation
+**Then** je trouve un guide "Migration Opportuniste Clean Code"
+**And** le guide explique la Rule of Three (pas d'abstraction prématurée)
+**And** les priorités de migration sont définies (NON-NÉGOCIABLES vs RECOMMANDÉS)
+**And** des commandes pour détecter violations sont fournies (npx eslint, ts-prune)
+
+**Tasks:**
+1. Créer `.eslintrc.strict.js` avec règles ADR-024
+2. Configurer Prettier compatibility
+3. Créer `.git/hooks/pre-commit` script TODO check
+4. Setup CI/CD linting step (GitHub Actions ou équivalent)
+5. Créer `docs/clean-code-migration-guide.md`
+6. Update `CONTRIBUTING.md` avec section Clean Code
+7. Tester hooks sur commits avec/sans TODO
+8. Vérifier CI/CD fail sur violations
+9. Code review validé
+
+**Definition of Done:**
+- ESLint strict rules configurées et passent sur codebase
+- Pre-commit hook bloque TODO sans ticket
+- CI/CD échoue si violations ESLint
+- CONTRIBUTING.md et docs à jour
+- Migration guide disponible
+- Tests validés (hook + CI/CD)
+- Code review approved
+
+---
+
+### Story 11.2: Migrate Codebase to Clean Code Standards (Opportunistic)
+
+As a **developer**,
+I want **to progressively migrate existing code to Clean Code standards**,
+So that **the entire codebase benefits from improved maintainability without a disruptive big-bang rewrite**.
+
+**Context:** Migration opportuniste signifie : toucher un fichier → appliquer règles ADR-024. Pas de rewrite complet, mais amélioration continue pendant 2-4 semaines.
+
+**Acceptance Criteria:**
+
+**AC1: Migration Opportuniste Strategy**
+
+**Given** je modifie un fichier existant pour une feature/bugfix
+**When** je sauvegarde mes changements
+**Then** j'applique les règles Clean Code ADR-024 au fichier entier
+**And** je vérifie que ESLint passe sur ce fichier
+**And** je documente les changements migration dans le commit message
+**And** le scope reste raisonnable (refacto < 30 min par fichier)
+
+**AC2: Priority Migration - NON-NÉGOCIABLES**
+
+**Given** je migre du code existant
+**When** j'applique les standards Clean Code
+**Then** je priorise les règles NON-NÉGOCIABLES :
+- Magic numbers → constantes nommées
+- Dead code supprimé
+- Code commenté supprimé  
+- Single Responsibility violations fixées
+- Functions > 50 lignes découpées
+**And** je crée des tickets séparés si refacto > 30 min
+
+**AC3: Definition of Done Extension**
+
+**Given** je marque une story comme "done"
+**When** je valide la checklist Definition of Done
+**Then** la checklist inclut maintenant :
+- ✅ Code respecte standards Clean Code ADR-024
+- ✅ ESLint strict passe sans warnings
+- ✅ No magic numbers, dead code, ou code commenté
+- ✅ Functions < 30 lignes (ou justification documentée)
+**And** code review vérifie compliance stricte
+
+**AC4: Migration Progress Tracking**
+
+**Given** nous progressons dans la migration
+**When** je consulte le suivi de migration
+**Then** je peux voir :
+- % de fichiers conformes Clean Code
+- Violations restantes par catégorie
+- Fichiers nécessitant migration prioritaire
+**And** l'équipe peut célébrer progrès (gamification optionnelle)
+
+**AC5: Code Review Enforcement**
+
+**Given** je soumets une PR
+**When** un reviewer examine mon code
+**Then** le reviewer vérifie compliance ADR-024 strictement
+**And** les violations bloquent la PR
+**And** le reviewer utilise checklist Clean Code standardisée
+**And** les discussions focalisent sur logic, pas style (ESLint gère style)
+
+**AC6: Migration Complete Criteria**
+
+**Given** 2-4 semaines se sont écoulées
+**When** nous évaluons l'état de migration
+**Then** > 90% des fichiers touchés sont conformes
+**And** < 10% violations NON-NÉGOCIABLES restantes
+**And** dette technique mesurée et contrôlée
+**And** onboarding time < 3 semaines (vs 6-8 avant)
+
+**Tasks:**
+1. Créer fichier `docs/clean-code-checklist.md` pour reviews
+2. Update Definition of Done dans project-context.md
+3. Créer script audit : `npx eslint --report-unused-disable-directives`
+4. Documenter pattern migration opportuniste
+5. Identifier top 10 fichiers violations prioritaires
+6. Migrer opportuniste pendant features/bugfixes (continu)
+7. Weekly review progression migration (team sync)
+8. Célébrer milestones (75%, 90%, 100%)
+
+**Definition of Done:**
+- Definition of Done mise à jour avec Clean Code checks
+- Checklist code review standardisée créée
+- Script audit violations disponible
+- > 90% fichiers touchés conformes après 2-4 semaines
+- Onboarding time < 3 semaines mesuré
+- Team adopte pratiques Clean Code
+- Code review valide compliance stricte
 
 ---

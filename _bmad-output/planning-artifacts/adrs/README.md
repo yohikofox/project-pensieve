@@ -28,8 +28,10 @@ Ce dossier contient tous les ADRs (Architecture Decision Records) du projet Pens
 | [ADR-020](./ADR-020-background-processing-strategy.md) | Background Processing Strategy - expo-task-manager | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
 | [ADR-021](./ADR-021-di-lifecycle-transient-first.md) | DI Lifecycle Strategy - Transient First (Révision ADR-017) | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
 | [ADR-022](./ADR-022-state-persistence-opsqlite.md) | State Persistence Strategy - OP-SQLite for All State | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
+| [ADR-023](./ADR-023-error-handling-strategy.md) | Stratégie Unifiée de Gestion des Erreurs - Result Pattern | ✅ Accepted | 2026-02-15 | yohikofox, Winston |
+| [ADR-024](./ADR-024-clean-code-standards.md) | Standards Clean Code Appliqués au Projet Pensieve | ✅ Accepted | 2026-02-15 | yohikofox, Winston |
 
-**Total:** 22 ADRs documentés (33+ sous-décisions architecturales)
+**Total:** 24 ADRs documentés (40+ sous-décisions architecturales)
 
 ---
 
@@ -229,5 +231,5 @@ Proposed (⏳) → Accepted (✅) → [Review après 1-3 mois] → Maintenu OU S
 
 ---
 
-**Dernière mise à jour :** 2026-01-24
+**Dernière mise à jour :** 2026-02-15
 **Maintenu par :** Winston (Architect) + yohikofox (Product Owner)

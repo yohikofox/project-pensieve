@@ -409,6 +409,56 @@ contexts/[context]/
 └── ui/                     # UI components
 ```
 
+**Clean Code Standards (ADR-024):**
+
+**🔴 NON-NÉGOCIABLES - Violations bloquent PR**
+
+1. **Nommage:**
+   - Noms révélateurs d'intention (pas de variables `d`, `u`, `get()`)
+   - Noms prononçables (`generationTimestamp` vs `genYmdhms`)
+   - Pas de magic numbers → constantes nommées (`UserStatus.SUSPENDED` vs `3`)
+   - Pas d'encodage hongroise (`userName` vs `strUserName`)
+
+2. **Fonctions:**
+   - Single Responsibility Principle (une fonction = une responsabilité)
+   - Un seul niveau d'abstraction par fonction
+   - Pas d'effets de bord cachés (pure functions préférées)
+   - Max 3 paramètres primitifs → sinon options object obligatoire
+   - Command/Query Separation (séparation domaine/fonctionnel)
+
+3. **Commentaires:**
+   - Code auto-documenté prioritaire (commentaires = échec du code)
+   - ❌ TODO interdit sans ticket → format: `// TODO(TICKET-ID): description`
+   - ✅ Commentaires légaux/warnings autorisés
+   - ❌ Code commenté interdit → supprimer immédiatement
+
+4. **SOLID:**
+   - Single Responsibility Principle (SRP) - une classe = une raison de changer
+   - Dependency Inversion (DIP) - dépendre d'abstractions, pas d'implémentations
+
+5. **Tests:**
+   - TDD Red-Green-Refactor obligatoire
+   - FIRST principles (Fast, Independent, Repeatable, Self-validating, Timely)
+
+6. **Code Smells:**
+   - ❌ Dead code → supprimer immédiatement
+   - ❌ Classes > 300 lignes ou > 10 méthodes publiques → violation SRP
+
+**🟡 FORTEMENT RECOMMANDÉS - Évalués en code review**
+
+1. **Fonctions courtes:** < 20 lignes idéal, < 30 acceptable, > 50 signal refactoring
+2. **Open/Closed Principle:** Rule of Three (abstraire à la 3ème occurrence)
+3. **Interface Segregation:** Interfaces ciblées, pas de "fat interfaces"
+4. **Code dupliqué:** Rule of Three (dupliquer 2x OK, abstraire à la 3ème)
+5. **undefined > null:** TypeScript, sauf interop API/DB (JSON, PostgreSQL)
+
+**🟢 CONTEXTUELS - Décision au cas par cas**
+
+1. **Taille fichiers:** < 300 lignes confortable, > 500 évaluer split
+2. **Null Object Pattern:** Si sémantiquement approprié (Guest user, Empty cart)
+
+**Références complètes:** ADR-024 - Standards Clean Code Appliqués au Projet Pensieve
+
 **Naming Conventions:**
 
 - **Files**: kebab-case (`user-service.ts`, `audio-recorder.hook.ts`)
@@ -562,6 +612,122 @@ pensieve/
 - ❌ Skip environment variable validation before deployment
 - ❌ Deploy without running tests first
 - ❌ Commit `.env` files to Git (only `.env.example`)
+
+---
+
+### Definition of Done
+
+**🎯 Conditions obligatoires avant de marquer une tâche comme terminée**
+
+**Console Cleanliness - BLOCKING:**
+
+```typescript
+// ❌ BLOCKING: Task CANNOT be marked complete with console output
+// Console must be 100% clean:
+- ❌ ZERO errors in console
+- ❌ ZERO warnings in console
+- ❌ ZERO deprecation notices
+
+// ✅ Verification checklist before marking task done:
+// 1. Run app in dev mode
+// 2. Navigate to implemented features
+// 3. Open browser/mobile console (metro bundler for mobile)
+// 4. Verify absolutely NO red or yellow messages
+// 5. If any warnings/errors exist → FIX THEM before marking done
+```
+
+**Dependencies Management - MANDATORY:**
+
+```bash
+# ✅ All libraries MUST use latest stable versions
+# ✅ Maintain compatibility between dependencies
+# ❌ NEVER use legacy/deprecated library versions (see .claude/CLAUDE.md)
+
+# Before marking task done:
+npm outdated                    # Check for updates
+npm audit                       # Check for vulnerabilities
+npm audit fix                   # Fix vulnerabilities if safe
+
+# Verify no deprecated dependencies:
+# - NO /legacy imports (expo-file-system/legacy)
+# - NO @deprecated API usage
+# - NO security vulnerabilities
+```
+
+**Definition of Done Checklist:**
+
+```markdown
+## Task Completion Checklist
+
+Before marking any task as complete, verify ALL items:
+
+### Code Quality
+- [ ] TypeScript strict mode - no `any` types
+- [ ] ESLint passes with zero errors/warnings
+- [ ] Prettier formatting applied
+- [ ] No console.log in production code (use logger)
+- [ ] No commented-out code blocks
+
+### Tests
+- [ ] Unit tests written and passing (100%)
+- [ ] BDD/Gherkin tests written for user stories
+- [ ] All existing tests still passing (no regressions)
+- [ ] Test coverage maintained or improved
+
+### Console & Runtime
+- [ ] ❌ BLOCKING: Zero errors in console
+- [ ] ❌ BLOCKING: Zero warnings in console
+- [ ] ❌ BLOCKING: Zero deprecation notices
+- [ ] App runs without crashes
+- [ ] No performance degradation
+
+### Dependencies
+- [ ] All dependencies on latest stable versions
+- [ ] No legacy/deprecated library usage
+- [ ] npm audit shows zero vulnerabilities
+- [ ] Package compatibility verified
+
+### Documentation
+- [ ] Code comments where logic is non-obvious
+- [ ] API documentation updated (if applicable)
+- [ ] Story acceptance criteria verified
+- [ ] Dev notes updated in story file
+
+### Git
+- [ ] Conventional commit format used
+- [ ] No .env files committed
+- [ ] No sensitive data in code
+- [ ] No AI attribution in commits (see .claude/CLAUDE.md)
+```
+
+**Anti-patterns - NEVER Mark Done If:**
+
+```typescript
+// ❌ WRONG: "It works on my machine but console has warnings"
+// Console output:
+// ⚠️ Warning: deprecated API usage in expo-file-system/legacy
+// → FIX: Migrate to modern API before marking done
+
+// ❌ WRONG: "Tests pass but npm audit shows vulnerabilities"
+// → FIX: Run npm audit fix, verify compatibility
+
+// ❌ WRONG: "Feature works but throws errors in edge cases"
+// Console: Error: Cannot read property 'x' of undefined
+// → FIX: Handle edge cases, add null checks
+
+// ❌ WRONG: "Skipping tests because I'm in a hurry"
+// → NEVER: Tests are NON-NEGOTIABLE
+
+// ✅ CORRECT: Clean console + all tests pass + no vulnerabilities
+// Only then → mark task complete
+```
+
+**Enforcement:**
+
+- Code reviews MUST verify console cleanliness
+- CI/CD SHOULD fail on warnings (if configured)
+- Manual testing checklist REQUIRED before story completion
+- TEA agent validates test coverage before marking done
 
 ---
 
@@ -1102,5 +1268,74 @@ git add .env.example
 - ALWAYS use `feat:`, `fix:`, `refactor:`, etc.
 - NEVER commit without type prefix
 - Impacts changelog generation, semantic versioning
+
+**16. Error Handling - Result Pattern (ADR-023)**
+
+**🚨 RÈGLE ABSOLUE : JAMAIS de throw**
+- ❌ **INTERDIT** : `throw new Error()` dans le code applicatif
+- ✅ **CORRECT** : Retourner `Result<T>` avec `validationError()`, `databaseError()`, etc.
+
+**Try/catch autorisé UNIQUEMENT dans 3 cas :**
+1. **Appels DB externes** : OP-SQLite, TypeORM, PostgreSQL
+2. **Appels API externes** : fetch, axios, Supabase, OpenAI, MinIO, Redis, RabbitMQ
+3. **Root handler technique** : Global error handler pour éviter crash app
+
+**Pattern Result :**
+```typescript
+// Enum de résultats
+enum ResultType {
+  SUCCESS = "success",
+  NOT_FOUND = "not_found",
+  DATABASE_ERROR = "database_error",
+  VALIDATION_ERROR = "validation_error",
+  NETWORK_ERROR = "network_error",
+  AUTH_ERROR = "auth_error",
+  BUSINESS_ERROR = "business_error",
+  UNKNOWN_ERROR = "unknown_error"
+}
+
+// Type Result
+type Result<T> = {
+  type: ResultType;
+  data?: T;
+  error?: string;
+  retryable?: boolean;
+};
+
+// ❌ WRONG - Throw interdit
+async createCapture(data): Promise<Result<Capture>> {
+  if (!data.rawContent) {
+    throw new Error("Invalid"); // ❌ FORBIDDEN
+  }
+}
+
+// ✅ CORRECT - Retourner Result
+async createCapture(data): Promise<Result<Capture>> {
+  if (!data.rawContent) {
+    return validationError("rawContent required"); // ✅ OK
+  }
+
+  try {
+    // Try/catch UNIQUEMENT pour DB externe
+    database.execute("INSERT...");
+    return success(capture);
+  } catch (error) {
+    return databaseError(error.message); // Pas de re-throw
+  }
+}
+```
+
+**Wrapper pour librairies externes système :**
+- Si librairie externe (RxJS, etc.) peut throw → créer wrapper qui retourne Result
+- Nos classes custom (Logger, Analytics, SyncQueue) → retournent DÉJÀ Result, pas de wrapper
+
+**Pattern par couche :**
+- **Domain** : Pure functions, retourne Result, JAMAIS try/catch
+- **Repository** : Try/catch UNIQUEMENT pour DB, retourne Result
+- **Service** : Compose Result, JAMAIS try/catch (sauf API directe)
+- **Controller** : Map Result → HTTP status
+- **UI** : Switch exhaustif sur ResultType
+
+**Référence :** ADR-023 - Stratégie Unifiée de Gestion des Erreurs
 
 ---
