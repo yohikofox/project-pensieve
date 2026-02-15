@@ -1,36 +1,36 @@
-# 📋 PLAN DE CORRECTIONS AUDIT V2 - MODE TDD
-**Date:** 2026-02-15 (Version 2 - Enrichi)
+# 📋 PLAN DE CORRECTIONS AUDIT - MODE TDD (VERSION FINALE)
+**Date:** 2026-02-15
 **Projet:** Pensieve
-**Basé sur:** AUDIT-CODE-ENRICHI-2026-02-15.md
+**Basé sur:** AUDIT-CODE-ENRICHI-2026-02-15.md + AUDIT-CODE-COMPLET-2026-02-15.md
 
 ---
 
 ## 🎯 OBJECTIF
 
-Corriger les **54 problèmes** (vs 34 v1) identifiés dans l'audit adversarial enrichi en suivant le cycle **RED-GREEN-REFACTOR** du TDD.
+Corriger les **54 problèmes** identifiés dans l'audit adversarial enrichi en suivant le cycle **RED-GREEN-REFACTOR** du TDD.
 
-**Changements vs V1:**
-- +7 violations BLOCKING Definition of Done
-- +5 violations BLOCKING ADR-024 Clean Code
-- +20 violations totales
-- +78h effort (69.5h → 147.5h)
+Chaque tâche permet de:
+- ✅ Travailler progressivement
+- ✅ Faire des pauses et reprendre
+- ✅ Valider chaque correction avec des tests
+- ✅ Suivre la progression via TaskList
 
 ---
 
 ## 📊 VUE D'ENSEMBLE
 
-### Métriques Globales V2
+### Métriques Globales
 
 | Catégorie | Tasks | Effort Total | Problèmes Résolus |
 |-----------|-------|--------------|-------------------|
 | 🔴 BLOCKING DoD | 7 | 13h | 7 BLOCKING |
 | 🔴 BLOCKING ADR-024 | 5 | 30.5h | 5 BLOCKING |
-| 🔴 CRITICAL Original | 4 | 33h | 15 CRITICAL |
+| 🔴 CRITICAL | 5 | 33h | 15 CRITICAL |
 | 🟠 HIGH | 5 | 40.5h | 14 HIGH |
-| 🟡 MEDIUM | 2 | 30.5h | 13 MEDIUM |
+| 🟡 MEDIUM | 1 | 30.5h | 13 MEDIUM |
 | **TOTAL** | **23** | **147.5h** | **54 issues** |
 
-### Distribution Effort V2
+### Distribution Effort
 
 ```
 BLOCKING DoD (13h):      ████░░░░░░░░░░░░░░░░░░░░ 9%
@@ -47,16 +47,15 @@ MEDIUM (30.5h):          ██████████████░░░░�
 
 ---
 
-## 🔴 PHASE 0: BLOCKING - DEFINITION OF DONE (13h)
+## 🔴 PHASE 1: BLOCKING - DEFINITION OF DONE (13h)
 
 **Objectif:** Rendre le code déployable selon DoD
 **Référence:** project-context.md lines 619-731
 
 ---
 
-### Task #14: Remplacer console.log par Logger service 🚫
+### Task #1: Remplacer console.log par Logger service 🚫
 
-**ID:** 14
 **Effort:** 4h
 **Priorité:** BLOCKING - DoD Console Cleanliness (line 623-630)
 
@@ -156,13 +155,10 @@ grep -r "console\." src/ || echo "✅ Clean"
 - [ ] ESLint rule `no-console` activée
 - [ ] Tests passent
 
-**Dépend de:** Aucun
-
 ---
 
-### Task #15: Remplacer types `any` par types stricts 🚫
+### Task #2: Remplacer types `any` par types stricts 🚫
 
-**ID:** 15
 **Effort:** 1.5h
 **Priorité:** BLOCKING - TypeScript Strict Mode + DoD
 
@@ -233,9 +229,8 @@ grep -rn ": any" pensieve/backend/src | wc -l  # = 0
 
 ---
 
-### Task #16: Fix exposition error messages 🔒
+### Task #3: Fix exposition error messages 🔒
 
-**ID:** 16
 **Effort:** 30min
 **Priorité:** BLOCKING - Sécurité (Information Disclosure)
 
@@ -312,9 +307,8 @@ grep -rn "error\\.message" pensieve/backend/src | wc -l  # = 0
 
 ---
 
-### Task #17: Fix secret JWT hardcodé 🔒
+### Task #4: Fix secret JWT hardcodé 🔒
 
-**ID:** 17
 **Effort:** 15min
 **Priorité:** BLOCKING - Sécurité Critique
 
@@ -386,10 +380,9 @@ grep "JWT_SECRET.*||" pensieve/backend/src | wc -l  # = 0
 
 ---
 
-### Task #18: Supprimer imports legacy expo-file-system ❌
+### Task #5: Supprimer imports legacy expo-file-system ❌
 
-**ID:** 18 (ex-Task #1 réorganisée)
-**Effort:** 2.5h (augmenté - 4 fichiers au lieu de 3)
+**Effort:** 2.5h
 **Priorité:** BLOCKING - Interdiction absolue + DoD
 
 **Problème:**
@@ -400,7 +393,7 @@ grep "JWT_SECRET.*||" pensieve/backend/src | wc -l  # = 0
 1. `CaptureDevTools.tsx:23`
 2. `SettingsScreen.tsx:17`
 3. `SettingsScreen.test.tsx:6`
-4. **NOUVEAU:** `utils/file-helpers.ts:8`
+4. `utils/file-helpers.ts:8`
 
 **TDD Steps:**
 1. 🔴 RED: Créer test vérifiant API moderne
@@ -430,13 +423,10 @@ rules: {
 - [ ] ESLint rule bannissant `/legacy`
 - [ ] Validation iOS + Android
 
-**Dépend de:** Aucun
-
 ---
 
-### Task #19: Fix npm vulnerabilities 🔒
+### Task #6: Fix npm vulnerabilities 🔒
 
-**ID:** 19
 **Effort:** 2h
 **Priorité:** BLOCKING - DoD Zero Vulnerabilities
 
@@ -503,9 +493,8 @@ npm audit --audit-level=moderate  # Devrait retourner 0
 
 ---
 
-### Task #20: Fix tests skipped 🧪
+### Task #7: Fix tests skipped 🧪
 
-**ID:** 20
 **Effort:** 3h
 **Priorité:** BLOCKING - DoD 100% Tests Pass
 
@@ -573,16 +562,15 @@ npm run test:acceptance -- --runInBand
 
 ---
 
-## 🔴 PHASE 0-BIS: BLOCKING - ADR-024 CLEAN CODE (30.5h)
+## 🔴 PHASE 2: BLOCKING - ADR-024 CLEAN CODE (30.5h)
 
 **Objectif:** Conformité ADR-024 NON-NÉGOCIABLES
 **Référence:** ADR-024, project-context.md lines 412-460
 
 ---
 
-### Task #21: Formater TODOs avec ticket IDs 📝
+### Task #8: Formater TODOs avec ticket IDs 📝
 
-**ID:** 21
 **Effort:** 4h
 **Priorité:** BLOCKING - ADR-024 Tier 1
 
@@ -661,9 +649,8 @@ grep -rn "// TODO(" src/ | wc -l  # = 26 (tous bien formatés)
 
 ---
 
-### Task #22: Supprimer code commenté 🗑️
+### Task #9: Supprimer code commenté 🗑️
 
-**ID:** 22
 **Effort:** 1.5h
 **Priorité:** BLOCKING - ADR-024 Tier 1
 
@@ -736,9 +723,8 @@ git diff --cached  # Vérifier suppressions
 
 ---
 
-### Task #23: Extraire magic numbers en constantes 🔢
+### Task #10: Extraire magic numbers en constantes 🔢
 
-**ID:** 23
 **Effort:** 3h
 **Priorité:** BLOCKING - ADR-024 Tier 1
 
@@ -835,9 +821,8 @@ npm run lint  # Devrait passer
 
 ---
 
-### Task #24: Refactor violations SRP - Phase 1 📦
+### Task #11: Refactor violations SRP - Phase 1 📦
 
-**ID:** 24
 **Effort:** 20h
 **Priorité:** BLOCKING - ADR-024 Tier 1
 
@@ -849,9 +834,6 @@ npm run lint  # Devrait passer
 1. **LLMModelService.ts** - 825 lines, 77 methods → Split en 5 services (12h)
 2. **LLMSettingsScreen.tsx** - 1196 lines → Extract components (6h)
 3. **migrations.ts** - 1898 lines → Split par version (2h - juste planning)
-
-**Scope Phase 2 (Sprint N+1):**
-- Autres fichiers (QueueDetailsScreen, CaptureRepository, etc.)
 
 **TDD Steps - LLMModelService.ts:**
 
@@ -884,24 +866,6 @@ export class LLMApiClient {
   async callAnthropic(prompt: string): Promise<Result<string>> { }
   async callOllama(prompt: string): Promise<Result<string>> { }
   // 8 autres méthodes API
-}
-
-// services/llm/LLMRetryService.ts (100 lines)
-export class LLMRetryService {
-  async withRetry<T>(fn: () => Promise<Result<T>>): Promise<Result<T>> { }
-  // Exponential backoff logic
-}
-
-// services/llm/LLMCacheService.ts (120 lines)
-export class LLMCacheService {
-  async get(key: string): Promise<string | null> { }
-  async set(key: string, value: string): Promise<void> { }
-}
-
-// services/llm/LLMValidationService.ts (80 lines)
-export class LLMValidationService {
-  validatePrompt(prompt: string): Result<void> { }
-  validateResponse(response: string): Result<void> { }
 }
 
 // services/llm/LLMModelService.ts (100 lines - FAÇADE)
@@ -950,51 +914,6 @@ container.registerSingleton('LLMModelService', (c) => new LLMModelService(
 ));
 ```
 
-**TDD Steps - LLMSettingsScreen.tsx:**
-
-1. 🔴 RED: Tests vérifiant composants extraits
-```typescript
-// LLMSettingsScreen.spec.tsx
-describe('LLMSettingsScreen', () => {
-  it('should be max 300 lines', () => {
-    const lineCount = fs.readFileSync('LLMSettingsScreen.tsx', 'utf-8').split('\n').length;
-    expect(lineCount).toBeLessThanOrEqual(300);
-  });
-
-  it('should use extracted components', () => {
-    const { getByTestId } = render(<LLMSettingsScreen />);
-    expect(getByTestId('model-selector')).toBeTruthy();
-    expect(getByTestId('api-key-input')).toBeTruthy();
-  });
-});
-```
-
-2. 🟢 GREEN: Extract components
-```typescript
-// screens/settings/llm/components/ModelSelector.tsx (80 lines)
-export const ModelSelector: React.FC<Props> = ({ value, onChange }) => {
-  // UI sélection modèle
-};
-
-// screens/settings/llm/components/APIKeyInput.tsx (60 lines)
-export const APIKeyInput: React.FC<Props> = ({ provider, value, onChange }) => {
-  // UI input API key avec validation
-};
-
-// screens/settings/llm/LLMSettingsScreen.tsx (200 lines)
-export const LLMSettingsScreen: React.FC = () => {
-  const { settings, updateSettings } = useLLMSettings();
-
-  return (
-    <Screen>
-      <ModelSelector value={settings.model} onChange={updateSettings} />
-      <APIKeyInput provider={settings.provider} value={settings.apiKey} />
-      {/* ... */}
-    </Screen>
-  );
-};
-```
-
 **Commandes:**
 ```bash
 # Mesurer lines
@@ -1016,8 +935,6 @@ npm run lint
 - [ ] Tous tests passants
 - [ ] CI check files > 500 lines configuré
 
-**Dépend de:** Aucun (parallélisable avec autres tasks)
-
 **Effort réparti:**
 - LLMModelService split: 12h
 - LLMSettingsScreen refactor: 6h
@@ -1025,9 +942,8 @@ npm run lint
 
 ---
 
-### Task #25: Fix noms variables non explicites 🏷️
+### Task #12: Fix noms variables non explicites 🏷️
 
-**ID:** 25
 **Effort:** 2h
 **Priorité:** BLOCKING - ADR-024 Tier 1
 
@@ -1105,15 +1021,14 @@ npm run lint  # Devrait passer
 
 ---
 
-## 🔴 PHASE 1: CRITICAL - VIOLATIONS ORIGINALES (33h)
+## 🔴 PHASE 3: CRITICAL - VIOLATIONS ORIGINALES (33h)
 
 **Objectif:** Valider fonctionnel complet
 
 ---
 
-### Task #26: Remplacer tests placeholder Story 5.4 ⚠️
+### Task #13: Remplacer tests placeholder Story 5.4 ⚠️
 
-**ID:** 26 (ex-Task #2)
 **Effort:** 4h
 **Priorité:** CRITICAL - Faux positifs tests
 
@@ -1135,13 +1050,10 @@ grep -n "expect(true).toBe(true)" tests/acceptance/story-5-4.test.ts
 npx jest --config jest.config.acceptance.js story-5-4.test.ts
 ```
 
-**Dépend de:** Aucun
-
 ---
 
-### Task #27: Remplacer tests placeholder autres stories ⚠️
+### Task #14: Remplacer tests placeholder autres stories ⚠️
 
-**ID:** 27 (ex-Task #3)
 **Effort:** 2h
 **Priorité:** CRITICAL
 
@@ -1149,13 +1061,12 @@ npx jest --config jest.config.acceptance.js story-5-4.test.ts
 - 10 tests placeholder dans 6 fichiers
 - Stories 3.1, 1.2, 2.3-2.6
 
-**Dépend de:** Task #26 (pour pattern cohérent)
+**Dépend de:** Task #13 (pour pattern cohérent)
 
 ---
 
-### Task #28: Créer feature files BDD Stories 3.3 et 7.1 ⚠️
+### Task #15: Créer feature files BDD Stories 3.3 et 7.1 ⚠️
 
-**ID:** 28 (ex-Task #6)
 **Effort:** 3h
 **Priorité:** CRITICAL
 
@@ -1170,9 +1081,8 @@ npx jest --config jest.config.acceptance.js story-5-4.test.ts
 
 ---
 
-### Task #29: Refactor throw → Result pattern (ADR-023) 📐
+### Task #16: Refactor throw → Result pattern (ADR-023) 📐
 
-**ID:** 29 (ex-Task #7)
 **Effort:** 8h
 **Priorité:** CRITICAL - Architecture
 
@@ -1183,7 +1093,7 @@ npx jest --config jest.config.acceptance.js story-5-4.test.ts
 **Fichiers prioritaires:**
 1. SyncQueueService.ts
 2. FileStorageService.ts
-3. LLMModelService.ts (après Task #24 split)
+3. LLMModelService.ts (après Task #11 split)
 4. TodoRepository.ts
 5. user-features.repository.ts
 6. useUserFeatures.ts
@@ -1196,13 +1106,12 @@ npx jest --config jest.config.acceptance.js story-5-4.test.ts
 
 **Impact:** Conformité ADR-023, error handling monadic
 
-**Dépend de:** Task #24 (si LLMModelService dans scope)
+**Dépend de:** Task #11 (si LLMModelService dans scope)
 
 ---
 
-### Task #30: Créer tests module Authorization (0% → 60%) 🧪
+### Task #17: Créer tests module Authorization (0% → 60%) 🧪
 
-**ID:** 30 (ex-Task #8)
 **Effort:** 16h
 **Priorité:** CRITICAL - Sécurité
 
@@ -1221,11 +1130,10 @@ npx jest --config jest.config.acceptance.js story-5-4.test.ts
 
 ---
 
-## 🟠 PHASE 2: HIGH PRIORITY (40.5h)
+## 🟠 PHASE 4: HIGH PRIORITY (40.5h)
 
-### Task #31: Fix CORS configuration 🔒
+### Task #18: Fix CORS configuration 🔒
 
-**ID:** 31 (ex-Task #9)
 **Effort:** 1h
 **Priorité:** HIGH - Sécurité
 
@@ -1238,9 +1146,8 @@ npx jest --config jest.config.acceptance.js story-5-4.test.ts
 
 ---
 
-### Task #32: Ajouter ValidationPipe global 🔒
+### Task #19: Ajouter ValidationPipe global 🔒
 
-**ID:** 32 (ex-Task #10)
 **Effort:** 30min
 **Priorité:** HIGH - Validation
 
@@ -1255,9 +1162,8 @@ app.useGlobalPipes(new ValidationPipe({
 
 ---
 
-### Task #33: Fix exceptions NestJS 🔒
+### Task #20: Fix exceptions NestJS 🔒
 
-**ID:** 33 (ex-Task #11)
 **Effort:** 1h
 **Priorité:** HIGH
 
@@ -1271,9 +1177,8 @@ app.useGlobalPipes(new ValidationPipe({
 
 ---
 
-### Task #34: Validation DTOs query params 🔒
+### Task #21: Validation DTOs query params 🔒
 
-**ID:** 34 (ex-Task #12)
 **Effort:** 2h
 **Priorité:** HIGH
 
@@ -1285,9 +1190,8 @@ app.useGlobalPipes(new ValidationPipe({
 
 ---
 
-### Task #35: Augmenter coverage mobile (32% → 60%) 🧪
+### Task #22: Augmenter coverage mobile (32% → 60%) 🧪
 
-**ID:** 35 (ex-Task #13)
 **Effort:** 20h
 **Priorité:** HIGH - Qualité
 
@@ -1306,20 +1210,23 @@ app.useGlobalPipes(new ValidationPipe({
 
 ---
 
-## 🟡 PHASE 3: MEDIUM PRIORITY (30.5h)
+## 🟡 PHASE 5: MEDIUM PRIORITY (30.5h)
 
-### Tasks #36-#37: Issues MEDIUM variées
+### Task #23: Issues MEDIUM regroupées
 
-**Regroupées pour simplicité:**
+**Effort:** 30.5h
+**Priorité:** MEDIUM
 
-**Task #36:** Logging, Retry, Event Bus, Validation (8h)
+**Sous-groupes:**
+
+**Logging & Monitoring (8h):**
 - Logging structuré (1h)
 - Retry logic LLM (2h)
 - Event Bus mocks → Redis (3h)
 - Validation DTO partielle (1.5h)
 - Error codes unifiés (0.5h)
 
-**Task #37:** Tests, Docs, Observabilité, Config (22.5h)
+**Tests & Documentation (22.5h):**
 - Tests E2E manquants (8h)
 - Documentation API (4h)
 - Métriques observabilité (3h)
@@ -1341,12 +1248,12 @@ app.useGlobalPipes(new ValidationPipe({
 
 **Démarrer une task:**
 ```bash
-TaskUpdate taskId=14 status=in_progress
+TaskUpdate taskId=1 status=in_progress
 ```
 
 **Compléter une task:**
 ```bash
-TaskUpdate taskId=14 status=completed
+TaskUpdate taskId=1 status=completed
 ```
 
 **Trouver la prochaine task:**
@@ -1514,8 +1421,8 @@ cd pensieve/mobile && npm run test:coverage
 
 ### 2. Démarrer la première tâche BLOCKING DoD
 ```bash
-# Task #14: Console.log removal
-TaskUpdate taskId=14 status=in_progress
+# Task #1: Console.log removal
+TaskUpdate taskId=1 status=in_progress
 
 cd pensieve/backend
 # Suivre les steps TDD dans la task description
@@ -1524,7 +1431,7 @@ cd pensieve/backend
 ### 3. Compléter et passer à la suivante
 ```bash
 # Marquer terminée
-TaskUpdate taskId=14 status=completed
+TaskUpdate taskId=1 status=completed
 
 # Voir prochaine task
 TaskList
@@ -1537,8 +1444,8 @@ TaskList
 ### Dépendances Tasks
 
 **Tasks dépendantes:**
-- Task #27 (placeholders autres) dépend de Task #26 (pattern cohérent)
-- Task #29 (Result pattern) optionnellement de Task #24 (si LLMModelService dans scope)
+- Task #14 (placeholders autres) dépend de Task #13 (pattern cohérent)
+- Task #16 (Result pattern) optionnellement de Task #11 (si LLMModelService dans scope)
 
 **Toutes les autres tasks sont indépendantes** et peuvent être faites en parallèle.
 
@@ -1552,7 +1459,7 @@ TaskList
 
 **Exemple pause:**
 ```bash
-# Vous êtes sur Task #24 (SRP refactor)
+# Vous êtes sur Task #11 (SRP refactor)
 # Vous avez fait LLMModelService split (12h sur 20h)
 
 # Pas besoin de faire quoi que ce soit
@@ -1560,7 +1467,7 @@ TaskList
 
 # À la reprise:
 TaskList
-# Vous voyez Task #24 in_progress
+# Vous voyez Task #11 in_progress
 # Relire description pour voir où vous en étiez
 ```
 
@@ -1573,10 +1480,9 @@ git commit -m "fix(mobile): remove all console.log statements
 - Replace 6 console.log with Logger service
 - Add ESLint rule no-console
 - Configure logger for DEV/PROD environments
-- Closes Task #14
+- Closes Task #1
 
-Refs: AUDIT-CODE-ENRICHI-2026-02-15.md (BLOCKING-1)
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+Refs: AUDIT-CODE-ENRICHI-2026-02-15.md (BLOCKING-1)"
 ```
 
 **Convention:**
@@ -1592,7 +1498,6 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 - **Audit enrichi:** `_bmad-output/AUDIT-CODE-ENRICHI-2026-02-15.md`
 - **Audit v1:** `_bmad-output/AUDIT-CODE-COMPLET-2026-02-15.md`
-- **Plan v1:** `_bmad-output/PLAN-CORRECTIONS-AUDIT-TDD.md`
 - **Project context:** `_bmad-output/project-context.md`
 - **ADR-023:** `planning-artifacts/adrs/ADR-023-error-handling-strategy.md`
 - **ADR-024:** `planning-artifacts/adrs/ADR-024-clean-code-standards.md`
@@ -1658,10 +1563,12 @@ npm run test:coverage
 
 ---
 
-## 📊 COMPARAISON V1 vs V2
+## 📊 HISTORIQUE ET ÉVOLUTION
 
-| Métrique | V1 | V2 | Delta |
-|----------|----|----|-------|
+### Comparaison V1 vs V2 (Fusionnés dans ce document)
+
+| Métrique | V1 (Initial) | V2 (Enrichi) | Delta |
+|----------|--------------|--------------|-------|
 | **Total Tasks** | 13 | 23 | +10 |
 | **Total Effort** | 69.5h | 147.5h | +78h (+112%) |
 | **BLOCKING Issues** | 0 | 12 | +12 |
@@ -1673,7 +1580,7 @@ npm run test:coverage
 **Raison augmentation effort:**
 - Ajout standards ADR-024 (Clean Code NON-NÉGOCIABLES)
 - Ajout Definition of Done enrichie (Console, npm audit, etc.)
-- SRP violations nécessitent refactoring lourd (20h pour Task #24)
+- SRP violations nécessitent refactoring lourd (20h pour Task #11)
 
 **Stratégie:**
 - V1 était optimiste, V2 est réaliste
@@ -1683,11 +1590,11 @@ npm run test:coverage
 ---
 
 **Créé:** 2026-02-15
-**Version:** 2.0 (Enrichi après passe 2 audit)
+**Version:** FINALE (Fusion V1 + V2)
 **Auteur:** Senior Developer (Mode Adversarial)
-**Total Tasks:** 23 (vs 13 v1)
-**Total Effort:** 147.5 heures (vs 69.5h v1)
-**Issues Résolues:** 54 (vs 34 v1)
+**Total Tasks:** 23
+**Total Effort:** 147.5 heures
+**Issues Résolues:** 54
 **Score Cible Final:** 8.5/10
 
 ---
