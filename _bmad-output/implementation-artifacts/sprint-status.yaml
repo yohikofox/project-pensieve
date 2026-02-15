@@ -96,7 +96,7 @@ development_status:
   epic-6: in-progress
   6-1-infrastructure-de-synchronisation-watermelondb: done
   6-2-synchronisation-local-cloud: done  # ✅ Complete: 127/127 tests, code review done, all AC satisfied
-  6-3-synchronisation-cloud-local: backlog
+  6-3-synchronisation-cloud-local: ready-for-dev
   6-4-indicateurs-de-statut-de-synchronisation: backlog
   epic-6-retrospective: optional
 

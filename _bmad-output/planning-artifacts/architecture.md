@@ -260,6 +260,14 @@ L'UX Spec révèle des contraintes architecturales fortes :
 
 **Language:** TypeScript strict
 
+**HTTP Client:** fetch natif + wrapper custom (ADR-025)
+- **Rationale:** Bundle size (-13 KB vs axios), ownership total, Node 22 a fetch natif
+- **Mobile:** `fetchWithRetry` wrapper (~100 lignes) avec retry Fibonacci + timeout
+- **Backend:** fetch natif (Node 22 built-in)
+- **Web:** fetch natif (Next.js optimisations auto-cache)
+- **Alternative rejetée:** axios (bundle size, dépendance externe, redondant Node 22)
+- **Référence:** ADR-025 pour détails complets
+
 ---
 
 ### Backend Stack
@@ -748,7 +756,7 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 
 **Pour l'index complet et tous les ADRs, voir : [Index ADR](./adrs/README.md)**
 
-**Total : 18 ADRs documentés (29 sous-décisions architecturales)**
+**Total : 25 ADRs documentés (40+ sous-décisions architecturales)**
 
 ---
 
@@ -764,7 +772,7 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 - [ADR-007](./adrs/ADR-007-from-scratch-approach.md) - From Scratch Approach (pas de starter full-stack)
 - [ADR-008](./adrs/ADR-008-anti-corruption-layer.md) - Anti-Corruption Layer (ACL) à la Frontière Mobile/Backend
 
-**Infrastructure & Technical Decisions (ADR-009 à ADR-018) :**
+**Infrastructure & Technical Decisions (ADR-009 à ADR-025) :**
 - [ADR-009](./adrs/ADR-009-sync-patterns.md) - Sync Patterns (6 sous-décisions)
 - [ADR-010](./adrs/ADR-010-security-encryption.md) - Security & Encryption (5 sous-décisions)
 - [ADR-011](./adrs/ADR-011-performance-optimization.md) - Performance Optimization (3 sous-décisions)
@@ -775,6 +783,13 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 - [ADR-016](./adrs/ADR-016-hybrid-architecture.md) - Hybrid Architecture : Cloud Auth + Homelab Storage
 - [ADR-017](./adrs/ADR-017-ioc-di-strategy.md) - Dependency Injection & IoC Container Strategy (2 sous-décisions)
 - [ADR-018](./adrs/ADR-018-migration-watermelondb-opsqlite.md) - Migration WatermelonDB → OP-SQLite ⚠️ **CRITIQUE** (Supersedes Technology Stack - Local Database)
+- [ADR-019](./adrs/ADR-019-eventbus-domain-events.md) - EventBus Architecture - Domain Events avec RxJS
+- [ADR-020](./adrs/ADR-020-background-processing-strategy.md) - Background Processing Strategy - expo-task-manager
+- [ADR-021](./adrs/ADR-021-di-lifecycle-transient-first.md) - DI Lifecycle Strategy - Transient First (Révision ADR-017)
+- [ADR-022](./adrs/ADR-022-state-persistence-opsqlite.md) - State Persistence Strategy - OP-SQLite for All State
+- [ADR-023](./adrs/ADR-023-error-handling-strategy.md) - Stratégie Unifiée de Gestion des Erreurs - Result Pattern
+- [ADR-024](./adrs/ADR-024-clean-code-standards.md) - Standards Clean Code Appliqués au Projet Pensieve
+- [ADR-025](./adrs/ADR-025-http-client-strategy.md) - HTTP Client Strategy - fetch natif + wrapper custom ⚠️ **NOUVEAU** (Supersedes Technology Stack - HTTP Client)
 
 ---
 
@@ -797,6 +812,7 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 - [ADR-009](./adrs/ADR-009-sync-patterns.md) - Sync protocol & conflict resolution
 - [ADR-003](./adrs/ADR-003-sync-infrastructure.md) - Sync as infrastructure
 - [ADR-008](./adrs/ADR-008-anti-corruption-layer.md) - ACL mobile ↔ backend
+- ⚠️ [ADR-025](./adrs/ADR-025-http-client-strategy.md) - HTTP Client (fetch natif, remplace axios)
 
 **Security & Operations :**
 - [ADR-010](./adrs/ADR-010-security-encryption.md) - Encryption at rest & in transit

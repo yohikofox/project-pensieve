@@ -149,6 +149,68 @@ ScreenWrapper (small) → extracts route params only
 - **React Query** - server state (API data)
 - **OP-SQLite** (`src/database/`) - local persistence, synchronous queries
 
+**HTTP Client Strategy (ADR-025):**
+
+**RÈGLE CRITIQUE** : Utiliser **fetch natif** UNIQUEMENT. ❌ **INTERDIT** : axios, ky, ofetch.
+
+**Mobile (React Native)** :
+```typescript
+// ✅ CORRECT: fetch + wrapper custom
+import { fetchWithRetry } from '@/infrastructure/http/fetchWithRetry';
+
+const response = await fetchWithRetry(`${baseUrl}/sync/pull`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify(payload),
+  timeout: 30000,  // 30s
+  retries: 3       // Fibonacci backoff
+});
+
+// ❌ WRONG: axios (bundle +13KB)
+import axios from 'axios';
+const response = await axios.post(...);
+```
+
+**Backend (NestJS + Node 22)** :
+```typescript
+// ✅ CORRECT: fetch natif (Node 22 built-in)
+const response = await fetch('https://api.example.com/data', {
+  method: 'GET',
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+
+// ❌ WRONG: axios (redondant avec Node 22)
+import axios from 'axios';
+```
+
+**Web (Next.js 15)** :
+```typescript
+// ✅ CORRECT: fetch natif (Next.js auto-cache)
+const response = await fetch('/api/data', {
+  next: { revalidate: 60 } // Next.js extended fetch
+});
+
+// ❌ WRONG: axios (casse optimisations Next.js)
+import axios from 'axios';
+```
+
+**Rationale** :
+- Bundle size : -13 KB (mobile critical)
+- Node 22 a fetch natif → axios obsolète
+- Next.js optimise fetch (cache, revalidation)
+- Ownership total du code HTTP
+
+**Wrapper custom** : `pensieve/mobile/src/infrastructure/http/fetchWithRetry.ts`
+- Retry avec backoff Fibonacci
+- Timeout configurable (AbortController)
+- TypeScript strict
+- Tests 100%
+
+**Référence** : ADR-025 - HTTP Client Strategy
+
 **Hooks Usage:**
 - Custom hooks in `contexts/[context]/hooks/`
 - DI resolution MUST be lazy (inside hooks, not module-level)
@@ -1277,7 +1339,7 @@ git add .env.example
 
 **Try/catch autorisé UNIQUEMENT dans 3 cas :**
 1. **Appels DB externes** : OP-SQLite, TypeORM, PostgreSQL
-2. **Appels API externes** : fetch, axios, Supabase, OpenAI, MinIO, Redis, RabbitMQ
+2. **Appels API externes** : fetch (ADR-025), Supabase, OpenAI, MinIO, Redis, RabbitMQ
 3. **Root handler technique** : Global error handler pour éviter crash app
 
 **Pattern Result :**
