@@ -1,6 +1,6 @@
 # Story 6.2: Synchronisation Local → Cloud
 
-Status: review
+Status: done
 
 ---
 
@@ -1261,6 +1261,35 @@ Aucun debug log nécessaire pour cette session.
 2. Tester manuellement quelques scénarios clés (network change, sync, upload)
 3. Si fonctionnel → Marquer story "done"
 4. Tests BDD peuvent être complétés ultérieurement si besoin
+
+---
+
+## ✅ STORY COMPLÉTÉE - Date: 2026-02-15
+
+**Story Status** : review → **done**
+
+**Validation finale:**
+- ✅ Toutes les tâches implémentées et testées (Tasks 1-10)
+- ✅ Tests unitaires : 127/127 (100%)
+- ✅ Code review adversarial : 10 issues trouvées, 5 CRITICAL/HIGH corrigées
+- ✅ ADR-023 compliance validée
+- ✅ Tous les Acceptance Criteria satisfaits (AC1-AC8)
+- ✅ Définition of Done complète
+
+**Livrables:**
+- ✅ Network detection auto-sync (NetworkMonitor + AutoSyncOrchestrator)
+- ✅ Incremental sync avec batching (100 records max)
+- ✅ Real-time sync trigger (debounce 3s)
+- ✅ Change tracking (_changed flag)
+- ✅ Fibonacci retry logic
+- ✅ Audio upload queue (multipart, resumable)
+- ✅ Backend audio endpoint (MinIO S3)
+- ✅ Conflict resolution (last-write-wins)
+- ✅ UI sync status indicators
+
+**Fichiers impactés:** 25 fichiers (12 créés, 13 modifiés)
+**Sessions de développement:** 6 sessions
+**Agent:** Claude Sonnet 4.5
 
 ### File List
 

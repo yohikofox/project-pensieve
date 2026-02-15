@@ -95,7 +95,7 @@ development_status:
   # Epic 6: Synchronisation Multi-Device (4 stories)
   epic-6: in-progress
   6-1-infrastructure-de-synchronisation-watermelondb: done
-  6-2-synchronisation-local-cloud: review  # Tests unitaires 127/127 (100%), code review complété, prêt pour validation
+  6-2-synchronisation-local-cloud: done  # ✅ Complete: 127/127 tests, code review done, all AC satisfied
   6-3-synchronisation-cloud-local: backlog
   6-4-indicateurs-de-statut-de-synchronisation: backlog
   epic-6-retrospective: optional
