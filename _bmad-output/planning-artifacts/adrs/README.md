@@ -30,8 +30,9 @@ Ce dossier contient tous les ADRs (Architecture Decision Records) du projet Pens
 | [ADR-022](./ADR-022-state-persistence-opsqlite.md) | State Persistence Strategy - OP-SQLite for All State | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
 | [ADR-023](./ADR-023-error-handling-strategy.md) | Stratégie Unifiée de Gestion des Erreurs - Result Pattern | ✅ Accepted | 2026-02-15 | yohikofox, Winston |
 | [ADR-024](./ADR-024-clean-code-standards.md) | Standards Clean Code Appliqués au Projet Pensieve | ✅ Accepted | 2026-02-15 | yohikofox, Winston |
+| [ADR-025](./ADR-025-http-client-strategy.md) | HTTP Client Strategy - fetch natif + wrapper custom | ✅ Accepted | 2026-02-15 | yohikofox, Winston, Amelia |
 
-**Total:** 24 ADRs documentés (40+ sous-décisions architecturales)
+**Total:** 25 ADRs documentés (40+ sous-décisions architecturales)
 
 ---
 
