@@ -1725,6 +1725,12 @@ Les utilisateurs bénéficient d'outils de support et de débogage contrôlés p
 - Interface admin pour gérer les permissions utilisateur
 - Support pour debugging en production sans republication app
 
+**Feedback discovery (2026-02-17) — Story 7.3 LLM Logs Analysis:**
+- Use case identifié : Quand l'app détecte des logs d'erreur, un LLM local crée automatiquement une GitHub Issue
+- Ce feedback enrichit la spec de Story 7.3 avec un output concret : la GitHub Issue auto-générée devient l'artefact de sortie du pipeline LLM
+- Lors de la création de la story 7.3, inclure : détection d'erreurs critiques, prompt LLM pour structurer le bug report, création GitHub Issue via API, deduplication (éviter doublons)
+- Signal power user : cette feature est perçue comme un "super-power" pour les solo devs (réduction friction bug reporting)
+
 ---
 
 ### Story 7.1: Support Mode avec Permissions Backend

@@ -107,9 +107,10 @@ development_status:
   7-3-llm-logs-analysis-github-issues: backlog  # Issue GitHub #17
   epic-7-retrospective: optional
 
-  # Epic 8: GitHub Issues Resolution (12 stories - Bug fixes + features from GitHub issues)
+  # Epic 8: GitHub Issues Resolution (15 stories - Bug fixes + features from GitHub issues + Quick Wins)
   # Source: https://github.com/yohikofox/pensieve/issues
   # Référence issues fermées: _bmad-output/implementation-artifacts/github-issues-closed-reference.md
+  # Quick wins ajoutés: 8-13, 8-14, 8-15 (discovery session power user 2026-02-17)
   epic-8: backlog  # Sprint immédiat: stories 8-1, 8-2, 8-3
   8-1-fix-typescript-compilation-errors: backlog  # Issues #22, #21, #20, #19 - CRITIQUE
   8-2-standardize-type-constants-pattern: backlog  # Issue #24 - HAUTE
@@ -123,7 +124,36 @@ development_status:
   8-10-ocr-manuscrit-capture-photo: backlog  # Issue #7 - Backlog
   8-11-suppression-compte-avec-anonymisation: backlog  # Issue #5 - Backlog
   8-12-export-rgpd-asynchrone: backlog  # Issue #4 - Backlog
+  # Quick Wins Tab Actions (source: discovery session power user 2026-02-17)
+  8-13-supprimer-une-tache: backlog  # Hard delete d'une tâche (swipe + bouton détail) - Quick Win
+  8-14-abandonner-une-tache: backlog  # État sémantique "abandonné" (soft state, historique préservé) - Quick Win
+  8-15-priorisation-visuelle-des-taches: backlog  # Highlights couleur (retard/prioritaire/approchant/normal) - Quick Win
   epic-8-retrospective: optional
+
+  # ============================================================
+  # DISCOVERY BACKLOG (items à étudier - pas encore des stories)
+  # Source: session discovery power user 2026-02-17
+  # ============================================================
+  # Ces items ne sont PAS des stories prêtes à implémenter.
+  # Ils nécessitent une discovery/spec avant de créer des stories.
+  #
+  # Format: item-id: status  # Description | Question clé | Horizon
+
+  discovery:
+    D1-capture-multi-modale-photo-documents: open  # Attacher photo/document à une capture → enrichissement contexte → meilleure extraction | Quel job spécifique ? Photo whiteboard ? Doc administratif ? OCR → texte → digest ? | Horizon: V2
+    D2-apple-watch-android-wear: open  # Déclencher capture audio depuis la montre (sans sortir le téléphone) | Quelle surface ? Juste déclenchement ou aussi écoute transcription ? | Persona fit: Quick Capturer (Bastien en mouvement) | Horizon: V2/V3
+    D3-actualites-metier-contextualisees: open  # Agrégateur actus par domaine (normes BTP, tendances, etc.) | Feature générique ou vertical seulement ? → Interview 2-3 personas différents pour valider | Si générique: pertinente / Si vertical seulement: hors scope | Horizon: V2
+    D4-integrations-externes-crm-facturation: open  # Capture interaction client → création CRM auto ou déclenchement facturation | Quel trigger exact ? Quel CRM (HubSpot, Notion, autre) ? | Alignement: Intégrations V2+ déjà planifiées | Horizon: V2+
+    D5-companion-quotidien-vision: closed-as-philosophy  # "Pensine comme outil pilotage quotidien des pensées" | PAS une feature - philosophie produit | Action: Amender product brief (voir section Positioning Philosophy) | Horizon: N/A (transversal)
+    D6-priorite-url-capture-liens-web: defer-to-roadmap  # Donner priorité à capture URL dans la roadmap | Déjà planifié V1.5 (retiré MVP pour simplifier) | Action: Revoir priorité lors prochain sprint planning V1.5 | Horizon: V1.5
+    D7-github-issues-auto-depuis-logs: enrich-epic-7-3  # LLM local crée GitHub Issue depuis logs d'erreur | Déjà dans backlog Epic 7.3 "LLM logs analysis" | Action: Enrichir spec Epic 7.3 avec ce feedback | Horizon: Epic 7
+
+  # Signal Persona (hors scope - pas de story)
+  # Use case Artisan / Plombier patron :
+  # Idées reçues: référentiel fournisseurs, aide recrutement, avis Google, commande fournitures
+  # CONCLUSION: App verticale gestion entreprise artisanale — hors périmètre Pensine
+  # SIGNAL UTILE: Persona artisan/TPE bénéficie des features core (capture, actions, companion)
+  # ACTION: Logger persona dans product brief pour informer vision V2 intégrations métier
 
   # Epic 9: Advanced Notifications & UX (1 story)
   epic-9: backlog

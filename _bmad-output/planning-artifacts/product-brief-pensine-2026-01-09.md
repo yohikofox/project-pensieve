@@ -372,3 +372,49 @@ Si Pensine réussit, il devient :
 
 **Tagline finale :**
 > *"Every product started as a thought. Pensine makes sure yours don't get lost."*
+
+---
+
+## Positioning Philosophy (ajout 2026-02-17)
+
+### Companion Quotidien — Philosophie Produit
+
+> **Pensine est un companion quotidien des pensées : simple, focalisé, sans feature-creep.**
+
+Ce positionnement a été confirmé lors d'une session discovery avec un power user (2026-02-17). Ce n'est **pas une nouvelle feature** — c'est la philosophie fondamentale qui guide toutes les décisions produit.
+
+**Ce que ça implique :**
+- Pensine reste concentré sur son core : capturer → digérer → révéler → agir
+- Chaque nouvelle feature doit passer le test : "Est-ce que ça renforce le pilotage quotidien des pensées ?"
+- Refuser le feature-creep, même face à des demandes légitimes d'utilisateurs (ex: features verticales métier)
+- La simplicité n'est pas une contrainte — c'est un choix stratégique différenciateur
+
+**Intégration dans le messaging :**
+- À intégrer dans l'onboarding : positionner Pensine comme "ton outil de réflexion quotidien"
+- À intégrer dans les stores App Store / Play Store : "Your daily thought companion"
+- La philosophie companion doit transparaître dans le micro-copy (notifications, empty states, etc.)
+
+---
+
+## Persona Signal — Artisan / TPE (ajout 2026-02-17)
+
+### Signal Terrain : Le Patron Artisan
+
+Session discovery 2026-02-17 : feedback d'un power user représentant le profil "artisan patron" (plombier, entrepreneur TPE).
+
+**Idées exprimées :** référentiel fournisseurs, aide au recrutement, avis Google, commandes fournitures, forfaitaire.
+
+**Verdict :** Ces features sont une **app verticale de gestion d'entreprise artisanale** — hors périmètre Pensine.
+
+**Signal utile pour la vision V2 :**
+Ce persona artisan/TPE peut bénéficier des features core de Pensine :
+- Capture vocale rapide entre deux chantiers
+- Extraction automatique de tâches clients
+- Companion pour piloter les pensées de gestion quotidienne
+
+**Implication pour la roadmap V2+ :**
+- Les intégrations tierces génériques (CRM, facturation) pourraient répondre à ce persona de façon horizontale
+- À valider via une interview ciblée (2-3 artisans différents) avant d'ajouter au backlog
+- Ce persona est **distinct** du persona primary (Yoann indie hacker) — ne pas dériver la vision core
+
+> **Règle** : Pensine sert ce persona avec ses features core. Il ne devient pas une app de gestion artisanale.
