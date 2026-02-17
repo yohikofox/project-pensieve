@@ -74,3 +74,38 @@ Cette story est le **prérequis bloquant** pour les stories 12.2 et 12.3 : une B
 - [x] Tests BDD si un AC utilisateur est impacté — N/A (story purement technique)
 - [x] ESLint + TypeScript strict passent
 - [x] Aucune régression sur les tests existants
+
+## Dev Agent Record
+
+### Agent Model Used
+
+claude-sonnet-4-5-20250929
+
+### Debug Log References
+
+- Test RED : `Cannot find module './base.entity'` → attendu (fichier non créé)
+- Fix API : `storage.generatedColumns` n'existe pas → renommé en `storage.generations`
+- Lint : formatage Prettier auto-corrigé via `eslint --fix`
+
+### Completion Notes List
+
+- ✅ AC1 : `src/common/entities/base.entity.ts` — `abstract class BaseEntity` avec `@PrimaryColumn('uuid')`, `@CreateDateColumn({ type: 'timestamptz' })`, `@UpdateDateColumn({ type: 'timestamptz' })`, `@DeleteDateColumn({ type: 'timestamptz', nullable: true })`
+- ✅ AC2 : Migration `1771300000000-AddBaseEntityColumnsToCapturesTable.ts` — retire DEFAULT uuid, corrige TIMESTAMPTZ, ajoute `deletedAt`
+- ✅ AC3 : `capture.entity.ts` étend `BaseEntity`, colonnes `id`/`createdAt`/`updatedAt` supprimées
+- ✅ AC4 : 3 tests unitaires passants — `@PrimaryColumn` sans auto-génération, `deletedAt` présent, types `timestamptz`
+- ✅ ESLint + TypeScript strict : aucune erreur dans les fichiers de la story
+- ✅ Aucune régression introduite (échecs préexistants hors scope story)
+
+### File List
+
+**Nouveaux fichiers créés:**
+- `pensieve/backend/src/common/entities/base.entity.ts`
+- `pensieve/backend/src/common/entities/base.entity.spec.ts`
+- `pensieve/backend/src/migrations/1771300000000-AddBaseEntityColumnsToCapturesTable.ts`
+
+**Fichiers modifiés:**
+- `pensieve/backend/src/modules/capture/domain/entities/capture.entity.ts`
+
+### Change Log
+
+- 2026-02-18 : Implémentation story 12.1 — BaseEntity créée, capture.entity.ts migré (entité pilote), migration ajoutée, 3 tests passants
