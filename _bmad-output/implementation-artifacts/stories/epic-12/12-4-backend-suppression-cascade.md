@@ -1,6 +1,6 @@
 # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

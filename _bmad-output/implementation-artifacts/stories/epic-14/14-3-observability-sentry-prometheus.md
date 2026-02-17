@@ -1,6 +1,6 @@
 # Story 14.3: Intégration Observability — Sentry et Structured Logging Backend
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

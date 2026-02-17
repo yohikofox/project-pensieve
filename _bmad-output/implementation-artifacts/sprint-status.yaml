@@ -2,7 +2,7 @@
 # project: pensine
 # project_key: pensine
 # tracking_system: file-system
-# story_location: _bmad-output/implementation-artifacts
+# story_location: _bmad-output/implementation-artifacts/stories/epic-{epic_num}
 
 # STATUS DEFINITIONS:
 # ==================
@@ -37,7 +37,7 @@ generated: 2026-01-21
 project: pensine
 project_key: pensine
 tracking_system: file-system
-story_location: _bmad-output/implementation-artifacts
+story_location: _bmad-output/implementation-artifacts/stories/epic-{epic_num}
 
 development_status:
   # Epic 1: Foundation & Authentification (3 stories - v2 Architecture Hybrid ADR-016)
@@ -175,31 +175,34 @@ development_status:
   epic-11-retrospective: optional
 
   # Epic 12: Conformité ADR — Priorité Critique 🔴 (4 stories - ADR-026 Backend Data Model)
-  # Source: Rapport d'audit architectural Winston — 2026-02-17
-  # Dépendances internes: 12-1 → 12-2 → 12-3 → 12-4 (séquentielles)
-  epic-12: backlog  # À planifier après Epic 6 et 8 critiques
-  12-1-backend-base-entity: backlog  # ADR-026 R6 — Créer BaseEntity partagée + @PrimaryColumn('uuid') + TIMESTAMPTZ
-  12-2-backend-pk-domaine: backlog  # ADR-026 R1 — Remplacer @PrimaryGeneratedColumn, UUID généré dans le domaine
-  12-3-backend-soft-delete: backlog  # ADR-026 R4 — @DeleteDateColumn sur toutes les entités, supprimer _status
-  12-4-backend-suppression-cascade: backlog  # ADR-026 R3 — Retirer cascade:true, gérer en couche applicative
+  # Source: Rapport d'audit architectural Winston — 2026-02-17 | epics.md#Epic-12
+  # Dépendances internes: 12-1 → 12-2 → 12-3 → 12-4 (séquentielles, ne pas paralléliser)
+  # Périmètre: Backend uniquement (NestJS + TypeORM + PostgreSQL)
+  epic-12: in-progress
+  12-1-backend-base-entity: ready-for-dev  # Story 12.1: Créer la BaseEntity Partagée Backend — ADR-026 R6 (@PrimaryColumn uuid, TIMESTAMPTZ, deletedAt)
+  12-2-backend-pk-domaine: ready-for-dev  # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine — ADR-026 R1 (crypto.randomUUID, FKs uuid)
+  12-3-backend-soft-delete: ready-for-dev  # Story 12.3: Implémenter le Soft Delete sur Toutes les Entités Backend — ADR-026 R4 (@DeleteDateColumn, supprimer _status)
+  12-4-backend-suppression-cascade: ready-for-dev  # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative — ADR-026 R3 (transaction explicite)
   epic-12-retrospective: optional
 
   # Epic 13: Conformité ADR — Priorité Moyenne 🟡 (4 stories - ADR-021, ADR-023, ADR-026 R2/R5)
-  # Source: Rapport d'audit architectural Winston — 2026-02-17
-  # Note: 13-2 et 13-3 ont une dépendance logique sur Epic 12
-  epic-13: backlog  # Après Epic 12
-  13-1-di-lifecycle-transient-first: backlog  # ADR-021 — Migrer container.ts vers Transient First (mobile)
-  13-2-backend-statuts-referentiels: backlog  # ADR-026 R2 — Tables thought_statuses + capture_states complétées
-  13-3-backend-timestamptz: backlog  # ADR-026 R5 — TIMESTAMPTZ sur toutes les colonnes date
-  13-4-result-pattern-generalisation: backlog  # ADR-023 — Déplacer Result.ts dans shared/domain, étendre à tous les contextes
+  # Source: Rapport d'audit architectural Winston — 2026-02-17 | epics.md#Epic-13
+  # Dépendances: 13-2 et 13-3 bloquées sur Epic 12 (BaseEntity + UUID requis)
+  # Périmètre: Mobile (13-1, 13-4) + Backend (13-2, 13-3)
+  epic-13: in-progress
+  13-1-di-lifecycle-transient-first: ready-for-dev  # Story 13.1: Migrer le Container DI vers Transient First (ADR-021) — container.ts mobile, repositories stateless
+  13-2-backend-statuts-referentiels: ready-for-dev  # Story 13.2: Créer les Tables Référentielles pour les Statuts Backend — ADR-026 R2 (thought_statuses, capture_states)
+  13-3-backend-timestamptz: ready-for-dev  # Story 13.3: Corriger les Types de Colonnes Date vers TIMESTAMPTZ — ADR-026 R5 (ALTER COLUMN TYPE TIMESTAMPTZ)
+  13-4-result-pattern-generalisation: ready-for-dev  # Story 13.4: Généraliser le Result Pattern à Tous les Contextes Mobile — ADR-023 (shared/domain/Result.ts, knowledge+action+Normalization)
   epic-13-retrospective: optional
 
   # Epic 14: Conformité ADR — Priorité Basse 🟢 (4 stories - ADR-018, ADR-022, ADR-015, ADR-026 R7)
-  # Source: Rapport d'audit architectural Winston — 2026-02-17
+  # Source: Rapport d'audit architectural Winston — 2026-02-17 | epics.md#Epic-14
   # Traitement opportuniste — peut être parallélisé avec autres epics
-  epic-14: backlog  # Opportuniste / sprint dette technique
-  14-1-doc-claude-md-op-sqlite: backlog  # ADR-018 — Corriger CLAUDE.md obsolète (WatermelonDB → OP-SQLite)
-  14-2-async-storage-audit: backlog  # ADR-022 — Audit AsyncStorage : vérifier absence de données critiques
-  14-3-observability-sentry-prometheus: backlog  # ADR-015 — Logger structuré + évaluation Sentry/Prometheus
-  14-4-renommage-owner-id: backlog  # ADR-026 R7 — Décision userId vs owner_id (décision yohikofox requise)
+  # Périmètre: Docs (14-1), Mobile (14-2), Backend (14-3), Convention (14-4)
+  epic-14: in-progress  # Opportuniste / sprint dette technique — stories prêtes, aucune dépendance bloquante
+  14-1-doc-claude-md-op-sqlite: ready-for-dev  # Story 14.1: Corriger la Documentation Obsolète CLAUDE.md (WatermelonDB → OP-SQLite) — ADR-018 (mobile/CLAUDE.md:67, project-context.md)
+  14-2-async-storage-audit: ready-for-dev  # Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques — ADR-022 (rapport audit, migration si violations)
+  14-3-observability-sentry-prometheus: ready-for-dev  # Story 14.3: Intégration Observability — Logger Structuré et Évaluation Sentry/Prometheus — ADR-015 (winston/pino backend)
+  14-4-renommage-owner-id: ready-for-dev  # Story 14.4: Décision et Migration owner_id (userId → owner_id) — ADR-026 R7 (décision yohikofox requise avant implémentation)
   epic-14-retrospective: optional

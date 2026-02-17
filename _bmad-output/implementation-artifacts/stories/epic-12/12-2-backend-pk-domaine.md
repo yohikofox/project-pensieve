@@ -1,6 +1,6 @@
 # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

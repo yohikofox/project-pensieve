@@ -1,6 +1,6 @@
 # Story 14.4: Décision et Migration owner_id (userId → owner_id)
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

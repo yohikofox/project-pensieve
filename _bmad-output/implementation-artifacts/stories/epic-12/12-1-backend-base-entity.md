@@ -1,6 +1,6 @@
 # Story 12.1: Créer la BaseEntity Partagée Backend
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

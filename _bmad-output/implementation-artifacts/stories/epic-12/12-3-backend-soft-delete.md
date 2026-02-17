@@ -1,6 +1,6 @@
 # Story 12.3: Implémenter le Soft Delete sur Toutes les Entités Backend
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

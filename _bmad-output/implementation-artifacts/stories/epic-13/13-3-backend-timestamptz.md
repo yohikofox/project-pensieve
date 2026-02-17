@@ -1,6 +1,6 @@
 # Story 13.3: Corriger les Types de Colonnes Date vers TIMESTAMPTZ
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

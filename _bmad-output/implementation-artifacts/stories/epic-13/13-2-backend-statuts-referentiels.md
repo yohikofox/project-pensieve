@@ -1,6 +1,6 @@
 # Story 13.2: Créer les Tables Référentielles pour les Statuts Backend
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

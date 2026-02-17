@@ -1,6 +1,6 @@
 # Story 14.1: Corriger la Documentation Obsolète CLAUDE.md (WatermelonDB → OP-SQLite)
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

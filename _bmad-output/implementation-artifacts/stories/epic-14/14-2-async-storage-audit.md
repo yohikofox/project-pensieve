@@ -1,6 +1,6 @@
 # Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

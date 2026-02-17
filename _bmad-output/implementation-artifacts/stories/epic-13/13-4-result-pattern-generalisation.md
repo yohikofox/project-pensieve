@@ -1,6 +1,6 @@
 # Story 13.4: Généraliser le Result Pattern à Tous les Contextes Mobile
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 

@@ -1,6 +1,6 @@
 # Story 13.1: Migrer le Container DI vers Transient First (ADR-021)
 
-Status: backlog
+Status: ready-for-dev
 
 ## Story
 
