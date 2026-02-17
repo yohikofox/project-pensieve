@@ -1,6 +1,6 @@
 # Story 12.1: Créer la BaseEntity Partagée Backend
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -67,10 +67,10 @@ Cette story est le **prérequis bloquant** pour les stories 12.2 et 12.3 : une B
 
 ## Definition of Done
 
-- [ ] `src/common/entities/base.entity.ts` créé
-- [ ] `capture.entity.ts` hérite de `BaseEntity` (entité pilote)
-- [ ] Migration TypeORM créée et validée (non appliquée en prod)
-- [ ] Tests unitaires (min 3 cas)
-- [ ] Tests BDD si un AC utilisateur est impacté
-- [ ] ESLint + TypeScript strict passent
-- [ ] Aucune régression sur les tests existants
+- [x] `src/common/entities/base.entity.ts` créé
+- [x] `capture.entity.ts` hérite de `BaseEntity` (entité pilote)
+- [x] Migration TypeORM créée et validée (non appliquée en prod)
+- [x] Tests unitaires (min 3 cas) — 3 tests passing
+- [x] Tests BDD si un AC utilisateur est impacté — N/A (story purement technique)
+- [x] ESLint + TypeScript strict passent
+- [x] Aucune régression sur les tests existants
