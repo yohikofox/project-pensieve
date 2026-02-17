@@ -100,14 +100,14 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 1: Initial Full Sync on First Login (AC1)
 
-- [ ] **1.1** Détecter premier login (pas de `lastPulledAt` dans AsyncStorage)
-- [ ] **1.2** Trigger full sync automatiquement après authentification
-- [ ] **1.3** Créer `InitialSyncService` avec progress tracking
-- [ ] **1.4** Implémenter progress indicator UI (percentage-based)
-- [ ] **1.5** Download ALL entities: captures, thoughts, ideas, todos
-- [ ] **1.6** Populate local OP-SQLite database with downloaded data
-- [ ] **1.7** Set initial `lastPulledAt` timestamp après succès
-- [ ] **1.8** Tests unitaires InitialSyncService
+- [x] **1.1** Détecter premier login (pas de `lastPulledAt` dans AsyncStorage)
+- [x] **1.2** Trigger full sync automatiquement après authentification
+- [x] **1.3** Créer `InitialSyncService` avec progress tracking
+- [x] **1.4** Implémenter progress indicator UI (percentage-based)
+- [x] **1.5** Download ALL entities: captures, thoughts, ideas, todos
+- [x] **1.6** Populate local OP-SQLite database with downloaded data
+- [x] **1.7** Set initial `lastPulledAt` timestamp après succès
+- [x] **1.8** Tests unitaires InitialSyncService
 
 **Références:**
 - Story 6.1: Backend `/api/sync/pull` endpoint déjà implémenté
@@ -118,14 +118,14 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 2: Metadata First, Audio Lazy Loading (AC2)
 
-- [ ] **2.1** Modifier PULL response pour séparer metadata vs audio URLs
-- [ ] **2.2** Download captures metadata en priorité (sans audio binaire)
-- [ ] **2.3** Store captures avec `audio_url` (MinIO S3) mais sans fichier local
-- [ ] **2.4** Créer `LazyAudioDownloader` service pour download on-demand
-- [ ] **2.5** Hook dans CaptureDetailScreen: download audio quand capture ouverte
-- [ ] **2.6** Implémenter priority queue pour audio downloads (most recent first)
-- [ ] **2.7** Cache audio téléchargé localement (OP-SQLite ou filesystem)
-- [ ] **2.8** Tests unitaires LazyAudioDownloader
+- [x] **2.1** Modifier PULL response pour séparer metadata vs audio URLs
+- [x] **2.2** Download captures metadata en priorité (sans audio binaire)
+- [x] **2.3** Store captures avec `audio_url` (MinIO S3) mais sans fichier local
+- [x] **2.4** Créer `LazyAudioDownloader` service pour download on-demand
+- [x] **2.5** Hook dans CaptureDetailScreen: download audio quand capture ouverte
+- [x] **2.6** Implémenter priority queue pour audio downloads (most recent first)
+- [x] **2.7** Cache audio téléchargé localement (OP-SQLite ou filesystem)
+- [x] **2.8** Tests unitaires LazyAudioDownloader
 
 **Références:**
 - Story 6.2: AudioUploadService + ChunkedUploadService déjà implémentés
@@ -136,12 +136,12 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 3: Real-Time Sync Between Devices (AC3)
 
-- [ ] **3.1** Vérifier polling 15min existe (ADR-009.1: launch + post-action + polling)
-- [ ] **3.2** Implémenter `PeriodicSyncService` avec interval 15 minutes
-- [ ] **3.3** Trigger `SyncService.sync()` périodiquement quand app active
-- [ ] **3.4** Implémenter reactive UI update via WatermelonDB observables (ou OP-SQLite change events)
-- [ ] **3.5** Créer subtle animation pour nouveaux items dans feed (fade-in, slide)
-- [ ] **3.6** Tests unitaires PeriodicSyncService + animation tests
+- [x] **3.1** Vérifier polling 15min existe (ADR-009.1: launch + post-action + polling)
+- [x] **3.2** Implémenter `PeriodicSyncService` avec interval 15 minutes
+- [x] **3.3** Trigger `SyncService.sync()` périodiquement quand app active
+- [x] **3.4** Implémenter reactive UI update via WatermelonDB observables (ou OP-SQLite change events)
+- [x] **3.5** Créer subtle animation pour nouveaux items dans feed (fade-in, slide)
+- [x] **3.6** Tests unitaires PeriodicSyncService + animation tests
 
 **Références:**
 - ADR-009.1: Timing de Synchronisation (launch + post-action + **polling 15min**)
@@ -152,12 +152,12 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 4: Incremental Sync Optimization (AC4)
 
-- [ ] **4.1** Vérifier `SyncService.performPull()` envoie `lastPulledAt` (déjà fait Story 6.1)
-- [ ] **4.2** Backend retourne seulement delta records depuis `lastPulledAt`
-- [ ] **4.3** Apply changes to local OP-SQLite (INSERT new, UPDATE modified, soft DELETE)
-- [ ] **4.4** Implémenter batching pour large datasets (100 records max par batch)
-- [ ] **4.5** Update `lastPulledAt` après chaque batch success
-- [ ] **4.6** Tests: 500 cloud changes → 5 batches de 100 → local DB updated
+- [x] **4.1** Vérifier `SyncService.performPull()` envoie `lastPulledAt` (déjà fait Story 6.1)
+- [x] **4.2** Backend retourne seulement delta records depuis `lastPulledAt`
+- [x] **4.3** Apply changes to local OP-SQLite (INSERT new, UPDATE modified, soft DELETE)
+- [x] **4.4** Implémenter batching pour large datasets (100 records max par batch)
+- [x] **4.5** Update `lastPulledAt` après chaque batch success
+- [x] **4.6** Tests: 500 cloud changes → 5 batches de 100 → local DB updated
 
 **Références:**
 - Story 6.1: Backend `/api/sync/pull` déjà retourne delta
@@ -168,11 +168,11 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 5: Deletion Propagation (AC5)
 
-- [ ] **5.1** Vérifier backend inclut soft deletes dans PULL response (`_status = 'deleted'`)
-- [ ] **5.2** Mobile PULL handler détecte `_status = 'deleted'`
-- [ ] **5.3** Apply soft delete localement: `UPDATE [table] SET _status = 'deleted' WHERE id = ?`
-- [ ] **5.4** UI filter deleted items: `WHERE _status != 'deleted'`
-- [ ] **5.5** Tests: Delete on Device A → sync → Device B removes from UI
+- [x] **5.1** Vérifier backend inclut soft deletes dans PULL response (`_status = 'deleted'`)
+- [x] **5.2** Mobile PULL handler détecte `_status = 'deleted'`
+- [x] **5.3** Apply soft delete localement: `UPDATE [table] SET _status = 'deleted' WHERE id = ?`
+- [x] **5.4** UI filter deleted items: `WHERE _status != 'deleted'`
+- [x] **5.5** Tests: Delete on Device A → sync → Device B removes from UI
 
 **Références:**
 - ADR-009.2: Soft deletes pour sync consistency
@@ -183,11 +183,11 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 6: Network Error Retry (AC6)
 
-- [ ] **6.1** Vérifier `retryWithFibonacci()` existe (déjà fait Story 6.1)
-- [ ] **6.2** Wrap `SyncService.performPull()` avec retry logic
-- [ ] **6.3** Preserve partially downloaded batch (commit après chaque batch)
-- [ ] **6.4** Update SyncStatusStore: `setPending()` si retry en cours
-- [ ] **6.5** Tests: Network failure mid-sync → retry → eventual success
+- [x] **6.1** Vérifier `retryWithFibonacci()` existe (déjà fait Story 6.1)
+- [x] **6.2** Wrap `SyncService.performPull()` avec retry logic
+- [x] **6.3** Preserve partially downloaded batch (commit après chaque batch)
+- [x] **6.4** Update SyncStatusStore: `setPending()` si retry en cours
+- [x] **6.5** Tests: Network failure mid-sync → retry → eventual success
 
 **Références:**
 - Story 6.1: `retry-logic.ts` implémente Fibonacci backoff
@@ -198,12 +198,12 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 7: Conflict Resolution Integration (AC7)
 
-- [ ] **7.1** Vérifier backend détecte conflicts via `lastPulledAt` vs `last_modified` (déjà fait Story 6.1)
-- [ ] **7.2** Vérifier ConflictHandler.ts existe (créé Story 6.2)
-- [ ] **7.3** Implémenter conflict resolution pour PULL (currently only PUSH)
-- [ ] **7.4** Apply server version localement si server wins (last-write-wins)
-- [ ] **7.5** Log conflicts locally: `console.log('[ConflictHandler] PULL conflict: ...')`
-- [ ] **7.6** Tests: Device A offline modifie → Device B modifie → A pull → server wins
+- [x] **7.1** Vérifier backend détecte conflicts via `lastPulledAt` vs `last_modified` (déjà fait Story 6.1)
+- [x] **7.2** Vérifier ConflictHandler.ts existe (créé Story 6.2)
+- [x] **7.3** Implémenter conflict resolution pour PULL (currently only PUSH)
+- [x] **7.4** Apply server version localement si server wins (last-write-wins)
+- [x] **7.5** Log conflicts locally: `console.log('[ConflictHandler] PULL conflict: ...')`
+- [x] **7.6** Tests: Device A offline modifie → Device B modifie → A pull → server wins
 
 **Références:**
 - Story 6.2: ConflictHandler créé pour PUSH, étendre pour PULL
