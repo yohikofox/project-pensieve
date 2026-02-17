@@ -16,18 +16,23 @@ epicsPending:
   - epic9: 1 story (Story 9.1) [Advanced Notifications]
   - epic10: 1 story (Story 10.1) [Monetization]
   - epic11: 2 stories (Story 11.1 - 11.2) [Clean Code Enforcement]
-totalStories: 48
+  - epic12: 4 stories (Story 12.1 - 12.4) [ADR Conformité Critique 🔴 — ADR-026 Backend Data Model]
+  - epic13: 4 stories (Story 13.1 - 13.4) [ADR Conformité Moyenne 🟡 — ADR-021, ADR-023, ADR-026 R2/R5]
+  - epic14: 4 stories (Story 14.1 - 14.4) [ADR Conformité Basse 🟢 — ADR-018, ADR-022, ADR-015, ADR-026 R7]
+totalStories: 60
 totalFRsCovered: 31
 githubIssuesIntegrated: 23
+adrViolationsAddressed: 12
 coveragePercentage: 100
 inputDocuments:
   - "_bmad-output/planning-artifacts/prd.md"
   - "_bmad-output/planning-artifacts/architecture.md"
   - "_bmad-output/planning-artifacts/ux-design-specification.md"
   - "https://github.com/yohikofox/pensieve/issues (23 issues ouvertes)"
+  - "_bmad-output/implementation-artifacts/audit-adr-2026-02-17.md"
 workflow: "create-epics-and-stories"
 agent: "pm + sm"
-lastUpdate: "2026-02-13"
+lastUpdate: "2026-02-18"
 ---
 
 # Pensine - Epic Breakdown
@@ -2225,5 +2230,352 @@ So that **the entire codebase benefits from improved maintainability without a d
 - Onboarding time < 3 semaines mesuré
 - Team adopte pratiques Clean Code
 - Code review valide compliance stricte
+
+---
+
+## Epic 12: Conformité ADR — Priorité Critique 🔴
+
+**Source:** Rapport d'audit architectural Winston — 2026-02-17
+**Périmètre:** Backend — violations ADR-026 (Backend Data Model Design Rules)
+**Rationale:** Les violations ADR-026 représentent une dette technique majeure sur le modèle de données backend : PKs déléguées à PostgreSQL, absence de soft delete, pas de BaseEntity, cascade non documentée. Un refactoring avec migrations correctives est nécessaire.
+
+### Story 12.1: Créer la BaseEntity Partagée Backend
+
+**As a** developer,
+**I want** a shared BaseEntity that all backend entities inherit from,
+**So that** `id`, `createdAt`, `updatedAt`, `deletedAt` are defined once and consistently (ADR-026 R6).
+
+**Acceptance Criteria:**
+- AC1: `src/common/entities/base.entity.ts` créé avec `@PrimaryColumn('uuid')`, `@CreateDateColumn({ type: 'timestamptz' })`, `@UpdateDateColumn`, `@DeleteDateColumn`
+- AC2: Migration TypeORM cohérente pour l'entité pilote (`capture.entity.ts`)
+- AC3: `capture.entity.ts` hérite de `BaseEntity` sans redéclaration de colonnes partagées
+- AC4: Tests unitaires de la BaseEntity (3 cas minimum)
+
+**Tasks:**
+1. Créer `src/common/entities/base.entity.ts`
+2. Appliquer `BaseEntity` sur `capture.entity.ts` (entité pilote)
+3. Générer et valider la migration TypeORM
+4. Écrire les tests unitaires
+
+**Definition of Done:**
+- `BaseEntity` créée et appliquée sur `capture.entity.ts`
+- Migration validée localement
+- Tests unitaires passent
+- Zero régression sur la suite de tests existante
+
+---
+
+### Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine
+
+**As a** developer,
+**I want** all backend entity PKs to be UUIDs generated in the domain layer,
+**So that** the domain controls its own identity and enables offline-first patterns (ADR-026 R1).
+
+**Acceptance Criteria:**
+- AC1: `@PrimaryGeneratedColumn` absent de toutes les entités (`capture`, `thought`, `idea`, `todo`, `capture-state`)
+- AC2: UUID généré dans la couche applicative (via `uuid` v7 ou `crypto.randomUUID()`)
+- AC3: Migration TypeORM correcte sans perte de données
+- AC4: FKs entières (`typeId?: number`, `stateId?: number`) migrées en UUID
+- AC5: Suite de tests complète — zero régression
+
+**Tasks:**
+1. Remplacer `@PrimaryGeneratedColumn` dans toutes les entités
+2. Implémenter génération UUID dans les services/factories
+3. Migrer `capture-state.entity.ts` : integer PK → UUID
+4. Mettre à jour les FKs (`typeId`, `stateId`)
+5. Générer et valider les migrations TypeORM
+
+**Definition of Done:**
+- Zero `@PrimaryGeneratedColumn` dans le backend
+- UUID généré en couche applicative (pas par PostgreSQL)
+- Migrations validées, données préservées
+- Tests : zero régression
+
+---
+
+### Story 12.3: Implémenter le Soft Delete sur Toutes les Entités Backend
+
+**As a** developer,
+**I want** all backend entities to use soft delete via `deletedAt` instead of hard delete or status flags,
+**So that** data is never lost and audit trails are preserved (ADR-026 R4).
+
+**Acceptance Criteria:**
+- AC1: `deleted_at TIMESTAMPTZ NULL` présent sur toutes les tables backend (via BaseEntity)
+- AC2: Champ `_status` textuel supprimé de `thought.entity.ts` (migration données : `_status='deleted'` → `deleted_at` renseigné)
+- AC3: Repositories utilisent `softDelete()` et `withDeleted()`
+- AC4: Endpoints DELETE retournent soft delete (404 sur GET après)
+- AC5: Tests BDD pour soft delete (min 3 scénarios)
+
+**Tasks:**
+1. Vérifier que `BaseEntity.deletedAt` est actif sur toutes les entités
+2. Migration : `UPDATE thoughts SET deleted_at = updated_at WHERE _status = 'deleted'`
+3. Migration : `ALTER TABLE thoughts DROP COLUMN _status`
+4. Mettre à jour les repositories pour utiliser `softDelete()`
+5. Écrire les tests BDD
+
+**Definition of Done:**
+- `deleted_at` présent sur toutes les tables backend
+- `_status` retiré de `thought.entity.ts`
+- Repositories utilisent soft delete
+- Tests BDD passent
+
+---
+
+### Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative
+
+**As a** developer,
+**I want** cascade delete managed explicitly in the application layer,
+**So that** deletion behavior is explicit, auditable, and compliant with ADR-026 R3.
+
+**Acceptance Criteria:**
+- AC1: `cascade: true` retiré de `thought.entity.ts:55` (relation Thought → Idea)
+- AC2: Service applicatif gère la suppression explicite des Idées liées
+- AC3: Transaction atomique (rollback si la suppression d'une Idea échoue)
+- AC4: Audit de toutes les cascades restantes dans le backend (rapport dans devnotes)
+- AC5: Tests BDD : cascade applicative, rollback transaction
+
+**Tasks:**
+1. Retirer `{ cascade: true }` de `thought.entity.ts`
+2. Implémenter suppression explicite dans `ThoughtService`
+3. Wrapper dans une transaction TypeORM
+4. Audit grep `cascade: true` sur tout le backend
+5. Écrire les tests BDD
+
+**Definition of Done:**
+- `cascade: true` absent de `thought.entity.ts`
+- Suppression gérée en couche applicative (avec transaction)
+- Result Pattern respecté (pas de throw)
+- Tests BDD passent
+
+---
+
+## Epic 13: Conformité ADR — Priorité Moyenne 🟡
+
+**Source:** Rapport d'audit architectural Winston — 2026-02-17
+**Périmètre:** Mobile (ADR-021, ADR-023) + Backend (ADR-026 R2, R5)
+**Rationale:** Ces violations impactent la qualité architecturale sans bloquer les fonctionnalités. Elles doivent être adressées dans les sprints suivant Epic 12.
+
+### Story 13.1: Migrer le Container DI vers Transient First (ADR-021)
+
+**As a** developer,
+**I want** the TSyringe DI container to use Transient as default and Singletons only where explicitly justified,
+**So that** the architecture respects ADR-021 and avoids hidden shared state.
+
+**Acceptance Criteria:**
+- AC1: Repositories stateless passés en `container.register()` (Transient)
+- AC2: Services applicatifs stateless passés en Transient
+- AC3: Singletons conservés documentés avec justification inline (ADR-021 exception)
+- AC4: Suite de tests mobile — zero régression
+- AC5: App démarre correctement (no "container not registered" errors)
+
+**Tasks:**
+1. Audit complet de `container.ts` : classifier chaque registration (Transient/Singleton justifié)
+2. Changer les repositories en `register()` (Transient)
+3. Changer les services stateless en Transient
+4. Ajouter commentaires de justification sur les Singletons conservés
+5. Tester le démarrage de l'app en simulateur
+
+**Definition of Done:**
+- Repositories stateless en Transient
+- Singletons conservés documentés
+- Zero régression tests
+- App démarre correctement
+
+---
+
+### Story 13.2: Créer les Tables Référentielles pour les Statuts Backend
+
+**As a** developer,
+**I want** entity statuses to use lookup tables with FK references instead of free-text columns,
+**So that** the data model is type-safe and extensible (ADR-026 R2).
+
+**Acceptance Criteria:**
+- AC1: Table `thought_statuses` créée (`id UUID`, `code`, `label`, `display_order`, `is_active`)
+- AC2: `thought.entity.ts` utilise FK `status_id → thought_statuses.id`
+- AC3: `capture_states` enrichie avec `label`, `display_order`, `is_active`
+- AC4: Seed des données référentielles (idempotent)
+- AC5: Migration des données existantes (`_status → status_id`)
+- AC6: Tests BDD (création, FK constraint, filtrage)
+
+**Tasks:**
+1. Créer migration : table `thought_statuses` + seed
+2. Ajouter colonnes manquantes à `capture_states`
+3. Mettre à jour `thought.entity.ts` avec FK `status_id`
+4. Migration données : `_status → status_id`
+5. Écrire tests BDD
+
+**Definition of Done:**
+- Table `thought_statuses` créée avec seed
+- FK `status_id` sur `thought`
+- Migration données validée
+- Tests BDD passent
+
+---
+
+### Story 13.3: Corriger les Types de Colonnes Date vers TIMESTAMPTZ
+
+**As a** developer,
+**I want** all date columns to use `TIMESTAMPTZ` (timestamp with time zone),
+**So that** no timezone information is lost (ADR-026 R5).
+
+**Acceptance Criteria:**
+- AC1: `@CreateDateColumn({ type: 'timestamptz' })` sur toutes les entités
+- AC2: `@UpdateDateColumn({ type: 'timestamptz' })` sur toutes les entités
+- AC3: `@DeleteDateColumn({ type: 'timestamptz' })` (soft delete — story 12.3)
+- AC4: Migration `ALTER TABLE ... ALTER COLUMN ... TYPE TIMESTAMPTZ` pour les tables existantes
+- AC5: FKs entières résiduelles migrées en UUID (aligné avec story 12.2)
+
+**Tasks:**
+1. Audit complet : lister toutes les colonnes `TIMESTAMP WITHOUT TIME ZONE`
+2. Vérifier que `BaseEntity` (story 12.1) couvre les cas principaux
+3. Créer migration ALTER pour les tables non couvertes
+4. Migrer FKs entières résiduelles en UUID
+5. Valider : pas de dérive timezone sur données existantes
+
+**Definition of Done:**
+- Audit complet documenté
+- Toutes les colonnes date en TIMESTAMPTZ
+- Migration validée localement
+- Zero régression
+
+---
+
+### Story 13.4: Généraliser le Result Pattern à Tous les Contextes Mobile
+
+**As a** developer,
+**I want** `Result<T>` available in `shared/domain/` and used consistently across all mobile bounded contexts,
+**So that** error handling is unified across the app (ADR-023).
+
+**Acceptance Criteria:**
+- AC1: `Result.ts` déplacé dans `contexts/shared/domain/Result.ts`
+- AC2: Type `ResultType` étendu avec tous les cas d'erreur (8 types : SUCCESS, NOT_FOUND, DATABASE_ERROR, VALIDATION_ERROR, NETWORK_ERROR, AUTH_ERROR, BUSINESS_ERROR, UNKNOWN_ERROR)
+- AC3: Contexte `knowledge` (mobile) adopte `Result<T>`
+- AC4: Contexte `action` (mobile) adopte `Result<T>`
+- AC5: Contexte `Normalization` (mobile) adopte `Result<T>`
+- AC6: Zero régression tests
+
+**Tasks:**
+1. Déplacer `Result.ts` dans `contexts/shared/domain/`
+2. Étendre `ResultType` avec les 8 types
+3. Mettre à jour tous les imports existants
+4. Auditer et mettre à jour les contextes `knowledge`, `action`, `Normalization`
+5. Vérifier grep `throw new Error` dans les contextes cibles → zéro résultat
+
+**Definition of Done:**
+- `Result.ts` partagé dans `shared/domain/`
+- 8 types `ResultType`
+- Contextes `knowledge`, `action`, `Normalization` adoptent le pattern
+- Zero `throw` dans le code applicatif (hors try/catch légitimes DB/API)
+- Tests passent
+
+---
+
+## Epic 14: Conformité ADR — Priorité Basse 🟢
+
+**Source:** Rapport d'audit architectural Winston — 2026-02-17
+**Périmètre:** Documentation (ADR-018), Mobile (ADR-022), Backend (ADR-015), Convention (ADR-026 R7)
+**Rationale:** Ces points ne bloquent pas les fonctionnalités et peuvent être traités de façon opportuniste ou dans un sprint dédié à la dette technique.
+
+### Story 14.1: Corriger la Documentation Obsolète CLAUDE.md (WatermelonDB → OP-SQLite)
+
+**As a** developer,
+**I want** internal documentation to accurately reflect the current tech stack,
+**So that** no AI agent or developer is misled by outdated WatermelonDB references (ADR-018).
+
+**Acceptance Criteria:**
+- AC1: `pensieve/mobile/CLAUDE.md` — zéro référence à WatermelonDB
+- AC2: Audit complet des fichiers `.md` — toutes les références WatermelonDB identifiées
+- AC3: `project-context.md` mis à jour (OP-SQLite comme DB locale)
+- AC4: Vérification de cohérence : dépendances documentées = `package.json`
+
+**Tasks:**
+1. Grep `WatermelonDB` dans tous les `.md` du projet
+2. Corriger `pensieve/mobile/CLAUDE.md:67`
+3. Mettre à jour `project-context.md` section dependencies mobile
+4. Commit `docs(mobile): update references from WatermelonDB to OP-SQLite`
+
+**Definition of Done:**
+- Zero référence WatermelonDB dans les fichiers de documentation courants
+- `project-context.md` à jour
+- Commit documentaire créé
+
+---
+
+### Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques
+
+**As a** developer,
+**I want** to verify that AsyncStorage is only used for non-critical UI preferences,
+**So that** we comply with ADR-022 which mandates OP-SQLite for all critical data.
+
+**Acceptance Criteria:**
+- AC1: Inventaire exhaustif de tous les usages `AsyncStorage.getItem/setItem/removeItem`
+- AC2: Zéro usage pour données critiques (tokens, captures, thoughts, sync metadata)
+- AC3: Correction des violations si trouvées (migration vers OP-SQLite ou expo-secure-store)
+- AC4: Commentaires `// ASYNC_STORAGE_OK: UI preference only` sur les usages autorisés
+- AC5: Rapport `async-storage-audit-report.md` produit
+
+**Tasks:**
+1. `grep -rn "AsyncStorage" pensieve/mobile/src/`
+2. Classifier chaque usage : UI_PREF ou CRITICAL_DATA
+3. Produire `async-storage-audit-report.md`
+4. Si violations : migrer vers OP-SQLite ou expo-secure-store
+5. Ajouter commentaires sur usages autorisés
+
+**Definition of Done:**
+- Rapport d'audit produit
+- Zero violation (données critiques dans AsyncStorage)
+- Usages autorisés documentés
+
+---
+
+### Story 14.3: Intégration Observability — Logger Structuré et Évaluation Sentry/Prometheus
+
+**As a** developer,
+**I want** proper observability tools integrated (structured logging minimum, Sentry and Prometheus evaluated),
+**So that** the system meets ADR-015 requirements for monitoring in production.
+
+**Acceptance Criteria:**
+- AC1: Logger structuré JSON en backend (winston ou pino) — priorité principale
+- AC2: Décision documentée sur Sentry (intégré ou déféré avec ticket)
+- AC3: Décision documentée sur Prometheus (intégré ou déféré avec justification)
+- AC4: Si Sentry intégré : DSN dans `.env.example`, tests de capture d'erreur
+- AC5: `observability-decisions.md` créé
+
+**Tasks:**
+1. Intégrer `winston` ou `pino` dans le backend NestJS
+2. Évaluer compatibilité `@sentry/react-native` avec Expo SDK 54
+3. Évaluer Prometheus via `metrics.controller.ts` existant
+4. Documenter les décisions dans `observability-decisions.md`
+5. Si Sentry retenu : intégrer mobile + backend
+
+**Definition of Done:**
+- Logger structuré JSON en backend
+- Décisions Sentry et Prometheus documentées
+- Zero régression
+
+---
+
+### Story 14.4: Décision et Migration owner_id (userId → owner_id)
+
+**As a** developer,
+**I want** a documented decision on `userId` vs `owner_id` naming in backend entities,
+**So that** the convention is either standardized per ADR-026 R7 or explicitly accepted as local convention.
+
+**Acceptance Criteria:**
+- AC1: Décision documentée : Option A (renommer → `owner_id`) ou Option B (conserver `userId` avec justification)
+- AC2 (si Option A): Migration `user_id → owner_id` + code mis à jour + tests passent
+- AC3 (si Option B): Commentaire dans les entités + `project-context.md` mis à jour
+- AC4: Convention choisie reflétée pour les futures entités
+
+**Tasks:**
+1. Grep `userId` / `user_id` dans `pensieve/backend/src/`
+2. Évaluer l'impact d'un renommage (nombre de fichiers, migrations nécessaires)
+3. Décision yohikofox
+4. Appliquer la décision (migration ou documentation)
+
+**Definition of Done:**
+- Décision documentée dans le devnotes de la story
+- Option choisie appliquée (migration ou commentaire)
+- `project-context.md` ou ADR-026 mis à jour
 
 ---
