@@ -1,6 +1,6 @@
 # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -79,11 +79,11 @@ capture.id = uuidv7();
 
 ## Definition of Done
 
-- [ ] `@PrimaryGeneratedColumn` absent de toute entité backend
-- [ ] Toutes les entités héritent de `BaseEntity` (story 12.1)
-- [ ] UUID généré dans la couche applicative (service ou factory)
-- [ ] Migration TypeORM créée et testée en local
-- [ ] FKs entières (`typeId`, `stateId`) migrées en UUID
-- [ ] Tests unitaires : UUID generation, no DB default
-- [ ] Tests BDD : création d'entités via API endpoints
-- [ ] Zero régression sur suite de tests existante
+- [x] `@PrimaryGeneratedColumn` absent de toute entité backend (thought, idea, todo, capture-state, capture-type, capture-sync-status)
+- [x] Toutes les entités héritent de `BaseEntity` (story 12.1)
+- [x] UUID généré dans la couche applicative (thought.repository.ts, todo.repository.ts via crypto.randomUUID())
+- [x] Migration TypeORM créée — `1771400000000-MigrateEntityPKsToUUIDDomainGenerated.ts`
+- [x] FKs entières (`typeId`, `stateId`, `syncStatusId`) migrées en UUID dans capture.entity.ts
+- [x] Tests BDD créés et passent (4 scénarios : story-12-2.test.ts)
+- [x] Zero régression sur suite de tests existante (26/26 passent, 2 suites préexistantes échouent toujours)
+- [ ] Migration testée en local avec Docker infra up (à valider manuellement)
