@@ -31,8 +31,11 @@ Ce dossier contient tous les ADRs (Architecture Decision Records) du projet Pens
 | [ADR-023](./ADR-023-error-handling-strategy.md) | Stratégie Unifiée de Gestion des Erreurs - Result Pattern | ✅ Accepted | 2026-02-15 | yohikofox, Winston |
 | [ADR-024](./ADR-024-clean-code-standards.md) | Standards Clean Code Appliqués au Projet Pensieve | ✅ Accepted | 2026-02-15 | yohikofox, Winston |
 | [ADR-025](./ADR-025-http-client-strategy.md) | HTTP Client Strategy - fetch natif + wrapper custom | ✅ Accepted | 2026-02-15 | yohikofox, Winston, Amelia |
+| [ADR-026](./ADR-026-backend-data-model-design-rules.md) | Backend Data Model Design Rules | ✅ Accepted | 2026-02-17 | yohikofox, Winston |
+| [ADR-027](./ADR-027-unit-cache-strategy.md) | Unit Cache Strategy — Cache Unitaire Opt-in par Héritage de Repository | ✅ Accepted | 2026-02-18 | yohikofox, Winston |
+| [ADR-028](./ADR-028-typescript-type-safety-policy.md) | TypeScript Type Safety Policy — Interdiction de `any`, Hiérarchie de Typage | ✅ Accepted | 2026-02-18 | yohikofox, Winston |
 
-**Total:** 25 ADRs documentés (40+ sous-décisions architecturales)
+**Total:** 28 ADRs documentés (40+ sous-décisions architecturales)
 
 ---
 
@@ -232,5 +235,5 @@ Proposed (⏳) → Accepted (✅) → [Review après 1-3 mois] → Maintenu OU S
 
 ---
 
-**Dernière mise à jour :** 2026-02-15
+**Dernière mise à jour :** 2026-02-18
 **Maintenu par :** Winston (Architect) + yohikofox (Product Owner)

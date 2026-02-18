@@ -23,10 +23,28 @@ participants:
 
 **Decision:** Structured logging (JSON), niveaux appropriés, rotation automatique
 
+---
+
+> ### ⚠️ Amendement — 2026-02-18
+> **Participants** : yohikofox (Product Owner) + Winston (Architect)
+>
+> La librairie de logging est amendée de **Winston** vers **Pino** (`nestjs-pino` v4.x + `pino-http` v10.x).
+>
+> **Justification technique acceptée** :
+> - Pino est 5-10x plus performant que Winston (benchmark officiel)
+> - `nestjs-pino` est l'intégration NestJS officielle
+> - Sortie JSON structurée native, compatible avec le format prescrit ci-dessous
+>
+> **Cet amendement est rétroactif** : l'implémentation réalisée en story 14.3 est validée a posteriori.
+>
+> **⛔ Mise en garde formelle** : La méthode utilisée lors de l'implémentation — substitution unilatérale d'une librairie prescrite dans un ADR sans consultation architecturale — est **explicitement rejetée** comme pratique. Tout agent dev qui identifie une divergence par rapport à un ADR doit la signaler à l'architecte avant d'agir.
+
+---
+
 **Niveaux de Log :**
 
 ```typescript
-// NestJS Winston logger
+// NestJS Pino logger (amendement 2026-02-18 — remplace Winston)
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
@@ -414,7 +432,8 @@ const PERFORMANCE_ALERTS = {
 - Prometheus: https://prometheus.io/docs/introduction/overview/
 - Grafana Dashboards: https://grafana.com/docs/grafana/latest/dashboards/
 - Sentry: https://docs.sentry.io/
-- Winston Logging: https://github.com/winstonjs/winston
+- Pino Logging: https://github.com/pinojs/pino (remplace Winston — voir amendement 15.1)
+- nestjs-pino: https://github.com/iamolegga/nestjs-pino
 - RED Metrics (Google SRE): https://sre.google/sre-book/monitoring-distributed-systems/
 
 ---

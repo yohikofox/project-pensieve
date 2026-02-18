@@ -1,6 +1,6 @@
 # Story 14.4: Décision et Migration owner_id (userId → owner_id)
 
-Status: ready-for-dev
+Status: in-progress
 
 ## Story
 
@@ -70,6 +70,37 @@ Audit ADR-026 R7 (2026-02-17) révèle :
 - ADR-026 R7: Naming convention `owner_id`
 - `pensieve/backend/src/modules/capture/domain/entities/capture.entity.ts`
 - `pensieve/backend/src/modules/knowledge/domain/entities/thought.entity.ts`
+
+## Tasks/Subtasks
+
+- [ ] T1 — AC1 : Décision documentée par yohikofox (Option A ou B) + saisie dans Dev Agent Record
+- [ ] T2 — AC1/AC5 : Mise à jour project-context.md avec la convention choisie
+- [ ] T3 (Option A seulement) — AC2 : Migration DB `user_id → owner_id` pour les 5 tables concernées (captures, thoughts, ideas, todos, notifications)
+- [ ] T4 (Option A seulement) — AC3 : Mise à jour entités TypeScript + repositories + services
+- [ ] T5 (Option A seulement) — AC3 : Vérification que tous les tests passent après le rename
+- [ ] T6 (Option B seulement) — AC4 : Ajout commentaire `// CONVENTION NOTE` dans les entités concernées
+
+## Dev Agent Record
+
+### Decision Log
+
+<!-- Agent : Indiquer la décision choisie (Option A ou B) et la justification après consultation avec yohikofox -->
+
+### Implementation Plan
+
+<!-- À compléter après décision -->
+
+### Completion Notes
+
+<!-- À compléter en fin de story -->
+
+## File List
+
+<!-- Fichiers créés/modifiés/supprimés au cours de l'implémentation -->
+
+## Change Log
+
+<!-- Résumé des changements effectués -->
 
 ## Definition of Done
 
