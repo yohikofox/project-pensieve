@@ -38,8 +38,7 @@ _This file contains critical rules and patterns that AI agents must follow when 
 **Key Dependencies:**
 
 **Mobile - Infrastructure:**
-- WatermelonDB (offline-first DB)
-- @op-engineering/op-sqlite **15.2.3**
+- @op-engineering/op-sqlite **15.2.3** (offline-first DB)
 - @supabase/supabase-js **2.90.1**
 - @tanstack/react-query **5.90.20**
 - zustand **5.0.10**
@@ -299,7 +298,8 @@ export class MockAudioRecorder {
   }
 }
 
-// Mock WatermelonDB decorators as no-ops
+// Legacy compatibility mock: some older acceptance tests still import @nozbe/watermelondb
+// Keep until tests/acceptance/capture/ tests are migrated to OP-SQLite
 moduleNameMapper: {
   '^@nozbe/watermelondb/decorators$':
     '<rootDir>/__mocks__/@nozbe/watermelondb/decorators.js'
