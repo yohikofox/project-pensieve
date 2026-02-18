@@ -182,7 +182,7 @@ development_status:
   12-1-backend-base-entity: review  # Story 12.1: Créer la BaseEntity Partagée Backend — ADR-026 R6 (@PrimaryColumn uuid, TIMESTAMPTZ, deletedAt)
   12-2-backend-pk-domaine: review  # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine — ADR-026 R1 (crypto.randomUUID, FKs uuid)
   12-3-backend-soft-delete: review  # Story 12.3: Implémenter le Soft Delete sur Toutes les Entités Backend — ADR-026 R4 (@DeleteDateColumn, supprimer _status)
-  12-4-backend-suppression-cascade: ready-for-dev  # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative — ADR-026 R3 (transaction explicite)
+  12-4-backend-suppression-cascade: review  # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative — ADR-026 R3 (transaction explicite)
   epic-12-retrospective: optional
 
   # Epic 13: Conformité ADR — Priorité Moyenne 🟡 (4 stories - ADR-021, ADR-023, ADR-026 R2/R5)
