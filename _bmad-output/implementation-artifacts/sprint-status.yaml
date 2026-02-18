@@ -130,8 +130,9 @@ development_status:
   8-15-priorisation-visuelle-des-taches: backlog  # Highlights couleur (retard/prioritaire/approchant/normal) - Quick Win
   # Performance fix (analysis session 2026-02-18)
   8-16-performance-latence-capture-screen: ready-for-dev  # Latence ~1s premier load CaptureScreen — viole NFR1 (<500ms)
-  # Email infrastructure (2026-02-18)
-  8-17-configuration-smtp-email-transactionnel: ready-for-dev  # SMTP custom Supabase + EmailModule NestJS — lève rate limit 2 emails/h
+  # Email infrastructure (2026-02-18) — DÉPRÉCIÉE
+  # ⚠️ Story 8-17 SUPERSEDÉE par Epic 15 (ADR-029 remplace Supabase Auth entièrement)
+  8-17-configuration-smtp-email-transactionnel: deprecated  # Supersedée par 15-1 — Better Auth + Resend remplace le bandaid SMTP Supabase
   epic-8-retrospective: optional
 
   # ============================================================
@@ -208,3 +209,14 @@ development_status:
   14-3-observability-sentry-prometheus: review  # Story 14.3: Intégration Observability — Logger Structuré et Évaluation Sentry/Prometheus — ADR-015 (winston/pino backend)
   14-4-renommage-owner-id: review  # Story 14.4: Décision et Migration owner_id (userId → owner_id) — ADR-026 R7 (Option A choisie — migration + rename complets)
   epic-14-retrospective: optional
+
+  # Epic 15: Migration Auth — Better Auth Self-Hosted + Resend (ADR-029 + ADR-030)
+  # Source: ADR-029 (Remplacement Supabase Auth) + ADR-030 (Resend email transactionnel) — 2026-02-18
+  # Décision: Supprimer la dépendance Supabase Auth, risque paywall inacceptable
+  # Dépendances: 15-1 → 15-2, 15-3 (serveur requis avant clients) | 15-2 et 15-3 parallélisables
+  epic-15: in-progress
+  15-1-better-auth-server-nestjs-resend: ready-for-dev  # Serveur Better Auth NestJS + EmailService Resend + BetterAuthGuard + migration TypeORM
+  15-2-mobile-better-auth-client: ready-for-dev  # Client mobile @better-auth/react-native + AuthTokenManager offline (valide jusqu'à 23:59)
+  15-3-web-admin-cleanup-supabase: ready-for-dev  # Clients web+admin better-auth/client + suppression complète Supabase
+  epic-15-retrospective: optional
+
