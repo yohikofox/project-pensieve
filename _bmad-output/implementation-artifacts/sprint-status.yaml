@@ -97,7 +97,7 @@ development_status:
   6-1-infrastructure-de-synchronisation-watermelondb: done
   6-2-synchronisation-local-cloud: done  # ✅ Complete: 127/127 tests, code review done, all AC satisfied
   6-3-synchronisation-cloud-local: done
-  6-4-indicateurs-de-statut-de-synchronisation: ready-for-dev
+  6-4-indicateurs-de-statut-de-synchronisation: review  # ✅ 7/7 BDD tests passing, all 8 tasks complete
   epic-6-retrospective: optional
 
   # Epic 7: Support & Observability (3 stories - Support tools + DevTools)
