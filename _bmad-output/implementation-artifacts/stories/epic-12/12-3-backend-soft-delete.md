@@ -1,6 +1,6 @@
 # Story 12.3: Implémenter le Soft Delete sur Toutes les Entités Backend
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -27,11 +27,11 @@ Le soft delete est déjà dans `BaseEntity` (story 12.1). Cette story migre les 
 **Then** all entity tables have a `deleted_at TIMESTAMPTZ NULL` column
 **And** TypeORM `@DeleteDateColumn` is active (enables automatic filtering)
 
-### AC2: Suppression du champ `_status` textuel dans `thought.entity.ts`
-**Given** `thought.entity.ts` uses `_status: 'active' | 'deleted'` as text column
+### AC2: Suppression du champ `_status` textuel dans les entités
+**Given** `thought.entity.ts`, `idea.entity.ts` et `todo.entity.ts` utilisaient `_status: 'active' | 'deleted'`
 **When** I migrate to soft delete
-**Then** the `_status` column is removed from the entity
-**And** a migration updates existing 'deleted' rows by setting `deleted_at = updated_at` (or NOW())
+**Then** the `_status` column is removed from all entities
+**And** a migration updates existing 'deleted' rows by setting `deleted_at = updated_at`
 **And** 'active' rows keep `deleted_at = NULL`
 
 ### AC3: Repositories utilisent `softDelete()` et `withDeleted()`
@@ -71,13 +71,80 @@ Le soft delete est déjà dans `BaseEntity` (story 12.1). Cette story migre les 
 - Story 13.2: Tables référentielles pour les statuts (complémentaire)
 - ADR-026 R4: Soft Delete obligatoire
 
+## Tasks/Subtasks
+
+- [x] Phase RED — Tests BDD créés (4 scénarios)
+  - [x] `test/acceptance/features/story-12-3-backend-soft-delete.feature`
+  - [x] `test/acceptance/story-12-3.test.ts`
+- [x] Phase GREEN — Entités migrées (3 fichiers)
+  - [x] `thought.entity.ts` : suppression de `_status`
+  - [x] `idea.entity.ts` : suppression de `_status`
+  - [x] `todo.entity.ts` : suppression de `_status`
+- [x] Phase GREEN — Repositories mis à jour (3 fichiers)
+  - [x] `thought.repository.ts` : `delete()` → `softDelete()` + `findByIdWithDeleted()`
+  - [x] `idea.repository.ts` : `delete()` → `softDelete()` + `findByIdWithDeleted()`
+  - [x] `todo.repository.ts` : `delete()` → `softDelete()` + `findByIdWithDeleted()`
+- [x] Migration TypeORM créée
+  - [x] `1771500000000-SoftDeleteAndRemoveStatusColumn.ts`
+- [x] Tests BDD verts (4/4)
+- [x] Build TypeScript : 0 erreur
+- [x] Zéro régression (30/30 tests passent)
+
 ## Definition of Done
 
-- [ ] `deleted_at TIMESTAMPTZ NULL` présent sur toutes les tables backend
-- [ ] Champ `_status` retiré de `thought.entity.ts`
-- [ ] Migration de données : `_status = 'deleted'` → `deleted_at` renseigné
-- [ ] Repositories utilisent `softDelete()` / `withDeleted()`
-- [ ] Endpoints DELETE vérifié : comportement soft delete confirmé
-- [ ] Tests BDD : min 3 scénarios (suppression, vérification 404, audit access)
-- [ ] Tests unitaires repositories : soft delete appliqué
-- [ ] Zero régression sur suite de tests existante
+- [x] `deleted_at TIMESTAMPTZ NULL` présent sur toutes les tables backend (via BaseEntity + migration 12.2)
+- [x] Champ `_status` retiré de `thought.entity.ts`, `idea.entity.ts`, `todo.entity.ts`
+- [x] Migration de données : `_status = 'deleted'` → `deleted_at` renseigné (migration 1771500000000)
+- [x] Repositories utilisent `softDelete()` / `withDeleted()`
+- [x] Endpoints DELETE vérifié : comportement soft delete confirmé (findById → null → 404)
+- [x] Tests BDD : 4 scénarios (softDelete invoqué, 404 après delete, accès audit withDeleted, absence _status)
+- [ ] Tests unitaires repositories : soft delete appliqué (couvert par BDD)
+- [x] Zero régression sur suite de tests existante (30/30 passent)
+- [ ] Migration testée en local avec Docker infra up (à valider manuellement)
+
+## Dev Agent Record
+
+### Implementation Plan
+
+**Phase RED** : Tests BDD créés avant implémentation — 4 scénarios couvrant AC2, AC3, AC4, AC5.
+
+**Phase GREEN** :
+- 3 entités (`thought`, `idea`, `todo`) : suppression du `@Column({ name: '_status' })`
+- 3 repositories : `delete()` → `softDelete()` + ajout de `findByIdWithDeleted()` avec `withDeleted: true`
+- 1 migration TypeORM : `UPDATE ... SET deletedAt = updatedAt WHERE _status = 'deleted'` puis `ALTER TABLE ... DROP COLUMN _status`
+
+**Pattern AC4 (404 auto)** : TypeORM filtre automatiquement les `deletedAt IS NOT NULL` dans `findOne()` standard. Le controller existant `throw new NotFoundException` quand `findById()` retourne null — aucune modification du controller nécessaire.
+
+### Completion Notes
+
+- 4/4 BDD scénarios verts ✅
+- Build TypeScript : 0 erreur ✅
+- 30/30 tests acceptance passent (les 2 suites préexistantes en échec — story-7-1 — restent inchangées) ✅
+- Entités : `thought.entity.ts`, `idea.entity.ts`, `todo.entity.ts` — `_status` supprimé ✅
+- Repositories : `softDelete()` utilisé, `findByIdWithDeleted()` ajouté pour accès audit ✅
+- Migration : `1771500000000-SoftDeleteAndRemoveStatusColumn.ts` — migration données + suppression colonne ✅
+
+### Debug Log
+
+Scénario 4 (vérification structurelle) initialement en échec : le commentaire `// Story 12.3: _status supprimé...` contenait `_status`. Corrigé en reformulant le commentaire.
+
+## File List
+
+- `pensieve/backend/src/modules/knowledge/domain/entities/thought.entity.ts` (modifié)
+- `pensieve/backend/src/modules/knowledge/domain/entities/idea.entity.ts` (modifié)
+- `pensieve/backend/src/modules/action/domain/entities/todo.entity.ts` (modifié)
+- `pensieve/backend/src/modules/knowledge/application/repositories/thought.repository.ts` (modifié)
+- `pensieve/backend/src/modules/knowledge/application/repositories/idea.repository.ts` (modifié)
+- `pensieve/backend/src/modules/action/application/repositories/todo.repository.ts` (modifié)
+- `pensieve/backend/src/migrations/1771500000000-SoftDeleteAndRemoveStatusColumn.ts` (créé)
+- `pensieve/backend/test/acceptance/features/story-12-3-backend-soft-delete.feature` (créé)
+- `pensieve/backend/test/acceptance/story-12-3.test.ts` (créé)
+
+## Change Log
+
+- 2026-02-18: Implémentation complète soft delete ADR-026 R4
+  - Suppression `_status` de thought, idea, todo
+  - `softDelete()` dans thought/idea/todo repositories
+  - `findByIdWithDeleted()` ajouté (accès admin/audit)
+  - Migration `1771500000000` — données + schéma
+  - 4 scénarios BDD verts, 0 régression
