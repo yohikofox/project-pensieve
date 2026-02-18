@@ -1,6 +1,6 @@
 # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine
 
-Status: review
+Status: done
 
 ## Story
 
@@ -87,3 +87,13 @@ capture.id = uuidv7();
 - [x] Tests BDD créés et passent (4 scénarios : story-12-2.test.ts)
 - [x] Zero régression sur suite de tests existante (26/26 passent, 2 suites préexistantes échouent toujours)
 - [ ] Migration testée en local avec Docker infra up (à valider manuellement)
+
+## Review Follow-ups (AI) — Correctifs appliqués
+
+- [x] [AI-Review][HIGH] `capture.entity.ts` absent du Scenario 4 BDD — ajouté à entityPaths [story-12-2.test.ts:258] [story-12-2.feature:27]
+- [x] [AI-Review][HIGH] Crash migration : `syncStatusId_new` NULL + NOT NULL constraint — validation pre-flight ajoutée [migration.ts:UP section 0]
+- [x] [AI-Review][HIGH] Perte silencieuse : typeId/stateId orphelins — avertissements console.warn + pre-flight [migration.ts:UP section 0]
+- [x] [AI-Review][MEDIUM] UUID v4 au lieu de v7 — migration vers `uuidv7()` du package `uuid` v11 [thought.repository.ts:14] [todo.repository.ts:15]
+- [x] [AI-Review][MEDIUM] Pas de validation référentiels avant migration — pre-flight erreurs bloquantes si valeurs inattendues [migration.ts:UP section 0]
+- [x] [AI-Review][MEDIUM] `DROP COLUMN CASCADE` perd les index FK — index `IDX_captures_typeId/stateId/syncStatusId` recréés [migration.ts:UP]
+- [x] [AI-Review][LOW] UUID regex trop permissive — regex stricte v4/v7 avec validation version et variant [story-12-2.test.ts:23]
