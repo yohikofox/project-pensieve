@@ -772,7 +772,7 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 - [ADR-007](./adrs/ADR-007-from-scratch-approach.md) - From Scratch Approach (pas de starter full-stack)
 - [ADR-008](./adrs/ADR-008-anti-corruption-layer.md) - Anti-Corruption Layer (ACL) à la Frontière Mobile/Backend
 
-**Infrastructure & Technical Decisions (ADR-009 à ADR-026) :**
+**Infrastructure & Technical Decisions (ADR-009 à ADR-027) :**
 - [ADR-009](./adrs/ADR-009-sync-patterns.md) - Sync Patterns (6 sous-décisions)
 - [ADR-010](./adrs/ADR-010-security-encryption.md) - Security & Encryption (5 sous-décisions)
 - [ADR-011](./adrs/ADR-011-performance-optimization.md) - Performance Optimization (3 sous-décisions)
@@ -790,7 +790,8 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 - [ADR-023](./adrs/ADR-023-error-handling-strategy.md) - Stratégie Unifiée de Gestion des Erreurs - Result Pattern
 - [ADR-024](./adrs/ADR-024-clean-code-standards.md) - Standards Clean Code Appliqués au Projet Pensieve
 - [ADR-025](./adrs/ADR-025-http-client-strategy.md) - HTTP Client Strategy - fetch natif + wrapper custom (Supersedes Technology Stack - HTTP Client)
-- [ADR-026](./adrs/ADR-026-backend-data-model-design-rules.md) - Backend Data Model Design Rules - Règles canoniques MCD ⚠️ **NOUVEAU**
+- [ADR-026](./adrs/ADR-026-backend-data-model-design-rules.md) - Backend Data Model Design Rules - Règles canoniques MCD
+- [ADR-027](./adrs/ADR-027-unit-cache-strategy.md) - Unit Cache Strategy - Cache unitaire opt-in par héritage de repository ⚠️ **NOUVEAU**
 
 ---
 
@@ -817,6 +818,7 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 
 **Backend (tous epics) :**
 - ⚠️ [ADR-026](./adrs/ADR-026-backend-data-model-design-rules.md) - Data Model Design Rules (PKs, référentiels, soft delete, multi-tenancy, TypeORM)
+- ⚠️ [ADR-027](./adrs/ADR-027-unit-cache-strategy.md) - Unit Cache Strategy (cache unitaire opt-in, namespace Redis, invalidation event-driven)
 
 **Security & Operations :**
 - [ADR-010](./adrs/ADR-010-security-encryption.md) - Encryption at rest & in transit
