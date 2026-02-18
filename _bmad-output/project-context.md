@@ -237,6 +237,17 @@ modules/[context]/
 **Database Rules (CRITICAL):**
 - `synchronize: false` - schema changes via migrations ONLY in `src/migrations/`
 - NEVER use `synchronize: true`
+- **Entity owner field naming (ADR-026 R7 — Decision 2026-02-18 by yohikofox):**
+  ```typescript
+  // ✅ CORRECT: owner_id in DB, ownerId in TypeScript
+  @Column({ type: 'uuid', name: 'owner_id' })
+  ownerId!: string;
+
+  // ❌ WRONG: userId / user_id — non-conformant to ADR-026 R7
+  @Column({ type: 'uuid', name: 'userId' })
+  userId!: string;
+  ```
+  All entities tracking resource ownership MUST use `ownerId` (TypeScript) / `owner_id` (DB column).
 
 **Authorization Pattern:**
 - Guards: `@RequirePermission()`, `@RequireOwnership()`, `@AllowSharedAccess()`
@@ -584,13 +595,14 @@ npx typeorm migration:generate src/migrations/MigrationName -d src/data-source.t
 npx typeorm migration:create src/migrations/MigrationName
 ```
 
-**6 Existing Migrations:**
+**7 Existing Migrations:**
 1. `1738796443000-CreateThoughtAndIdeaTables.ts`
 2. `1738869600000-CreateTodosTable.ts`
 3. `1738869700000-CreateNotificationsTable.ts`
 4. `1738869800000-AddPushTokenAndNotificationPreferencesToUsers.ts`
 5. `1739450000000-CreateAuthorizationTables.ts` (11 tables)
 6. `1739490000000-CreateAdminUsersTable.ts`
+7. `1771900000000-RenameUserIdToOwnerId.ts` (renames `user_id` → `owner_id` on captures, thoughts, ideas, todos, notifications)
 
 **Development Server Workflow:**
 
