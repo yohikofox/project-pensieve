@@ -97,7 +97,7 @@ development_status:
   6-1-infrastructure-de-synchronisation-watermelondb: done
   6-2-synchronisation-local-cloud: done  # ✅ Complete: 127/127 tests, code review done, all AC satisfied
   6-3-synchronisation-cloud-local: done
-  6-4-indicateurs-de-statut-de-synchronisation: review  # ✅ 7/7 BDD tests passing, all 8 tasks complete
+  6-4-indicateurs-de-statut-de-synchronisation: done  # ✅ Code review: 9/9 fixes (4 HIGH + 5 MEDIUM). Badge AC6 intégré, AC9 modal amélioré, RefreshControl corrigé, ADR-023 conforme. 7/7 BDD tests.
   epic-6-retrospective: optional
 
   # Epic 7: Support & Observability (3 stories - Support tools + DevTools)

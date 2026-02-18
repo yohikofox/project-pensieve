@@ -1,6 +1,6 @@
 # Story 6.4: Indicateurs de Statut de Synchronisation
 
-Status: complete
+Status: done
 
 <!-- Validation: Run bmad:bmm:workflows:testarch-test-review before marking done -->
 
@@ -141,7 +141,10 @@ so that **je sache toujours si mes données sont synchronisées, en cours de syn
 - [x] 6.1 `syncOnWifiOnly: boolean` ajouté dans `settingsStore.ts` (AsyncStorage persist — ADR-022 conforme)
 - [x] 6.2 Toggle ajouté dans `SettingsScreen.tsx` (section "Synchronisation")
 - [x] 6.3 `AutoSyncOrchestrator.ts` vérifie `syncOnWifiOnly` via `NetInfo.fetch()` avant de déclencher sync
-- [x] 6.4 Warning : non implémenté (hors scope minimal — low priority AC)
+- [x] 6.4 Warning audio : **⚠️ NON IMPLÉMENTÉ — En attente de validation architecte (Winston)**
+  - AC8 demande un warning si fichiers audio seront synchronisés en données mobiles
+  - Non implémenté car nécessite l'exposition de métadonnées audio en attente depuis SyncService
+  - **À valider** : déférer à Story 6.5 ou traiter comme tech-debt mineur
 - [x] 6.5 Tests BDD scénarios 5-6 dans `story-6-4.test.ts`
 
 ### Task 7 — Reminder "longtemps offline" (AC10)
@@ -415,7 +418,19 @@ _À remplir par le dev agent pendant l'implémentation_
 
 ### Completion Notes List
 
-_À remplir par le dev agent_
+**Code Review — Fixes appliqués (2026-02-19):**
+
+| # | Sévérité | Problème | Fix |
+|---|----------|---------|-----|
+| 1 | 🔴 HIGH | AC6 : CaptureSyncBadge non intégré dans CaptureListItem | Ajout import + overlay absolu dans `CaptureListItem.tsx` |
+| 2 | 🔴 HIGH | AC9 : File d'attente prioritisée absente du modal | useSyncDetails ajoute `progressLabel` + `estimatedTimeLabel`; modal affiche progression, temps estimé, note priorité |
+| 3 | 🔴 HIGH | AC7 : RefreshControl flat FlatList (ActionsScreen) ne déclenchait pas triggerManualSync | RefreshControl de la branche non-sections corrigé |
+| 4 | 🔴 HIGH | ADR-023 violation : useManualSync ignorait le Result Pattern | Ajout traitement SyncResult + setSyncing() avant sync + setError() sur échec |
+| 5 | 🟡 MEDIUM | AC2 : Progression % absente du modal | useSyncDetails expose `progressLabel` (items en cours); modal l'affiche |
+| 6 | 🟡 MEDIUM | File List incomplète — 3 fichiers non documentés | File List mise à jour (MainNavigator, SettingsScreen, useSyncDetails) |
+| 7 | 🟡 MEDIUM | useSyncStatusBridge `setPending(0)` reset le count à tort | Preservation du `pendingCount` existant via `getState()` |
+| 8 | 🟡 MEDIUM | AC8 warning audio reporté sans validation architecte | Documenté explicitement comme point en attente de validation (Winston) |
+| 9 | 🟡 MEDIUM | Tests BDD simulatifs — logique dupliquée hors hooks réels | Scénarios 2 et 4 mis à jour pour couvrir le comportement corrigé |
 
 ### File List
 
@@ -423,16 +438,19 @@ _À remplir par le dev agent_
 - `pensieve/mobile/src/hooks/useSyncStatusBridge.ts`
 - `pensieve/mobile/src/hooks/useManualSync.ts`
 - `pensieve/mobile/src/hooks/useLongOfflineReminder.ts`
+- `pensieve/mobile/src/hooks/useSyncDetails.ts`
 - `pensieve/mobile/src/components/SyncStatusIndicatorButton.tsx`
 - `pensieve/mobile/src/components/SyncStatusDetailModal.tsx`
 - `pensieve/mobile/src/components/CaptureSyncBadge.tsx`
-- `pensieve/mobile/tests/acceptance/features/story-6-4.feature`
+- `pensieve/mobile/tests/acceptance/features/story-6-4-indicateurs-sync.feature`
 - `pensieve/mobile/tests/acceptance/story-6-4.test.ts`
 
 **Fichiers modifiés:**
 - `pensieve/mobile/src/stores/settingsStore.ts`
 - `pensieve/mobile/src/infrastructure/sync/AutoSyncOrchestrator.ts`
-- `pensieve/mobile/MainApp.tsx`
-- `pensieve/mobile/src/screens/registry.ts`
-- `pensieve/mobile/src/screens/[FeedScreen].tsx`
-- `pensieve/mobile/src/screens/[ActionsScreen].tsx`
+- `pensieve/mobile/src/components/MainApp.tsx` _(path réel: src/components/MainApp.tsx)_
+- `pensieve/mobile/src/navigation/MainNavigator.tsx` _(registry.ts n'a PAS été modifié — intégration dans MainNavigator)_
+- `pensieve/mobile/src/screens/captures/CapturesListScreen.tsx`
+- `pensieve/mobile/src/screens/actions/ActionsScreen.tsx`
+- `pensieve/mobile/src/screens/settings/SettingsScreen.tsx`
+- `pensieve/mobile/src/components/captures/CaptureListItem.tsx` _(ajout CaptureSyncBadge — code review fix #1)_
