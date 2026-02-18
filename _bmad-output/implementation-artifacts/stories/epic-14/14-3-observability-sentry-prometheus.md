@@ -1,6 +1,6 @@
 # Story 14.3: Intégration Observability — Sentry et Structured Logging Backend
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -79,12 +79,100 @@ Audit ADR-015 (2026-02-17) révèle :
 - `pensieve/backend/src/modules/knowledge/application/controllers/metrics.controller.ts`
 - `pensieve/mobile/src/infrastructure/logging/LoggerService.ts`
 
+## Tasks / Subtasks
+
+### Task 1: Documentation des décisions observability (AC2, AC3, AC4, AC5)
+- [x] T1.1: Évaluer compatibilité `@sentry/react-native` avec Expo SDK 54 — décider intégrer ou déférer
+- [x] T1.2: Évaluer intégration `@sentry/nestjs` backend — décider intégrer ou déférer
+- [x] T1.3: Vérifier que `/metrics` expose un format Prometheus valide — documenter métriques manquantes
+- [x] T1.4: Créer `observability-decisions.md` avec toutes les décisions V1
+
+### Task 2: Logger structuré NestJS avec pino (AC1)
+- [x] T2.1: Installer `nestjs-pino`, `pino-http` (prod) et `pino-pretty` (dev)
+- [x] T2.2: Configurer `LoggerModule` pino dans `AppModule` (JSON structuré + pretty en dev)
+- [x] T2.3: Mettre à jour `main.ts` — `bufferLogs: true` + `app.useLogger(app.get(Logger))`
+- [x] T2.4: Ajouter `LOG_LEVEL` et `SENTRY_DSN` dans `.env.example`
+- [x] T2.5: Écrire tests unitaires pour la configuration du logger (8 tests)
+
+### Task 3: Tests BDD acceptance (AC1)
+- [x] T3.1: Créer `test/acceptance/features/story-14-3.feature` (Gherkin, 4 scénarios)
+- [x] T3.2: Créer `test/acceptance/story-14-3.test.ts` (step definitions, 4 tests)
+
+## Dev Notes
+
+### Décisions prises (2026-02-18)
+
+**Sentry (AC2 mobile + AC3 backend) → DIFFÉRÉ V1.5**
+- Raison : `@sentry/react-native` ≥ 6.x requiert Expo config plugin natif + DSN Sentry project actif
+- Pas de compte Sentry configuré pour ce sprint
+- Ticket créé : voir `observability-decisions.md`
+
+**Prometheus (AC4) → PARTIELLEMENT VÉRIFIÉ**
+- `metrics.controller.ts` expose déjà un format Prometheus valide (queue depth, jobs)
+- HTTP request duration histogram et active connections : déféré car `prom-client` non installé
+- Le stack Prometheus homelab n'est pas confirmé comme déployé
+- Décision documentée dans `observability-decisions.md`
+
+**Logger pino (AC1) → IMPLÉMENTÉ**
+- `nestjs-pino` v4.x + `pino-http` v10.x installés
+- `pino-pretty` en devDependency
+- `LoggerModule.forRootAsync()` dans `AppModule`
+- `main.ts` mis à jour avec `bufferLogs: true`
+
+## Dev Agent Record
+
+### Implementation Plan
+
+1. **Task 1** : Documentation et décisions — création `observability-decisions.md`
+2. **Task 2** : Installation pino + configuration `AppModule` + `main.ts` + `.env.example`
+3. **Task 3** : Tests BDD acceptance
+
+### Debug Log
+
+*(vide)*
+
+### Completion Notes
+
+**AC1 — Logger structuré pino** : Implémenté avec `nestjs-pino` v4.x + `pino-http` v11.x. La configuration produit des logs JSON avec les champs requis : `time`, `level`, `msg`, `context`, `reqId`. En dev, `pino-pretty` est utilisé pour une sortie lisible en console. `main.ts` mis à jour avec `bufferLogs: true` pour capturer les logs au démarrage.
+
+**AC2 / AC3 — Sentry** : Différé V1.5 — compte Sentry non disponible, intégration native Expo requise. Décision documentée dans `observability-decisions.md`.
+
+**AC4 — Prometheus** : Format validé — l'endpoint `/metrics` existant expose déjà un format Prometheus valide. HTTP histogram et active connections différés (prom-client non installé, stack homelab non confirmé).
+
+**AC5** : `observability-decisions.md` créé avec toutes les décisions V1.
+
+**Tests** : 8 tests unitaires (logger config) + 4 BDD acceptance. Zéro régression (mêmes 4 tests pré-existants échouent avant et après).
+
+## File List
+
+**Backend — Nouveaux fichiers :**
+- `pensieve/backend/src/config/logger.config.ts`
+- `pensieve/backend/src/config/logger.config.spec.ts`
+- `pensieve/backend/test/acceptance/features/story-14-3-observability-logger.feature`
+- `pensieve/backend/test/acceptance/story-14-3.test.ts`
+
+**Backend — Fichiers modifiés :**
+- `pensieve/backend/src/app.module.ts` (import LoggerModule)
+- `pensieve/backend/src/main.ts` (bufferLogs + useLogger + void bootstrap)
+- `pensieve/backend/.env.example` (LOG_LEVEL + SENTRY_DSN placeholder)
+- `pensieve/backend/package.json` (nestjs-pino, pino-http, pino-pretty)
+
+**Documentation :**
+- `_bmad-output/implementation-artifacts/observability-decisions.md` (nouveau)
+
+## Change Log
+
+| Date | Author | Change |
+|------|--------|--------|
+| 2026-02-18 | dev-agent | Story enrichie avec Tasks/Subtasks, Dev Notes, démarrage implémentation |
+| 2026-02-18 | dev-agent | AC1 implémenté : nestjs-pino + pino-http configurés, 12 tests écrits. AC2/AC3/AC4 partiels documentés. |
+
 ## Definition of Done
 
-- [ ] Logger structuré JSON en backend (winston ou pino) — AC1
-- [ ] Décision documentée sur Sentry (intégré ou déféré avec ticket)
-- [ ] Décision documentée sur Prometheus (intégré ou déféré avec justification)
-- [ ] Si Sentry intégré : tests de capture d'erreur en dev
-- [ ] `SENTRY_DSN` dans `.env.example` (pas de DSN réel committé)
-- [ ] `observability-decisions.md` créé listant les décisions prises
-- [ ] Zero régression sur tests existants
+- [x] Logger structuré JSON en backend (winston ou pino) — AC1
+- [x] Décision documentée sur Sentry (intégré ou déféré avec ticket)
+- [x] Décision documentée sur Prometheus (intégré ou déféré avec justification)
+- [ ] Si Sentry intégré : tests de capture d'erreur en dev (N/A — Sentry différé)
+- [x] `SENTRY_DSN` dans `.env.example` (pas de DSN réel committé)
+- [x] `observability-decisions.md` créé listant les décisions prises
+- [x] Zero régression sur tests existants

@@ -203,6 +203,6 @@ development_status:
   epic-14: in-progress  # Opportuniste / sprint dette technique — stories prêtes, aucune dépendance bloquante
   14-1-doc-claude-md-op-sqlite: review  # Story 14.1: Corriger la Documentation Obsolète CLAUDE.md (WatermelonDB → OP-SQLite) — ADR-018 (mobile/CLAUDE.md:67, project-context.md)
   14-2-async-storage-audit: review  # Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques — ADR-022 (rapport audit, migration si violations)
-  14-3-observability-sentry-prometheus: ready-for-dev  # Story 14.3: Intégration Observability — Logger Structuré et Évaluation Sentry/Prometheus — ADR-015 (winston/pino backend)
+  14-3-observability-sentry-prometheus: review  # Story 14.3: Intégration Observability — Logger Structuré et Évaluation Sentry/Prometheus — ADR-015 (winston/pino backend)
   14-4-renommage-owner-id: ready-for-dev  # Story 14.4: Décision et Migration owner_id (userId → owner_id) — ADR-026 R7 (décision yohikofox requise avant implémentation)
   epic-14-retrospective: optional
