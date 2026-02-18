@@ -2,7 +2,8 @@
 adr: ADR-016
 title: "Hybrid Architecture - Cloud Auth + Homelab Storage"
 date: 2026-01-19
-status: "✅ Accepted"
+status: "🔄 Partiellement Superseded"
+superseded_by: "ADR-029 (portion Auth — Supabase → Better Auth) | ADR-030 (Email transactionnel)"
 context: "Phase 3 - Solutioning - Architecture Design"
 participants:
   - yohikofox (Product Owner)
@@ -11,7 +12,13 @@ participants:
 
 # ADR-016: Hybrid Architecture - Cloud Auth + Homelab Storage
 
-**Status:** ✅ ACCEPTÉ
+> ⚠️ **PARTIELLEMENT SUPERSEDED**
+>
+> - **Portion Auth (Supabase Cloud)** → Remplacée par **[ADR-029](./ADR-029-auth-provider-better-auth.md)** (Better Auth self-hosted, 2026-02-18)
+> - **Portion Email transactionnel** → Remplacée par **[ADR-030](./ADR-030-transactional-email-provider.md)** (Resend, 2026-02-18)
+> - **Portion Storage (MinIO homelab)** → ✅ **Toujours valide et inchangée**
+
+**Status:** 🔄 PARTIELLEMENT SUPERSEDED (Auth) / ✅ VALIDE (Storage)
 
 **Date:** 2026-01-19
 

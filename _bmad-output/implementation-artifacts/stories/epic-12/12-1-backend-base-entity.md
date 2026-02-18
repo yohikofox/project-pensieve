@@ -1,6 +1,6 @@
 # Story 12.1: Créer la BaseEntity Partagée Backend
 
-Status: review
+Status: in-progress
 
 ## Story
 
@@ -106,6 +106,17 @@ claude-sonnet-4-5-20250929
 **Fichiers modifiés:**
 - `pensieve/backend/src/modules/capture/domain/entities/capture.entity.ts`
 
+### Review Follow-ups (AI)
+
+- [ ] [AI-Review][HIGH] Test AC4 trompeur : "should have deletedAt column that is nullable" ne vérifie pas la nullabilité — ajouter `expect(deletedAtColumn?.options?.nullable).toBe(true)` [base.entity.spec.ts:33]
+- [ ] [AI-Review][HIGH] Collision de noms avec `typeorm.BaseEntity` (ActiveRecord) — renommer en `AppBaseEntity` ou `PensieveBaseEntity` pour éviter les imports accidentels depuis typeorm [base.entity.ts:32]
+- [ ] [AI-Review][MEDIUM] `@Index` manquant sur `deletedAt` — TypeORM filtre automatiquement `WHERE deleted_at IS NULL` sur chaque find(), index crucial pour la performance en production [base.entity.ts:62]
+- [ ] [AI-Review][MEDIUM] Type `timestamptz` de `deletedAt` non testé dans les tests unitaires — compléter le test 2 avec `expect(deletedAtColumn?.options?.type).toBe('timestamptz')` [base.entity.spec.ts:33]
+- [ ] [AI-Review][MEDIUM] Barrel file absent : créer `src/common/entities/index.ts` pour éviter les imports à 4+ niveaux de profondeur dans tous les bounded contexts [src/common/entities/]
+- [ ] [AI-Review][LOW] Migration `down()` fragile : restaure `DEFAULT uuid_generate_v4()` qui dépend de l'extension `uuid-ossp` (peut échouer si extension absente) [migration:67]
+- [ ] [AI-Review][LOW] `deletedAt!: Date | null` — opérateur `!` incohérent sur type nullable, préférer `deletedAt: Date | null = null` pour la clarté sémantique [base.entity.ts:63]
+
 ### Change Log
 
 - 2026-02-18 : Implémentation story 12.1 — BaseEntity créée, capture.entity.ts migré (entité pilote), migration ajoutée, 3 tests passants
+- 2026-02-18 : Code review adversariale — 7 points identifiés (2 HIGH, 3 MEDIUM, 2 LOW), action items créés dans "Review Follow-ups"

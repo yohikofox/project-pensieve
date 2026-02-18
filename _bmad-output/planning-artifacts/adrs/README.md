@@ -21,7 +21,7 @@ Ce dossier contient tous les ADRs (Architecture Decision Records) du projet Pens
 | [ADR-013](./ADR-013-notification-system.md) | Notification System | ✅ Accepted | 2026-01-19 | yohikofox, Winston |
 | [ADR-014](./ADR-014-storage-management.md) | Storage Management | ✅ Accepted | 2026-01-19 | yohikofox, Winston |
 | [ADR-015](./ADR-015-observability-strategy.md) | Observability Strategy | ✅ Accepted | 2026-01-19 | yohikofox, Winston |
-| [ADR-016](./ADR-016-hybrid-architecture.md) | Hybrid Architecture - Cloud Auth + Homelab Storage | ✅ Accepted | 2026-01-19 | yohikofox, Winston |
+| [ADR-016](./ADR-016-hybrid-architecture.md) | Hybrid Architecture - Cloud Auth + Homelab Storage | 🔄 Partiellement Superseded (Auth→ADR-029, Email→ADR-030, Storage✅) | 2026-01-19 | yohikofox, Winston |
 | [ADR-017](./ADR-017-ioc-di-strategy.md) | Dependency Injection & IoC Container Strategy | ✅ Accepted | 2026-01-22 | yohikofox, Winston, Amelia, Murat |
 | [ADR-018](./ADR-018-migration-watermelondb-opsqlite.md) | Migration WatermelonDB → OP-SQLite | ✅ Accepted | 2026-01-22 | yohikofox, Winston, Amelia |
 | [ADR-019](./ADR-019-eventbus-domain-events.md) | EventBus Architecture - Domain Events avec RxJS | ✅ Accepted | 2026-01-24 | yohikofox, Winston, Amelia |
@@ -35,7 +35,10 @@ Ce dossier contient tous les ADRs (Architecture Decision Records) du projet Pens
 | [ADR-027](./ADR-027-unit-cache-strategy.md) | Unit Cache Strategy — Cache Unitaire Opt-in par Héritage de Repository | ✅ Accepted | 2026-02-18 | yohikofox, Winston |
 | [ADR-028](./ADR-028-typescript-type-safety-policy.md) | TypeScript Type Safety Policy — Interdiction de `any`, Hiérarchie de Typage | ✅ Accepted | 2026-02-18 | yohikofox, Winston |
 
-**Total:** 28 ADRs documentés (40+ sous-décisions architecturales)
+| [ADR-029](./ADR-029-auth-provider-better-auth.md) | Authentication Provider — Better Auth Self-Hosted (Révision Auth ADR-016) | ✅ Accepted | 2026-02-18 | yohikofox, Winston |
+| [ADR-030](./ADR-030-transactional-email-provider.md) | Transactional Email Provider — Resend | ✅ Accepted | 2026-02-18 | yohikofox, Winston |
+
+**Total:** 30 ADRs documentés (40+ sous-décisions architecturales)
 
 ---
 
@@ -235,5 +238,5 @@ Proposed (⏳) → Accepted (✅) → [Review après 1-3 mois] → Maintenu OU S
 
 ---
 
-**Dernière mise à jour :** 2026-02-18
+**Dernière mise à jour :** 2026-02-18 (ADR-029 + ADR-030 ajoutés — remplacement Supabase Auth)
 **Maintenu par :** Winston (Architect) + yohikofox (Product Owner)
