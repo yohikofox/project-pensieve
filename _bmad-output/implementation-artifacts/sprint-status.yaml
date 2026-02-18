@@ -130,6 +130,8 @@ development_status:
   8-15-priorisation-visuelle-des-taches: backlog  # Highlights couleur (retard/prioritaire/approchant/normal) - Quick Win
   # Performance fix (analysis session 2026-02-18)
   8-16-performance-latence-capture-screen: ready-for-dev  # Latence ~1s premier load CaptureScreen — viole NFR1 (<500ms)
+  # Email infrastructure (2026-02-18)
+  8-17-configuration-smtp-email-transactionnel: ready-for-dev  # SMTP custom Supabase + EmailModule NestJS — lève rate limit 2 emails/h
   epic-8-retrospective: optional
 
   # ============================================================
@@ -179,7 +181,7 @@ development_status:
   # Dépendances internes: 12-1 → 12-2 → 12-3 → 12-4 (séquentielles, ne pas paralléliser)
   # Périmètre: Backend uniquement (NestJS + TypeORM + PostgreSQL)
   epic-12: in-progress
-  12-1-backend-base-entity: review  # Story 12.1: Créer la BaseEntity Partagée Backend — ADR-026 R6 (@PrimaryColumn uuid, TIMESTAMPTZ, deletedAt)
+  12-1-backend-base-entity: in-progress  # Story 12.1: Créer la BaseEntity Partagée Backend — ADR-026 R6 (@PrimaryColumn uuid, TIMESTAMPTZ, deletedAt)
   12-2-backend-pk-domaine: review  # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine — ADR-026 R1 (crypto.randomUUID, FKs uuid)
   12-3-backend-soft-delete: review  # Story 12.3: Implémenter le Soft Delete sur Toutes les Entités Backend — ADR-026 R4 (@DeleteDateColumn, supprimer _status)
   12-4-backend-suppression-cascade: review  # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative — ADR-026 R3 (transaction explicite)
