@@ -1,6 +1,6 @@
 # Story 6.3: Synchronisation Cloud → Local
 
-Status: ready-for-dev
+Status: done
 
 ---
 
@@ -214,11 +214,11 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 8: Background Sync After Offline Period (AC8)
 
-- [ ] **8.1** Vérifier AutoSyncOrchestrator démarre au boot (fait Story 6.2)
-- [ ] **8.2** Trigger sync automatique quand network revient (déjà fait Story 6.2)
-- [ ] **8.3** Implémenter chunking pour large downloads (réutiliser batching Task 4)
-- [ ] **8.4** Keep UI responsive: sync en background thread (fire-and-forget)
-- [ ] **8.5** Tests: Offline 7 days → 1000 cloud changes → sync success sans freeze UI
+- [x] **8.1** Vérifier AutoSyncOrchestrator démarre au boot (fait Story 6.2)
+- [x] **8.2** Trigger sync automatique quand network revient (déjà fait Story 6.2)
+- [x] **8.3** Implémenter chunking pour large downloads (réutiliser batching Task 4)
+- [x] **8.4** Keep UI responsive: sync en background thread (fire-and-forget)
+- [x] **8.5** Tests: Offline 7 days → 1000 cloud changes → sync success sans freeze UI
 
 **Références:**
 - Story 6.2: NetworkMonitor + AutoSyncOrchestrator déjà implémentés
@@ -229,11 +229,11 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 9: Sync Completion UI Updates (AC9)
 
-- [ ] **9.1** Vérifier SyncStatusStore.setSynced() existe (fait Story 6.2)
-- [ ] **9.2** Trigger `setSynced(Date.now())` après PULL success
-- [ ] **9.3** Update UI reactively via SyncStatusIndicator (déjà intégré Story 6.2)
-- [ ] **9.4** Show brief toast notification "Synced" (optional, 2s auto-dismiss)
-- [ ] **9.5** Tests: PULL success → SyncStatusStore updated → UI shows "Synced"
+- [x] **9.1** Vérifier SyncStatusStore.setSynced() existe (fait Story 6.2)
+- [x] **9.2** Trigger `setSynced(Date.now())` après PULL success
+- [x] **9.3** Update UI reactively via SyncStatusIndicator (déjà intégré Story 6.2)
+- [x] **9.4** Show brief toast notification "Synced" (optional, 2s auto-dismiss)
+- [x] **9.5** Tests: PULL success → SyncStatusStore updated → UI shows "Synced"
 
 **Références:**
 - Story 6.2: SyncStatusStore + SyncStatusIndicator déjà créés
@@ -244,10 +244,10 @@ So that **I can access all my captures from any device** (FR30, NFR9).
 
 ### Task 10: Integration Testing & BDD Scenarios (All ACs)
 
-- [ ] **10.1** Créer fichier Gherkin: `mobile/tests/acceptance/features/story-6-3-sync-cloud-local.feature`
-- [ ] **10.2** Scénarios BDD (9 scénarios pour AC1-AC9):
+- [x] **10.1** Créer fichier Gherkin: `mobile/tests/acceptance/features/story-6-3-sync-cloud-local.feature`
+- [x] **10.2** Scénarios BDD (11 scénarios pour AC1-AC9, AC2 en a 2):
   - **AC1:** Initial full sync on first login
-  - **AC2:** Metadata first, audio lazy loading
+  - **AC2:** Metadata first, audio lazy loading (+ dédup audio)
   - **AC3:** Real-time sync between devices (periodic 15min)
   - **AC4:** Incremental sync (delta only)
   - **AC5:** Deletion propagation
@@ -255,9 +255,9 @@ So that **I can access all my captures from any device** (FR30, NFR9).
   - **AC7:** Conflict resolution PULL
   - **AC8:** Background sync after offline period
   - **AC9:** Sync completion UI updates
-- [ ] **10.3** Créer step definitions: `mobile/tests/acceptance/story-6-3.test.ts`
-- [ ] **10.4** Mock `axios`, `DatabaseConnection`, `AsyncStorage`, `ConflictHandler`, `SyncStatusStore`
-- [ ] **10.5** Run tests: `npm run test:acceptance -- --testPathPattern="story-6-3"`
+- [x] **10.3** Créer step definitions: `mobile/tests/acceptance/story-6-3.test.ts`
+- [x] **10.4** Mock `fetch`, `DatabaseConnection`, `ConflictHandler`, `SyncStatusStore`, `expo-file-system` (ADR-022: pas d'AsyncStorage)
+- [x] **10.5** Run tests: 11/11 passent
 
 **Références:**
 - Story 6.1: Pattern BDD déjà établi
