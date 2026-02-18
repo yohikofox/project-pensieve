@@ -193,7 +193,7 @@ development_status:
   13-1-di-lifecycle-transient-first: review  # Story 13.1: Migrer le Container DI vers Transient First (ADR-021) — container.ts mobile, repositories stateless
   13-2-backend-statuts-referentiels: review  # Story 13.2: Créer les Tables Référentielles pour les Statuts Backend — ADR-026 R2 (thought_statuses, capture_states)
   13-3-backend-timestamptz: review  # Story 13.3: Corriger les Types de Colonnes Date vers TIMESTAMPTZ — ADR-026 R5 (ALTER COLUMN TYPE TIMESTAMPTZ)
-  13-4-result-pattern-generalisation: ready-for-dev  # Story 13.4: Généraliser le Result Pattern à Tous les Contextes Mobile — ADR-023 (shared/domain/Result.ts, knowledge+action+Normalization)
+  13-4-result-pattern-generalisation: review  # Story 13.4: Généraliser le Result Pattern à Tous les Contextes Mobile — ADR-023 (shared/domain/Result.ts, knowledge+action+Normalization)
   epic-13-retrospective: optional
 
   # Epic 14: Conformité ADR — Priorité Basse 🟢 (4 stories - ADR-018, ADR-022, ADR-015, ADR-026 R7)
