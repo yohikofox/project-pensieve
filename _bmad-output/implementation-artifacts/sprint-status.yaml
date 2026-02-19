@@ -192,11 +192,11 @@ development_status:
   # Source: Rapport d'audit architectural Winston — 2026-02-17 | epics.md#Epic-13
   # Dépendances: 13-2 et 13-3 bloquées sur Epic 12 (BaseEntity + UUID requis)
   # Périmètre: Mobile (13-1, 13-4) + Backend (13-2, 13-3)
-  epic-13: in-progress
+  epic-13: done  # Toutes les 4 stories ADR-021+ADR-023+ADR-026 R2/R5 complètes (2026-02-19)
   13-1-di-lifecycle-transient-first: done  # Story 13.1: Code review OK — 2H+4M corrigés, 24 tests, BDD Gherkin, device Android validé
   13-2-backend-statuts-referentiels: done  # Story 13.2: Code review OK — 1C+3H+2M corrigés, 7/7 BDD tests passent
   13-3-backend-timestamptz: done  # Story 13.3: Code review OK — 2H+3M corrigés, 34 unit tests + 9 BDD passent
-  13-4-result-pattern-generalisation: review  # Story 13.4: Généraliser le Result Pattern à Tous les Contextes Mobile — ADR-023 (shared/domain/Result.ts, knowledge+action+Normalization)
+  13-4-result-pattern-generalisation: done  # Story 13.4: Code review OK — 3H+4M corrigés, 6/6 BDD + 15/15 unit + 5/5 hook tests. retryable? ajouté, aliases Result<T>/ResultType, trimSilence supprimé, mock complété.
   epic-13-retrospective: optional
 
   # Epic 14: Conformité ADR — Priorité Basse 🟢 (4 stories - ADR-018, ADR-022, ADR-015, ADR-026 R7)
