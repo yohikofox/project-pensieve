@@ -217,6 +217,6 @@ development_status:
   epic-15: in-progress
   15-1-better-auth-server-nestjs-resend: done  # Code review: 9/9 fixes (2C+3H+3M+1L). Validation secret, pool limité, BDD 12/12 (register/login/logout/admin plugin ajoutés), File List complétée.
   15-2-mobile-better-auth-client: done  # Code review: 8H+M fixes (DI bypass LoginScreen/ResetPassword, userId hardcodé, getSession cold start, new AuthTokenManager direct, async incohérence, expiresIn hardcodé, File List, IAuthService interface). 8/8 BDD verts.
-  15-3-web-admin-cleanup-supabase: ready-for-dev  # Clients web+admin better-auth/client + suppression complète Supabase
+  15-3-web-admin-cleanup-supabase: review  # better-auth/client web+admin, @supabase/* supprimé, grep=0, builds OK (web+admin), 58 BDD verts (story-1-2: 22, story-1-3: 18, backend: 18)
   epic-15-retrospective: optional
 
