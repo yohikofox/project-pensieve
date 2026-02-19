@@ -193,7 +193,7 @@ development_status:
   # Dépendances: 13-2 et 13-3 bloquées sur Epic 12 (BaseEntity + UUID requis)
   # Périmètre: Mobile (13-1, 13-4) + Backend (13-2, 13-3)
   epic-13: in-progress
-  13-1-di-lifecycle-transient-first: in-progress  # Story 13.1: Code review appliqué (2026-02-19) — 2H+4M corrigés. Restant: validation manuelle simulateur iOS (M4)
+  13-1-di-lifecycle-transient-first: done  # Story 13.1: Code review OK — 2H+4M corrigés, 24 tests, BDD Gherkin, device Android validé
   13-2-backend-statuts-referentiels: review  # Story 13.2: Créer les Tables Référentielles pour les Statuts Backend — ADR-026 R2 (thought_statuses, capture_states)
   13-3-backend-timestamptz: review  # Story 13.3: Corriger les Types de Colonnes Date vers TIMESTAMPTZ — ADR-026 R5 (ALTER COLUMN TYPE TIMESTAMPTZ)
   13-4-result-pattern-generalisation: review  # Story 13.4: Généraliser le Result Pattern à Tous les Contextes Mobile — ADR-023 (shared/domain/Result.ts, knowledge+action+Normalization)
