@@ -19,8 +19,8 @@ grep -rn "AsyncStorage" pensieve/mobile/src/ --include="*.ts" --include="*.tsx"
 | Catégorie | Nombre de fichiers |
 |-----------|-------------------|
 | **VIOLATIONS CRITIQUES** (données critiques dans AsyncStorage) | 3 |
-| **UI_PREF** (acceptable — préférences UI) | 8 |
-| Fichiers de tests (mocks) | 3 |
+| **UI_PREF** (acceptable — préférences UI) | 9 |
+| Fichiers de tests (mocks) | 4 |
 
 **Statut final** : ✅ Toutes violations corrigées — zéro donnée critique dans AsyncStorage
 
@@ -101,6 +101,7 @@ Ces fichiers utilisent AsyncStorage pour des **préférences UI uniquement**, ce
 | `src/contexts/capture/services/RetentionPolicyService.ts` | Config rétention, date dernière purge | ✅ UI_PREF |
 | `src/contexts/Normalization/services/CorrectionLearningService.ts` | Historique corrections transcription (cache comportemental) | ✅ UI_PREF |
 | `src/contexts/identity/data/user-features.repository.ts` | Cache TTL des feature flags utilisateur (non autoritatif) | ✅ UI_PREF |
+| `src/hooks/useLongOfflineReminder.ts` | Timestamp de dismissal du rappel hors-ligne (déjà annoté depuis Story 6.4) | ✅ UI_PREF |
 
 ---
 
@@ -108,12 +109,11 @@ Ces fichiers utilisent AsyncStorage pour des **préférences UI uniquement**, ce
 
 Les fichiers suivants utilisent AsyncStorage uniquement pour des **mocks dans les tests** :
 
-- `src/infrastructure/sync/__tests__/InitialSyncService.test.ts`
+- `src/infrastructure/sync/__tests__/InitialSyncService.test.ts` — ✅ Mis à jour : mock `SyncStorage` (OP-SQLite) au lieu d'AsyncStorage
+- `src/infrastructure/sync/__tests__/SyncStorage.test.ts` — ✅ Nouveau : tests unitaires pour toutes les fonctions SyncStorage (Story 14.2 code review)
 - `src/contexts/action/hooks/__tests__/useFilterState.test.ts`
 - `src/contexts/capture/services/__tests__/RetentionPolicyService.test.ts`
 - `src/contexts/identity/data/__tests__/user-features.repository.test.ts`
-
-> ⚠️ Note : Le test `InitialSyncService.test.ts` mock l'ancien AsyncStorage. Il doit être mis à jour pour mocker OP-SQLite après la migration. Voir section 6.
 
 ---
 
@@ -163,14 +163,27 @@ key.__chunk_2     → deuxième chunk (bytes 2048-4095)
 
 ---
 
-## 8. Note sur les Tests `InitialSyncService.test.ts`
+## 8. Tests mis à jour post-migration
 
-Le fichier de test `src/infrastructure/sync/__tests__/InitialSyncService.test.ts` mock `@react-native-async-storage/async-storage` et testait le comportement de `isFirstSync()` avec `AsyncStorage.getItem`.
+### `InitialSyncService.test.ts` — ✅ Migré
 
-Après la migration :
-- `isFirstSync()` utilise maintenant `getLastPulledAt('captures')` depuis OP-SQLite
-- Les tests doivent être mis à jour pour mocker `SyncStorage` ou la fonction `getLastPulledAt`
-- Le test existant continue de compiler mais ne teste plus le bon chemin → à corriger dans la story de tests (hors périmètre Story 14.2 — audit uniquement)
+Le fichier de test a été mis à jour dans la même story pour mocker `SyncStorage` (OP-SQLite) au lieu d'AsyncStorage :
+```typescript
+jest.mock('../SyncStorage', () => ({
+  getLastPulledAt: jest.fn(),
+  updateLastPulledAt: jest.fn(),
+}));
+```
+
+### `SyncStorage.test.ts` — ✅ Créé (code review 14.2)
+
+Nouveaux tests unitaires couvrant toutes les fonctions OP-SQLite de `SyncStorage.ts` :
+- `getSyncMetadata` — lecture depuis OP-SQLite, cas null et cas existant
+- `setSyncMetadata` — écriture UPSERT
+- `getLastPulledAt` — retourne 0 si absent (full sync)
+- `updateLastPulledAt` / `updateLastPushedAt` — préservation des champs existants
+- `updateSyncStatus` — statuts error/in_progress
+- `clearAllSyncMetadata` — `DELETE FROM sync_metadata` (sans liste hardcodée)
 
 ---
 

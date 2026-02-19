@@ -1,6 +1,6 @@
 # Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques
 
-Status: review
+Status: done
 
 ## Story
 
@@ -133,15 +133,18 @@ Audit complet effectué sur 100% des usages AsyncStorage dans `pensieve/mobile/s
 
 ### New Files
 - `pensieve/mobile/src/lib/large-secure-store.ts` — LargeSecureStore adapter (SecureStore chunking)
-- `pensieve/mobile/src/infrastructure/sync/__tests__/SyncStorage.sqlite.test.ts` — Tests OP-SQLite SyncStorage
+- `pensieve/mobile/src/infrastructure/sync/__tests__/SyncStorage.test.ts` — Tests unitaires OP-SQLite pour SyncStorage (créé en code review)
 - `_bmad-output/implementation-artifacts/async-storage-audit-report.md` — Rapport d'audit
 
 ### Modified Files
 - `pensieve/mobile/src/lib/supabase.ts` — Remplacer AsyncStorage par LargeSecureStore
-- `pensieve/mobile/src/database/schema.ts` — Ajouter `CREATE_SYNC_METADATA_TABLE` + SCHEMA_VERSION → 24
+- `pensieve/mobile/src/lib/large-secure-store.ts` — Fix sécurité : nettoyage des chunks orphelins lors du setItem (code review)
+- `pensieve/mobile/src/database/schema.ts` — Ajouter `CREATE_SYNC_METADATA_TABLE` + SCHEMA_VERSION → 24 + inclure dans SCHEMA_DDL (code review)
 - `pensieve/mobile/src/database/migrations.ts` — Ajouter migration v24 (`sync_metadata` table)
-- `pensieve/mobile/src/infrastructure/sync/SyncStorage.ts` — Réécrire avec OP-SQLite
+- `pensieve/mobile/src/infrastructure/sync/SyncStorage.ts` — Réécrire avec OP-SQLite + fix clearAllSyncMetadata (DELETE FROM sync_metadata, code review)
 - `pensieve/mobile/src/infrastructure/sync/InitialSyncService.ts` — Utiliser SyncStorage refactorisé
+- `pensieve/mobile/src/infrastructure/sync/__tests__/InitialSyncService.test.ts` — Migrer mock AsyncStorage → mock SyncStorage (OP-SQLite)
+- `pensieve/mobile/src/infrastructure/sync/types.ts` — Corriger JSDoc SyncMetadata : AsyncStorage → OP-SQLite (code review)
 - `pensieve/mobile/src/stores/settingsStore.ts` — Ajouter commentaire ASYNC_STORAGE_OK
 - `pensieve/mobile/src/contexts/Normalization/services/LLMModelService.ts` — Ajouter commentaire ASYNC_STORAGE_OK
 - `pensieve/mobile/src/contexts/Normalization/services/TranscriptionModelService.ts` — Ajouter commentaire ASYNC_STORAGE_OK
@@ -155,3 +158,4 @@ Audit complet effectué sur 100% des usages AsyncStorage dans `pensieve/mobile/s
 ## Change Log
 
 - 2026-02-18: Story 14.2 implémentée — Audit AsyncStorage complet, 2 violations corrigées, 8 usages UI_PREF documentés, migration OP-SQLite v24 créée, LargeSecureStore adapter créé
+- 2026-02-19: Code review — 3H+4M corrigés : File List corrigée, tests SyncStorage créés (14 tests), types.ts JSDoc mis à jour, LargeSecureStore sécurisé (stale chunks), SCHEMA_DDL complété, clearAllSyncMetadata simplifié, rapport audit complété (9 UI_PREF)
