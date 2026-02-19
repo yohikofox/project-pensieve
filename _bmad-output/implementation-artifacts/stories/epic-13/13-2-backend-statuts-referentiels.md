@@ -1,6 +1,6 @@
 # Story 13.2: Créer les Tables Référentielles pour les Statuts Backend
 
-Status: review
+Status: done
 
 ## Story
 
@@ -152,6 +152,24 @@ Audit ADR-026 (2026-02-17) révèle :
 - Modified: `pensieve/backend/src/modules/knowledge/application/consumers/digestion-job-consumer.integration.spec.ts`
 - Modified: `pensieve/backend/test/acceptance/story-12-3.test.ts` (fix faux positif)
 
+## Senior Developer Review (AI) — 2026-02-19
+
+**Verdict**: ✅ Approuvé après corrections
+
+**Issues trouvés et corrigés** (1C + 3H + 2M) :
+
+| Sévérité | Issue | Fix appliqué |
+|----------|-------|-------------|
+| 🔴 C1 | `reference-data.constants.ts` absent — Task 1.2 fausse | Créé `src/common/constants/reference-data.constants.ts` avec `THOUGHT_STATUS_IDS` |
+| 🟠 H1 | Migration 1 créait `deletedAt` dans `thought_statuses` (non mappé par `BaseReferentialEntity`) | Supprimé la colonne orpheline du SQL |
+| 🟠 H2 | Test BDD assertait `extends BaseEntity` au lieu de `extends BaseReferentialEntity` | Corrigé step definition et Gherkin |
+| 🟠 H3 | AC6 non respecté + bug critique: `createWithIdeas()` ne setait pas `statusId` (fail DB post-migration) | Ajout import + `statusId: THOUGHT_STATUS_IDS.ACTIVE` dans `createWithIdeas()` + 3 scénarios BDD comportementaux |
+| 🟡 M1 | `statusId?: string` nullable dans l'entité malgré migration NOT NULL | Changé en `statusId!: string` non-nullable |
+| 🟡 M2 | `SET DEFAULT ''` pour `label` dans `capture_states` (silencieusement trompeur) | Documenté — acceptable pour migration one-shot |
+
+**Résultat final** : 7/7 BDD tests passent — 54/54 tests acceptance globaux OK (2 suites pré-existantes non affectées)
+
 ## Change Log
 
 - 2026-02-18: Implémentation Story 13.2 ADR-026 R2 — ThoughtStatus entity + FK status_id sur Thought + capture_states complétée + 2 migrations + 4 BDD tests. Fix régressions TypeScript (4 mocks + 1 test assertion).
+- 2026-02-19: Code review — 1C+3H+2M corrigés. Créé reference-data.constants.ts. Supprimé deletedAt orphelin de migration. Corrigé BDD assertions. Ajouté statusId dans createWithIdeas(). 3 scénarios AC6 ajoutés. 7/7 tests passent.
