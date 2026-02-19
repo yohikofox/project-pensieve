@@ -94,7 +94,7 @@
 **Implementation Checklist:**
 - [ ] Afficher spinner + "Transcription in progress..." si `state === 'TRANSCRIBING'`
 - [ ] Permettre lecture audio même pendant transcription
-- [ ] Implémenter polling (ou WatermelonDB observe) pour détecter state change
+- [ ] Implémenter polling + EventBus (RxJS Subject) pour détecter state change (OP-SQLite n'a pas d'API observe() native)
 - [ ] Quand state passe à "TRANSCRIBED", afficher `normalizedText` automatiquement
 - [ ] Tester avec `testContext.db.update()` pour simuler state change
 - [ ] Vérifier que UI se met à jour sans refresh manuel
@@ -135,7 +135,7 @@
 ### ✅ AC5: Fonctionnement Offline (FR23: Local Cache Compliance)
 
 **Requirements:**
-- Transcription loaded from local WatermelonDB cache when offline (FR23 compliance)
+- Transcription loaded from local OP-SQLite cache when offline (FR23 compliance)
 - All functionality works identically to online mode
 - No network errors or "connection lost" messages shown
 - Audio playback works offline (files stored locally)
@@ -149,7 +149,7 @@
 - ✅ BDD: `story-2-6.test.ts` - Step "aucune erreur réseau n'est affichée"
 
 **Implementation Checklist:**
-- [ ] Vérifier que `Capture.normalizedText` est chargé depuis WatermelonDB (local)
+- [ ] Vérifier que `Capture.normalizedText` est chargé depuis OP-SQLite (local)
 - [ ] Tester avec `testContext.setOffline(true)`
 - [ ] S'assurer que aucune requête réseau n'est faite
 - [ ] Audio file path pointe vers stockage local (pas de téléchargement)
@@ -512,8 +512,9 @@ npm run test:acceptance -- --testNamePattern="retry"
    - Audio state management (play, pause, seek)
 
 4. **Implement Live Update Mechanism**
-   - WatermelonDB observe() for state changes
-   - Or polling mechanism to detect "TRANSCRIBING" → "TRANSCRIBED" transition
+   - EventBus (RxJS Subject) pour recevoir les events de state change émis après update OP-SQLite
+   - Polling OP-SQLite (requête périodique) comme fallback si EventBus non disponible
+   - Détecter la transition "TRANSCRIBING" → "TRANSCRIBED" pour auto-update UI
    - Auto-update UI without manual refresh
 
 5. **Implement Retry Transcription Handler**
@@ -527,7 +528,7 @@ npm run test:acceptance -- --testNamePattern="retry"
    - Optimize font size and spacing for readability
 
 7. **Implement Offline Mode Support (FR23)**
-   - Load transcription from local WatermelonDB cache
+   - Load transcription from local OP-SQLite cache
    - No network calls required
    - Audio playback from local storage
 

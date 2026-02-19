@@ -1,6 +1,6 @@
 # Story 14.1: Corriger la Documentation Obsolète CLAUDE.md (WatermelonDB → OP-SQLite)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -66,7 +66,7 @@ Audit ADR-018 (2026-02-17) révèle :
 - [x] `project-context.md` : dépendances mobile à jour (ligne WatermelonDB supprimée, OP-SQLite 15.2.3 conservé)
 - [x] Audit complet : grep sur `pensieve/CLAUDE.md`, `pensieve/mobile/CLAUDE.md`, `_bmad-output/project-context.md` → zéro occurrence WatermelonDB obsolète
 - [x] `pensieve/CLAUDE.md` (root) corrigé : ligne 96 (`Local DB`) et ligne 115 (description mocks) mises à jour vers OP-SQLite
-- [ ] Commit avec message `docs(mobile): update CLAUDE.md references from WatermelonDB to OP-SQLite`
+- [x] Commit avec message `docs(mobile): update CLAUDE.md references from WatermelonDB to OP-SQLite` (pensine: `921183c`, pensieve: `72db2f5`)
 
 ## Dev Agent Record
 
@@ -93,11 +93,50 @@ Audit ADR-018 (2026-02-17) révèle :
 - AC3 ✅ : `project-context.md` → dépendance WatermelonDB supprimée, OP-SQLite 15.2.3 en place
 - AC4 ✅ : package.json confirmé → `@op-engineering/op-sqlite ^15.2.3` présent, WatermelonDB absent des dépendances de production
 
+### Review Follow-ups Résolus (2026-02-19)
+
+- ✅ Resolved review finding [HIGH]: `tea-artifacts-index.md:151,232` — 2 refs WatermelonDB → OP-SQLite
+- ✅ Resolved review finding [MEDIUM]: `CLAUDE.md:86,169` — Tech Stack Summary + Sync section mis à jour
+- ✅ Resolved review finding [MEDIUM]: `test-infrastructure-setup.md:173` — "(remplace WatermelonDB)" → "(abstraction OP-SQLite pour tests)"
+- ✅ Resolved review finding [LOW]: `README.md:86,133` — 2 refs WatermelonDB → OP-SQLite
+- ✅ Resolved review finding [LOW]: ATDD checklists (7 fichiers) — remplacement global WatermelonDB → OP-SQLite
+- ✅ Resolved review finding [LOW]: AC4 cross-check — `@nozbe/watermelondb` en dépendances test déjà documenté dans `project-context.md:312-317`
+
+### Review Pass 2 — Corrections Auto-Fixes (2026-02-19)
+
+- ✅ Fixed [MEDIUM]: `atdd-checklist-2-6:97,515` — "OP-SQLite observe()" sémantiquement incorrect → remplacé par "EventBus (RxJS Subject) + polling OP-SQLite" (OP-SQLite n'a pas d'API observe() native, le projet utilise EventBus)
+- ✅ Fixed [LOW]: `atdd-checklist-2-1:375` — `@nozbe/watermelondb` sans clarification → marqué ⚠️ legacy test mock uniquement + référence ADR-018
+- ✅ Fixed [LOW]: `atdd-checklist-2-2:404` — `@nozbe/watermelondb - Offline database` trompeur → marqué ⚠️ legacy test mock + vraie offline DB = op-sqlite
+
+## Tasks/Subtasks
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][HIGH] `tea-artifacts-index.md` : living document avec 2 refs WatermelonDB — ligne 151 décrit une AC courante avec l'ancien nom de tech, ligne 232 décrit le mock InMemoryDatabase comme "WatermelonDB in-memory" (scope AC2) [`_bmad-output/tea-artifacts-index.md:151,232`]
+- [x] [AI-Review][MEDIUM] `pensine/CLAUDE.md` (repo docs, pas submodule) : 2 refs WatermelonDB non corrigées — table Tech Stack Summary et section Sync — document de navigation principal de ce repo, premier vu par les agents AI [`pensine/CLAUDE.md:86,169`]
+- [x] [AI-Review][MEDIUM] `test-infrastructure-setup.md` non audité : ligne 173 "InMemoryDatabase (remplace WatermelonDB)" — hors scope corrigé mais dans le scope AC2 "Any `*.md` files in `_bmad-output/`" [`_bmad-output/test-infrastructure-setup.md:173`]
+- [x] [AI-Review][LOW] `pensine/README.md` : 2 refs WatermelonDB (hors scope AC mais visible sur GitHub) [`pensine/README.md:86,133`]
+- [x] [AI-Review][LOW] ATDD checklists historiques : `atdd-checklist-2.1.md`, `atdd-checklist-2-3.md`, `atdd-checklist-2-4.md`, `atdd-checklist-2-5.md` — multiples refs WatermelonDB dans des artefacts créés avant la migration. Scope AC2 strict mais valeur discutable (artefacts historiques) [`_bmad-output/atdd-checklist-2*.md`]
+- [x] [AI-Review][LOW] AC4 cross-check partiel : vérification faite sur les dépendances de production uniquement — `@nozbe/watermelondb` toujours présent dans les dépendances de test (`jest.config.js moduleNameMapper`) — déjà documenté dans `project-context.md:312-317` (note legacy compatibility) [`_bmad-output/project-context.md:302-318`]
+
 ## File List
 
 - `pensieve/CLAUDE.md` (modifié)
 - `_bmad-output/project-context.md` (modifié)
+- `_bmad-output/tea-artifacts-index.md` (modifié — review follow-up)
+- `_bmad-output/test-infrastructure-setup.md` (modifié — review follow-up)
+- `CLAUDE.md` (modifié — review follow-up : lignes 86, 169)
+- `README.md` (modifié — review follow-up : lignes 86, 133)
+- `_bmad-output/atdd-checklist-2.1.md` (modifié — review follow-up)
+- `_bmad-output/atdd-checklist-2-1-capture-audio-1-tap.md` (modifié — review follow-up)
+- `_bmad-output/atdd-checklist-2-2-capture-texte-rapide.md` (modifié — review follow-up)
+- `_bmad-output/atdd-checklist-2-3-annuler-capture-audio.md` (modifié — review follow-up)
+- `_bmad-output/atdd-checklist-2-4-stockage-offline.md` (modifié — review follow-up)
+- `_bmad-output/atdd-checklist-2-5-transcription-whisper.md` (modifié — review follow-up)
+- `_bmad-output/atdd-checklist-2-6-consultation-transcription.md` (modifié — review follow-up)
 
 ## Change Log
 
 - 2026-02-18 : Story 14.1 implémentée — Correction des références documentaires WatermelonDB → OP-SQLite dans `pensieve/CLAUDE.md` et `_bmad-output/project-context.md`
+- 2026-02-19 : Review follow-ups traités — 6 items résolus (1 HIGH + 2 MEDIUM + 3 LOW) : tea-artifacts-index.md, CLAUDE.md (root), README.md, test-infrastructure-setup.md, 7 ATDD checklists
+- 2026-02-19 : Review pass 2 — 3 corrections auto (1M+2L) : atdd-checklist-2-6 observe() sémantique corrigée, atdd-checklist-2-1/2-2 @nozbe clarifiés comme legacy test mock

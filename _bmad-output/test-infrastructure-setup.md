@@ -170,7 +170,7 @@ Plan du scénario: Gérer les enregistrements très courts
    - `getFiles()` pour inspection
    - `setAvailableSpace()` pour tester espace insuffisant
 
-3. **InMemoryDatabase** (remplace WatermelonDB)
+3. **InMemoryDatabase** (abstraction OP-SQLite pour tests)
    - CRUD complet sur Capture entities
    - `findByState()` / `findBySyncStatus()`
    - Aucune dépendance SQLite

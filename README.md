@@ -83,7 +83,7 @@ Vérification de qualité :
 ### Mobile
 - **React Native** + Expo (custom dev client)
 - **TypeScript** (strict mode)
-- **WatermelonDB** (offline-first)
+- **@op-engineering/op-sqlite** (offline-first, synchronous queries)
 - **Whisper.rn** (transcription on-device ~500 Mo)
 
 ### Backend
@@ -130,7 +130,7 @@ Vérification de qualité :
 - 🔔 **Notification** : Push, local
 
 **Infrastructure :**
-- 🔄 **Sync** : WatermelonDB sync protocol
+- 🔄 **Sync** : OP-SQLite sync protocol
 
 ---
 

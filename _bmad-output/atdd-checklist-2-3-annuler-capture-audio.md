@@ -24,7 +24,7 @@
 **Requirements:**
 - Recording stops immediately on cancel button tap
 - Audio file deleted from device storage
-- Capture entity removed from WatermelonDB
+- Capture entity removed from OP-SQLite
 - User returned to main screen ready for new capture
 
 **Test Coverage:**
@@ -39,7 +39,7 @@
 - [ ] Ajouter bouton "Cancel" avec `data-testid="cancel-recording-button"` dans l'UI d'enregistrement
 - [ ] Implémenter `RecordingService.cancelRecording()` pour arrêter le recorder
 - [ ] Appeler `MockAudioRecorder.stopRecording()` puis supprimer le fichier
-- [ ] Supprimer l'entité Capture de WatermelonDB via `db.delete(captureId)`
+- [ ] Supprimer l'entité Capture de OP-SQLite via `db.delete(captureId)`
 - [ ] Vérifier avec `MockFileSystem.fileExists(filePath)` que le fichier est bien supprimé
 - [ ] Naviguer vers l'écran principal après cancellation
 - [ ] **Run test:** `npm run test:acceptance:story-2-3`
@@ -174,7 +174,7 @@
 
 - ✅ **Scenario:** "Vérifier suppression de l'entité Capture"
   - **Status:** RED - Capture deletion logic not implemented
-  - **Verifies:** Capture entity is removed from WatermelonDB
+  - **Verifies:** Capture entity is removed from OP-SQLite
 
 - ✅ **Scenario:** "Retour à l'écran principal après annulation"
   - **Status:** RED - Navigation logic not implemented

@@ -242,7 +242,7 @@ pensieve/mobile/tests/acceptance/capture/text-capture-input.test.tsx
 #### Task 4: Offline Mode Support
 
 - [ ] **Subtask 4.1**: Test offline text capture
-  - [ ] Ensure WatermelonDB Capture entity created
+  - [ ] Ensure OP-SQLite Capture entity created
   - [ ] Verify syncStatus set to 'pending'
   - [ ] Confirm no network calls attempted
   - [ ] Run tests: `npm run test:acceptance -- text-capture-service.test.ts` (AC4 tests)
@@ -375,7 +375,7 @@ npm run test:acceptance -- text-capture-input.test.tsx -t "should auto-focus"
 ### Already Implemented Components
 
 **From Story 2.1:**
-- ✅ Capture WatermelonDB model (polymorphic type support)
+- ✅ Capture OP-SQLite model (polymorphic type support)
 - ✅ Capture Context file structure
 - ✅ Sync status tracking (syncStatus field)
 - ✅ Offline queue mechanism
@@ -401,7 +401,7 @@ npm run test:acceptance -- text-capture-input.test.tsx -t "should auto-focus"
 ## Dependencies & Libraries
 
 ### Already Installed (Story 2.1)
-- ✅ `@nozbe/watermelondb` - Offline database
+- ⚠️ `@nozbe/watermelondb` - **legacy test mock uniquement** (la vraie offline DB est `@op-engineering/op-sqlite` — voir ADR-018)
 - ✅ `expo-haptics` - Haptic feedback
 - ✅ React Native core (TextInput, Keyboard, Alert)
 

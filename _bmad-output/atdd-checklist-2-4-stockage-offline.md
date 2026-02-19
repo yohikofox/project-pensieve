@@ -22,7 +22,7 @@
 ### ✅ AC1: Persistance des Captures Offline
 
 **Requirements:**
-- All Capture entities persisted in WatermelonDB (audio and text types)
+- All Capture entities persisted in OP-SQLite (audio and text types)
 - Audio files stored in secure device storage
 - Each Capture has sync status field: "pending" (not synced) or "synced"
 - Captures marked "pending" are queued for future synchronization
@@ -30,14 +30,14 @@
 
 **Test Coverage:**
 - ✅ BDD: `story-2-4-stockage-offline.feature` - Scénario "Persister captures audio en mode offline"
-- ✅ BDD: `story-2-4.test.ts` - Step "les Captures sont persistées dans WatermelonDB"
+- ✅ BDD: `story-2-4.test.ts` - Step "les Captures sont persistées dans OP-SQLite"
 - ✅ BDD: `story-2-4.test.ts` - Step "les fichiers audio sont stockés dans le storage sécurisé"
 - ✅ BDD: `story-2-4.test.ts` - Step "chaque Capture a un champ syncStatus"
 - ✅ BDD: `story-2-4.test.ts` - Step "les Captures avec syncStatus 'pending' sont dans la queue de sync"
 
 **Implementation Checklist:**
-- [ ] Configurer WatermelonDB schema avec champ `syncStatus: 'pending' | 'synced'`
-- [ ] Implémenter `CaptureRepository.create()` pour persister dans WatermelonDB
+- [ ] Configurer OP-SQLite schema avec champ `syncStatus: 'pending' | 'synced'`
+- [ ] Implémenter `CaptureRepository.create()` pour persister dans OP-SQLite
 - [ ] Stocker audio files dans `FileSystem.documentDirectory + 'captures/'`
 - [ ] Ajouter metadata : `capturedAt`, `filePath`, `duration`, `fileSize`
 - [ ] Implémenter `SyncQueue.addToQueue(capture)` pour captures pending
@@ -77,7 +77,7 @@
 ### ✅ AC3: Accès Rapide aux Captures Offline (NFR4: < 1s Load Time)
 
 **Requirements:**
-- All captures loaded from WatermelonDB in < 1s (NFR4 compliance)
+- All captures loaded from OP-SQLite in < 1s (NFR4 compliance)
 - Feed displays all captures with offline indicators
 - Visual indicator shows sync status (pending = cloud icon with slash)
 - No network errors shown to user
@@ -108,7 +108,7 @@
 - All saved captures recovered intact after crash (NFR8 compliance)
 - Pending sync status preserved across app restarts
 - No data loss (zero tolerance per NFR6)
-- WatermelonDB integrity verified on startup
+- OP-SQLite integrity verified on startup
 - Orphaned files cleaned up during recovery
 
 **Test Coverage:**
@@ -121,7 +121,7 @@
 
 **Implementation Checklist:**
 - [ ] Implémenter `CrashRecoveryService.recoverCaptures()` au démarrage
-- [ ] Vérifier intégrité WatermelonDB avec `db.count()` vs expected
+- [ ] Vérifier intégrité OP-SQLite avec `db.count()` vs expected
 - [ ] Tester avec `MockApp.crash()` puis `MockApp.relaunch()`
 - [ ] Vérifier que `InMemoryDatabase.findAll()` retourne toutes les captures
 - [ ] Confirmer que `syncStatus: 'pending'` est préservé après crash
@@ -164,7 +164,7 @@
 
 **Requirements:**
 - Audio files encrypted using device-level encryption (iOS: Data Protection, Android: File-based encryption)
-- Text content encrypted in WatermelonDB
+- Text content encrypted in OP-SQLite
 - Metadata includes `encryptionStatus: boolean` flag
 - Encryption transparent to user (handled by OS)
 - Verify encryption on file write
@@ -198,8 +198,8 @@
 
 #### AC1 - Persistance Offline (5 scenarios)
 - ✅ **Scenario:** "Persister captures audio en mode offline"
-  - **Status:** RED - WatermelonDB persistence not implemented
-  - **Verifies:** Captures stored in WatermelonDB with syncStatus field
+  - **Status:** RED - OP-SQLite persistence not implemented
+  - **Verifies:** Captures stored in OP-SQLite with syncStatus field
 
 - ✅ **Scenario:** "Stocker fichiers audio dans secure storage"
   - **Status:** RED - File storage logic not implemented
@@ -274,7 +274,7 @@
   - **Status:** RED - Data loss prevention not verified
   - **Verifies:** NFR6 compliance (zero data loss)
 
-- ✅ **Scenario:** "Vérifier intégrité WatermelonDB au démarrage"
+- ✅ **Scenario:** "Vérifier intégrité OP-SQLite au démarrage"
   - **Status:** RED - DB integrity check not implemented
   - **Verifies:** Database consistency verified on startup
 
@@ -555,13 +555,13 @@ Status: 🔴 RED phase verified
    - Wire it into TestContext
    - Export for use in tests
 
-3. **Extend Capture Schema in WatermelonDB**
+3. **Extend Capture Schema in OP-SQLite**
    - Add `syncStatus: 'pending' | 'synced'` field
    - Add `encryptionStatus: boolean` field
    - Run migration
 
 4. **Implement CaptureRepository.create()**
-   - Persist captures in WatermelonDB
+   - Persist captures in OP-SQLite
    - Store audio files in secure directory
    - Set syncStatus and encryptionStatus
 
@@ -577,7 +577,7 @@ Status: 🔴 RED phase verified
 
 7. **Implement CrashRecoveryService**
    - `recoverCaptures()` on app start
-   - Verify WatermelonDB integrity
+   - Verify OP-SQLite integrity
    - Clean up orphaned files
 
 8. **Configure Device-Level Encryption**
@@ -587,7 +587,7 @@ Status: 🔴 RED phase verified
 
 9. **Optimize Load Performance (NFR4)**
    - Ensure captures load in < 1s
-   - Use WatermelonDB query optimization
+   - Use OP-SQLite query optimization
    - Measure with performance.now()
 
 10. **Test Each Implementation**
@@ -611,7 +611,7 @@ Mark tasks complete in this checklist as you implement them.
    - Add TypeScript strict typing
 
 2. **Performance Optimization**
-   - Batch WatermelonDB writes for efficiency
+   - Batch OP-SQLite writes for efficiency
    - Use indexed queries for fast retrieval
    - Optimize file I/O operations
 

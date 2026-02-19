@@ -22,7 +22,7 @@
 - Audio recording starts within 500ms (NFR1 compliance)
 - Visual feedback displayed (pulsing red indicator)
 - Haptic feedback triggered on iOS/Android
-- Capture entity created in WatermelonDB with status "recording"
+- Capture entity created in OP-SQLite with status "recording"
 - Audio data streamed to local storage
 
 **Test Coverage:**
@@ -150,9 +150,9 @@ pensieve/mobile/tests/support/factories/capture.factory.ts
 
 #### Task 1: Setup Capture Context Mobile Infrastructure
 
-- [ ] **Subtask 1.1**: Create Capture aggregate model in WatermelonDB
+- [ ] **Subtask 1.1**: Create Capture aggregate model in OP-SQLite
   - [ ] Define schema with fields: id, type, state, rawContent, normalizedText, capturedAt, location, tags, syncStatus
-  - [ ] Implement WatermelonDB model with decorators
+  - [ ] Implement OP-SQLite model with decorators
   - [ ] Add migration script for Capture table
   - [ ] Run tests: `npm run test:acceptance -- capture-model.test.ts`
   - [ ] ✅ Tests pass (green)
@@ -196,7 +196,7 @@ pensieve/mobile/tests/support/factories/capture.factory.ts
   - [ ] Create CrashRecoveryService class
   - [ ] Detect incomplete recordings on app launch
   - [ ] Attempt recovery of partial audio files
-  - [ ] Store recovery metadata in WatermelonDB
+  - [ ] Store recovery metadata in OP-SQLite
   - [ ] Notify user of recovered captures
   - [ ] Run tests: `detox test -- audio-1-tap.e2e.ts` (AC4 tests)
   - [ ] ✅ Tests pass (green)
@@ -204,7 +204,7 @@ pensieve/mobile/tests/support/factories/capture.factory.ts
 - [ ] **Subtask 2.3**: Mark Capture entities for sync
   - [ ] Add syncStatus field handling
   - [ ] Implement offline queue for pending captures
-  - [ ] Ensure WatermelonDB sync protocol compatibility
+  - [ ] Ensure OP-SQLite sync protocol compatibility
   - [ ] Run tests: `npm run test:acceptance -- capture-model.test.ts` (sync tests)
   - [ ] ✅ Tests pass (green)
 
@@ -359,7 +359,7 @@ npm run test:acceptance -- --watch
 - Mock `Haptics.impactAsync()` for unit tests
 - Actual haptic feedback only testable on physical devices
 
-### WatermelonDB Test Setup
+### OP-SQLite Test Setup
 
 **In-memory Database:**
 - Use SQLite in-memory adapter for tests
@@ -372,7 +372,7 @@ npm run test:acceptance -- --watch
 
 ### Already Installed (Epic 1)
 - ✅ `react-native` + `expo`
-- ✅ `@nozbe/watermelondb` (~0.27.0)
+- ⚠️ `@nozbe/watermelondb` (~0.27.0) — **legacy test mock uniquement** (remplacé par `@op-engineering/op-sqlite` en prod — voir ADR-018)
 - ✅ TypeScript tooling
 - ✅ Jest testing framework
 

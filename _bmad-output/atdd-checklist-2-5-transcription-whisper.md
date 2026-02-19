@@ -35,7 +35,7 @@
 
 **Implementation Checklist:**
 - [ ] Implémenter `TranscriptionQueue.addJob(captureId)` après audio save
-- [ ] Mettre à jour `Capture.state = 'TRANSCRIBING'` dans WatermelonDB
+- [ ] Mettre à jour `Capture.state = 'TRANSCRIBING'` dans OP-SQLite
 - [ ] Démarrer `BackgroundTranscriptionService.start()`
 - [ ] Tester avec `MockTranscriptionQueue.getJobsCount() === 1`
 - [ ] Vérifier que l'utilisateur peut continuer à utiliser l'app

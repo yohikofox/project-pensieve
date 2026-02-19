@@ -40,7 +40,7 @@
    - **Note**: Haptics not directly testable in Detox
 
 4. ✅ `should create Capture entity with status "recording"`
-   - **Validates**: WatermelonDB entity creation
+   - **Validates**: OP-SQLite entity creation
    - **TestID**: `recording-indicator`, `recording-timer`
 
 5. ✅ `should stream audio data to local storage`
@@ -71,7 +71,7 @@
 
 11. ✅ `should mark Capture entity for future sync`
     - **TestID**: `capture-item-0-sync-pending`
-    - **Validates**: syncStatus = 'pending' in WatermelonDB
+    - **Validates**: syncStatus = 'pending' in OP-SQLite
 
 ### AC4: Crash Recovery (2 tests)
 
@@ -187,12 +187,12 @@
 
 ### Task 1: Setup Capture Context Mobile Infrastructure
 
-#### Subtask 1.1: Create Capture WatermelonDB Model
+#### Subtask 1.1: Create Capture OP-SQLite Model
 
 - [ ] Define `Capture.schema.ts` with fields:
   - `id`, `type`, `state`, `rawContent`, `normalizedText`
   - `capturedAt`, `location`, `tags`, `syncStatus`
-- [ ] Implement `Capture.model.ts` with WatermelonDB decorators
+- [ ] Implement `Capture.model.ts` with OP-SQLite decorators
 - [ ] Create migration script for Capture table
 - [ ] **TestIDs added**: N/A (database model)
 - [ ] **Tests affected**: AC1 test #4, AC2 test #8
@@ -246,7 +246,7 @@
 - [ ] Detect incomplete recordings on app launch
 - [ ] Implement `CrashRecoveryService.ts`
 - [ ] Attempt recovery of partial files
-- [ ] Store recovery metadata in WatermelonDB
+- [ ] Store recovery metadata in OP-SQLite
 - [ ] Show notification to user
 - [ ] **TestIDs added**: `recovery-notification`
 - [ ] **Tests affected**: AC4 tests #12, #13

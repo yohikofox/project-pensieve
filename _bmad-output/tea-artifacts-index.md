@@ -148,7 +148,7 @@ Ce fichier index tous les artefacts créés par l'agent TEA pour le projet Pensi
 - MockApp (crash, relaunch, reset)
 
 **Coverage:**
-- AC1: Persistance des captures offline (WatermelonDB + secure storage, syncStatus field)
+- AC1: Persistance des captures offline (OP-SQLite + secure storage, syncStatus field)
 - AC2: Création multiple sans réseau (NFR7: 100% offline, storage monitoring, warnings)
 - AC3: Accès rapide aux captures offline (NFR4: < 1s load time, offline indicators, optimistic UI)
 - AC4: Récupération après crash (NFR8: crash recovery, NFR6: zero data loss, DB integrity)
@@ -229,7 +229,7 @@ Ce fichier index tous les artefacts créés par l'agent TEA pour le projet Pensi
 |------|----------------|-------------------|
 | MockAudioRecorder | Audio recording (expo-av) | 2.1, 2.3, 2.4 |
 | MockFileSystem | File system (expo-file-system) | 2.1, 2.3, 2.4 |
-| InMemoryDatabase | WatermelonDB in-memory | 2.1, 2.2, 2.3, 2.4 |
+| InMemoryDatabase | OP-SQLite in-memory | 2.1, 2.2, 2.3, 2.4 |
 | MockSupabaseAuth | Supabase authentication | 1.2 |
 | MockAsyncStorage | React Native AsyncStorage | 1.2 |
 | MockRGPDService | RGPD compliance (export, deletion) | 1.3 |
