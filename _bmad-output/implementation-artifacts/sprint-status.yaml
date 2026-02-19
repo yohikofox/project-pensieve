@@ -205,8 +205,8 @@ development_status:
   # Périmètre: Docs (14-1), Mobile (14-2), Backend (14-3), Convention (14-4)
   epic-14: in-progress  # Opportuniste / sprint dette technique — stories prêtes, aucune dépendance bloquante
   14-1-doc-claude-md-op-sqlite: done  # Story 14.1: Review pass 2 validé — 1M+2L corrigés (observe() sémantique + @nozbe legacy clarified), sprint-status synced
-  14-2-async-storage-audit: review  # Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques — ADR-022 (rapport audit, migration si violations)
-  14-3-observability-sentry-prometheus: review  # Story 14.3: Intégration Observability — Logger Structuré et Évaluation Sentry/Prometheus — ADR-015 (winston/pino backend)
+  14-2-async-storage-audit: done  # Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques — ADR-022 (rapport audit, migration si violations)
+  14-3-observability-sentry-prometheus: done  # Story 14.3: Code review: 2H+4M+2L corrigés. SensitiveDataFilter redact, NestJS intégration tests, AC1 champs pino, LOG_FILE_PATH transport, mock RabbitMQ BDD. 11 unit + 4 intégration + 4 BDD.
   14-4-renommage-owner-id: review  # Story 14.4: Décision et Migration owner_id (userId → owner_id) — ADR-026 R7 (Option A choisie — migration + rename complets)
   epic-14-retrospective: optional
 

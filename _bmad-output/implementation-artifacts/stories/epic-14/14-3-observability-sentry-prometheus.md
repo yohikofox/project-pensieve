@@ -1,6 +1,6 @@
 # Story 14.3: Intégration Observability — Sentry et Structured Logging Backend
 
-Status: review
+Status: done
 
 ## Story
 
@@ -25,8 +25,10 @@ Audit ADR-015 (2026-02-17) révèle :
 ### AC1: Logger structuré NestJS (backend)
 **Given** the backend uses NestJS built-in Logger
 **When** I integrate a structured logger
-**Then** either `winston` or `pino` is added as a NestJS logger provider
-**And** all log entries are JSON-formatted with: `timestamp`, `level`, `message`, `context`, `requestId`
+**Then** `nestjs-pino` is added as a NestJS logger provider (amendement ADR-015 §15.1 — 2026-02-18)
+**And** all log entries are JSON-formatted with: `time` (Unix ms), `level`, `msg`, `context`
+**And** HTTP-scoped logs additionally include `reqId` (injected by pino-http middleware only — not present on non-HTTP logs such as workers, startup logs)
+**And** sensitive fields are automatically redacted: `authorization`, `cookie`, `email`, `password`, `token`, `transcription`
 **And** existing `logger.info()` / `logger.error()` calls remain compatible
 
 ### AC2: Sentry intégration (mobile)
@@ -91,8 +93,10 @@ Audit ADR-015 (2026-02-17) révèle :
 - [x] T2.1: Installer `nestjs-pino`, `pino-http` (prod) et `pino-pretty` (dev)
 - [x] T2.2: Configurer `LoggerModule` pino dans `AppModule` (JSON structuré + pretty en dev)
 - [x] T2.3: Mettre à jour `main.ts` — `bufferLogs: true` + `app.useLogger(app.get(Logger))`
-- [x] T2.4: Ajouter `LOG_LEVEL` et `SENTRY_DSN` dans `.env.example`
-- [x] T2.5: Écrire tests unitaires pour la configuration du logger (8 tests)
+- [x] T2.4: Ajouter `LOG_LEVEL`, `SENTRY_DSN`, `LOG_FILE_PATH` dans `.env.example`
+- [x] T2.5: Écrire tests unitaires pour la configuration du logger (11 tests)
+- [x] T2.6: Ajouter `redact` pino pour filtrage PII (ADR-015 §15.1 — H1 code review)
+- [x] T2.7: Ajouter transport fichier optionnel via `LOG_FILE_PATH` (ADR-015 rotation — M3 code review)
 
 ### Task 3: Tests BDD acceptance (AC1)
 - [x] T3.1: Créer `test/acceptance/features/story-14-3.feature` (Gherkin, 4 scénarios)
@@ -148,13 +152,14 @@ Audit ADR-015 (2026-02-17) révèle :
 **Backend — Nouveaux fichiers :**
 - `pensieve/backend/src/config/logger.config.ts`
 - `pensieve/backend/src/config/logger.config.spec.ts`
+- `pensieve/backend/src/config/logger.integration.spec.ts` (intégration NestJS — H2 code review)
 - `pensieve/backend/test/acceptance/features/story-14-3-observability-logger.feature`
 - `pensieve/backend/test/acceptance/story-14-3.test.ts`
 
 **Backend — Fichiers modifiés :**
-- `pensieve/backend/src/app.module.ts` (import LoggerModule)
+- `pensieve/backend/src/app.module.ts` (import LoggerModule + LOG_FILE_PATH)
 - `pensieve/backend/src/main.ts` (bufferLogs + useLogger + void bootstrap)
-- `pensieve/backend/.env.example` (LOG_LEVEL + SENTRY_DSN placeholder)
+- `pensieve/backend/.env.example` (LOG_LEVEL + SENTRY_DSN + LOG_FILE_PATH)
 - `pensieve/backend/package.json` (nestjs-pino, pino-http, pino-pretty)
 
 **Documentation :**
@@ -166,6 +171,7 @@ Audit ADR-015 (2026-02-17) révèle :
 |------|--------|--------|
 | 2026-02-18 | dev-agent | Story enrichie avec Tasks/Subtasks, Dev Notes, démarrage implémentation |
 | 2026-02-18 | dev-agent | AC1 implémenté : nestjs-pino + pino-http configurés, 12 tests écrits. AC2/AC3/AC4 partiels documentés. |
+| 2026-02-19 | code-review | 8 issues (2H+4M+2L) — 6 fixes appliqués : SensitiveDataFilter redact (H1), intégration NestJS réelle logger.integration.spec.ts (H2), champs AC1 corrigés time/msg/reqId (M1+M2), transport fichier LOG_FILE_PATH (M3), mock RabbitMQ BDD (M4), version pino-http v11 doc (L2), ServerResponse inutilisé retiré (L1). 11 unit tests + 4 integration + 4 BDD. |
 
 ## Definition of Done
 

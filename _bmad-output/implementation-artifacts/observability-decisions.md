@@ -21,7 +21,7 @@
 ## Décision 1 : Logger structuré pino (backend) — IMPLÉMENTÉ
 
 **Scope** : ADR-015 AC1
-**Outil choisi** : `nestjs-pino` v4.x + `pino-http` v10.x
+**Outil choisi** : `nestjs-pino` ^4.6.0 + `pino-http` ^11.0.0 + `pino-pretty` ^13.1.3
 **Raison du choix pino vs winston** :
 - pino est 5-10x plus performant que winston (benchmark officiel)
 - `nestjs-pino` est le package officiel d'intégration NestJS
