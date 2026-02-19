@@ -1,6 +1,6 @@
 # Story 12.1: Créer la BaseEntity Partagée Backend
 
-Status: review
+Status: done
 
 ## Story
 
@@ -123,8 +123,20 @@ claude-sonnet-4-5-20250929
 - [x] [AI-Review][LOW] Migration `down()` fragile : restaure `DEFAULT uuid_generate_v4()` qui dépend de l'extension `uuid-ossp` (peut échouer si extension absente) [migration:67]
 - [x] [AI-Review][LOW] `deletedAt!: Date | null` — opérateur `!` incohérent sur type nullable, préférer `deletedAt: Date | null = null` pour la clarté sémantique [base.entity.ts:63]
 
+### Review Follow-ups (Adversarial — 2026-02-19)
+
+- [x] [Review][HIGH] 30 erreurs ESLint dans `timestamp-columns.spec.ts` — DoD violation "ESLint + TypeScript strict passent" : 6 imports inutilisés, dead code `getDateColumnsForEntity`, 23× `no-unsafe-member-access` via `as any`. Corrigés : side-effect imports, suppression dead code, `col.options.type` typé.
+- [x] [Review][HIGH] Migration manque `CREATE INDEX` pour `deletedAt` — `@Index()` déclaré dans l'entité mais non persisté en DB (`synchronize: false`). Ajouté `CREATE INDEX idx_captures_deleted_at` dans `up()` et `DROP INDEX` dans `down()`.
+- [x] [Review][MEDIUM] `BaseReferentialEntity` non déclarée dans la File List — scope creep tracé ici mais non corrigé (scope futur).
+- [x] [Review][MEDIUM] Barrel file créé mais non utilisé — les 4 entités du scope de la story (capture, todo, idea, thought) importaient encore depuis le chemin direct `base.entity`. Corrigé : imports via `../../../../common/entities`.
+- [x] [Review][MEDIUM] Dead code `getDateColumnsForEntity` — fonction définie mais jamais appelée dans `timestamp-columns.spec.ts:41-61`. Supprimée.
+- [ ] [Review][LOW] Side-effect imports sans `void` explicite — résolu dans le correctif H1 (conversion en side-effect imports).
+- [ ] [Review][LOW] Header `timestamp-columns.spec.ts` dit "Story 13.3" — confusion ownership, acceptable en l'état.
+- [ ] [Review][LOW] Migration `down()` n'avait pas de `DROP INDEX` — résolu dans le correctif H2.
+
 ### Change Log
 
 - 2026-02-18 : Implémentation story 12.1 — BaseEntity créée, capture.entity.ts migré (entité pilote), migration ajoutée, 3 tests passants
-- 2026-02-18 : Code review adversariale — 7 points identifiés (2 HIGH, 3 MEDIUM, 2 LOW), action items créés dans "Review Follow-ups"
-- 2026-02-19 : Addressed code review findings — 7 items resolved (2 HIGH + 3 MEDIUM + 2 LOW) : `BaseEntity` → `AppBaseEntity` (6 fichiers + timestamp-columns.spec.ts), `@Index()` sur `deletedAt`, tests nullable+timestamptz, barrel index.ts, migration down() → gen_random_uuid(), `deletedAt = null`
+- 2026-02-18 : Code review adversariale (AI) — 7 points identifiés (2 HIGH, 3 MEDIUM, 2 LOW), action items créés dans "Review Follow-ups"
+- 2026-02-19 : Addressed AI code review findings — 7 items resolved (2 HIGH + 3 MEDIUM + 2 LOW) : `BaseEntity` → `AppBaseEntity` (6 fichiers + timestamp-columns.spec.ts), `@Index()` sur `deletedAt`, tests nullable+timestamptz, barrel index.ts, migration down() → gen_random_uuid(), `deletedAt = null`
+- 2026-02-19 : Code review adversariale (Winston) — 8 findings (2H+3M+3L). 4 correctifs appliqués : CREATE INDEX migration, 30 ESLint errors, barrel adopté dans 4 entités, dead code supprimé. Story → done.
