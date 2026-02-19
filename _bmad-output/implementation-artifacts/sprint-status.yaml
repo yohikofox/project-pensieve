@@ -215,7 +215,7 @@ development_status:
   # Décision: Supprimer la dépendance Supabase Auth, risque paywall inacceptable
   # Dépendances: 15-1 → 15-2, 15-3 (serveur requis avant clients) | 15-2 et 15-3 parallélisables
   epic-15: in-progress
-  15-1-better-auth-server-nestjs-resend: ready-for-dev  # Serveur Better Auth NestJS + EmailService Resend + BetterAuthGuard + migration TypeORM
+  15-1-better-auth-server-nestjs-resend: done  # Code review: 9/9 fixes (2C+3H+3M+1L). Validation secret, pool limité, BDD 12/12 (register/login/logout/admin plugin ajoutés), File List complétée.
   15-2-mobile-better-auth-client: ready-for-dev  # Client mobile @better-auth/react-native + AuthTokenManager offline (valide jusqu'à 23:59)
   15-3-web-admin-cleanup-supabase: ready-for-dev  # Clients web+admin better-auth/client + suppression complète Supabase
   epic-15-retrospective: optional
