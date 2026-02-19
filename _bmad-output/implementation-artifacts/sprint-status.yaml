@@ -185,7 +185,7 @@ development_status:
   12-1-backend-base-entity: done  # Story 12.1: Créer la BaseEntity Partagée Backend — ADR-026 R6. Code review adversariale: 8 findings (2H+3M+3L), 4 fixes: CREATE INDEX migration, 30 ESLint errors, barrel adopté, dead code supprimé.
   12-2-backend-pk-domaine: done  # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine — ADR-026 R1 (uuidv7, FKs uuid). Code review: 7/7 fixes (3 HIGH + 3 MEDIUM + 1 LOW).
   12-3-backend-soft-delete: done  # Story 12.3: Code review 2: 5 correctifs (H1 lastModifiedAt, H2 arch tests ADR-026 R4, H3 IdeaRepo BDD, M1 File List, M2 indexes). 5/5 BDD verts, 47/47 acceptance. Action item: AC4 HTTP + arch tests epic-13+.
-  12-4-backend-suppression-cascade: review  # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative — ADR-026 R3 (transaction explicite)
+  12-4-backend-suppression-cascade: done  # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative — ADR-026 R3 (transaction explicite)
   epic-12-retrospective: optional
 
   # Epic 13: Conformité ADR — Priorité Moyenne 🟡 (4 stories - ADR-021, ADR-023, ADR-026 R2/R5)

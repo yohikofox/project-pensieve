@@ -1,6 +1,6 @@
 # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative
 
-Status: review
+Status: done
 
 ## Story
 
@@ -124,6 +124,11 @@ La cascade TypeORM est dangereuse car :
   - **Décision** : CONSERVÉ — Cette contrainte FK SQL est différente du cascade ORM TypeORM.
   - **Rationale ADR-026 R3** : Cette contrainte est intentionnelle pour garantir l'intégrité référentielle lors d'opérations de maintenance DB directe (hard-delete d'entités de test, cleanup admin). Avec le soft delete TypeORM (`softDelete()`), cette contrainte n'est jamais déclenchée car softDelete émet un UPDATE (pas un DELETE SQL). Documenté ici comme décision explicite conformément à ADR-026 R3.
 
+- `todo.entity.ts:71` → `@ManyToOne(() => Thought, { onDelete: 'CASCADE' })`
+  - **Décision** : CONSERVÉ — Même rationale que `idea.entity.ts:38`.
+  - **Rationale ADR-026 R3** : Contrainte FK SQL uniquement, jamais déclenchée par `softDelete()` (UPDATE). Garantit l'intégrité référentielle lors de suppressions DB directes (maintenance admin). Documenté via commentaire ADR-026 R3 dans `todo.entity.ts` lors de la code review story 12.4.
+  - **Note** : `ThoughtDeleteService` gère le soft-delete des Ideas liées mais pas des Todos. Le scope de cette story est limité à la relation Thought → Idea (seule relation qui avait un `cascade: true` ORM). Les Todos ne peuvent pas être soft-deleted de façon automatique sans une story dédiée (Thought → Todos → cascade applicative).
+
 **Migration** : Aucune migration SQL nécessaire — la suppression du `cascade: true` TypeORM n'impacte pas le schéma DB. C'était une configuration ORM uniquement.
 
 ### Plan d'implémentation
@@ -172,6 +177,7 @@ Story 12.4 : Supprimer les Cascades TypeORM — gestion applicative des suppress
 - `pensieve/backend/src/modules/knowledge/knowledge.module.ts` (modifié)
 - `pensieve/backend/test/acceptance/features/story-12-4-backend-suppression-cascade.feature` (créé)
 - `pensieve/backend/test/acceptance/story-12-4.test.ts` (créé)
+- `pensieve/backend/src/modules/action/domain/entities/todo.entity.ts` (modifié — code review: documentation ADR-026 R3)
 
 ## Change Log
 
