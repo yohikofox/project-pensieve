@@ -1,6 +1,6 @@
 # Story 13.1: Migrer le Container DI vers Transient First (ADR-021)
 
-Status: review
+Status: in-progress
 
 ## Story
 
@@ -106,10 +106,17 @@ container.registerSingleton(RecordingService);
 - [x] Task 3: Créer tests de non-régression DI (AC5)
   - [x] 3.1 Créer `container.lifecycle.test.ts` avec tests TSyringe purs (documentation vivante)
   - [x] 3.2 Créer tests de vérification comportement container réel (avec mocks)
-  - [x] 3.3 Vérifier 10/10 tests passent
+  - [x] 3.3 Vérifier 10/10 tests passent → 24/24 après code review (couverture étendue)
 - [x] Task 4: Validation finale
   - [x] 4.1 Confirmer zéro régression sur tests d'acceptance (baseline identique avant/après)
   - [x] 4.2 Vérifier aucune erreur TypeScript sur container.ts
+- [x] Task 5: Correctifs code review (2026-02-19)
+  - [x] 5.1 Supprimer console.log dans registerServices() — remplacé par ILogger.debug()
+  - [x] 5.2 Créer fichier Gherkin story-13-1-di-lifecycle.feature + step definitions (H2)
+  - [x] 5.3 Étendre couverture tests lifecycle : 8/8 repos + 11/11 services → 24 tests (M1)
+  - [x] 5.4 Documenter double registration FileStorageService (M2)
+  - [x] 5.5 Renommer token 'IFileSystem' → 'INormalizationFileSystem' (M3) + AudioConversionService
+  - [ ] 5.6 Valider démarrage sur simulateur iOS (M4 — validation manuelle requise)
 
 ## Dev Agent Record
 
@@ -132,9 +139,11 @@ container.registerSingleton(RecordingService);
 - ✅ AC2: 11 services stateless migrés en Transient (PermissionService, FileStorageService, etc.)
 - ✅ AC3: 22 singletons conservés avec commentaires SINGLETON: justification (ADR-021)
 - ✅ AC4: Aucune régression — baseline identique avant/après (17 suites préexistantes échouent pour des raisons non liées à ce changement)
-- ✅ AC5: 10 tests DI lifecycle créés et passent (Transient/Singleton behavior + lazy resolution)
-- ⚠️ AC4 simulateur : non testé (hors scope CI) — les tests automatisés confirment la non-régression
-- Le fichier container.ts passe aucune erreur TypeScript strict
+- ✅ AC5: 24 tests DI lifecycle (10 initiaux + 14 ajoutés en code review) — couverture 8/8 repos + 11/11 services + 5 scénarios BDD Gherkin
+- ⚠️ AC4 simulateur : non testé — validation manuelle requise (item 5.6)
+- ✅ console.log supprimé — remplacé par ILogger.debug() (Definition of Done conforme)
+- ✅ Naming collision résolue : token 'IFileSystem' (ExpoFileSystem Normalization) → 'INormalizationFileSystem'
+- Le fichier container.ts passe sans erreur TypeScript strict
 
 ### Debug Log
 
@@ -145,8 +154,12 @@ container.registerSingleton(RecordingService);
 ## File List
 
 - Modified: `pensieve/mobile/src/infrastructure/di/container.ts`
-- Added: `pensieve/mobile/src/infrastructure/di/__tests__/container.lifecycle.test.ts`
+- Modified: `pensieve/mobile/src/infrastructure/di/__tests__/container.lifecycle.test.ts`
+- Modified: `pensieve/mobile/src/contexts/Normalization/services/AudioConversionService.ts`
+- Added: `pensieve/mobile/tests/acceptance/features/story-13-1-di-lifecycle.feature`
+- Added: `pensieve/mobile/tests/acceptance/story-13-1.test.ts`
 
 ## Change Log
 
 - 2026-02-18: Migration container.ts ADR-021 Transient First — 8 repositories + 11 services → Transient, 22 singletons documentés avec justification inline. Nouveaux tests: 10 tests DI lifecycle (AC5).
+- 2026-02-19: Correctifs code review — console.log → ILogger.debug(), token 'IFileSystem' → 'INormalizationFileSystem', tests lifecycle étendus (24 tests couvrant 8/8 repos + 11/11 services), fichier BDD Gherkin créé (5 scénarios AC1/AC2/AC3/AC5).
