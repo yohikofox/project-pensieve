@@ -1,6 +1,6 @@
 # Story 13.3: Corriger les Types de Colonnes Date vers TIMESTAMPTZ
 
-Status: review
+Status: done
 
 ## Story
 
@@ -105,15 +105,15 @@ ALTER TABLE captures
 
 **Audit complet (2026-02-18) — Colonnes TIMESTAMP WITHOUT TIME ZONE identifiées :**
 
-| Entité | Table | Colonnes violant ADR-026 R5 |
-|--------|-------|----------------------------|
-| `todo.entity.ts` | `todos` | `deadline`, `completed_at` |
-| `Notification.entity.ts` | `notifications` | `sent_at`, `delivered_at`, `created_at`, `updated_at` |
+| Entité | Table | Colonnes violant ADR-026 R5 (nom réel TypeORM) |
+|--------|-------|------------------------------------------------|
+| `todo.entity.ts` | `todos` | `deadline`, `completedAt` |
+| `Notification.entity.ts` | `notifications` | `sentAt`, `deliveredAt`, `createdAt`, `updatedAt` |
 | `user.entity.ts` | `users` | `deletion_requested_at`, `created_at`, `updated_at` |
 | `admin-user.entity.ts` | `admin_users` | `created_at`, `updated_at` |
 | `audit-log.entity.ts` | `audit_logs` | `timestamp` |
-| `sync-log.entity.ts` | `sync_logs` | `started_at`, `completed_at` |
-| `sync-conflict.entity.ts` | `sync_conflicts` | `resolved_at` |
+| `sync-log.entity.ts` | `sync_logs` | `startedAt`, `completedAt` |
+| `sync-conflict.entity.ts` | `sync_conflicts` | `resolvedAt` |
 | `role.entity.ts` | `roles` | `created_at`, `updated_at` |
 | `permission.entity.ts` | `permissions` | `created_at`, `updated_at` |
 | `subscription-tier.entity.ts` | `subscription_tiers` | `created_at`, `updated_at` |
@@ -125,6 +125,8 @@ ALTER TABLE captures
 | `tier-permission.entity.ts` | `tier_permissions` | `created_at` |
 | `share-role.entity.ts` | `share_roles` | `created_at`, `updated_at` |
 | `share-role-permission.entity.ts` | `share_role_permissions` | `created_at` |
+
+> **Note** : Les entités sans option `name:` dans leurs décorateurs TypeORM conservent le nom de la propriété TypeScript (camelCase) comme nom de colonne SQL. Les entités avec `name: 'snake_case'` explicit utilisent le snake_case. Cf. migration SQL pour noms réels.
 
 **AC5 (FKs entières)** : Capture entity déjà corrigée en story 12.2 (typeId, stateId, syncStatusId = UUID strings ✅).
 
@@ -143,8 +145,19 @@ ALTER TABLE captures
 - ✅ AC3: Toutes les `@DeleteDateColumn` utilisent `{ type: 'timestamptz' }` (BaseEntity ✅ depuis story 12.1)
 - ✅ AC4: Migration `1771800000000-AlterTimestampColumnsToTimestamptz.ts` créée — ALTER TABLE pour 18 tables
 - ✅ AC5: FKs entières confirmées absentes dans `capture.entity.ts` (typeId, stateId, syncStatusId = UUID strings ✅ depuis story 12.2)
-- ✅ AC6: 32 tests unitaires TypeORM metadata + 9 scenarios BDD Gherkin — tous passent
-- ✅ Zero régression: baseline inchangé (46/46 acceptance tests, 353/430 unit tests — échecs pré-existants uniquement)
+- ✅ AC6: 34 tests unitaires TypeORM metadata (après code review: +5 entités jonction, +4 expiresAt explicites, -3 tests vacueux) + 9 scenarios BDD Gherkin — tous passent
+- ✅ Zero régression: baseline inchangé (46/46 acceptance tests — échecs pré-existants uniquement)
+
+### Violations ADR-026 résiduelles (hors scope R5 — à tracker)
+
+Ces violations ont été identifiées lors de l'audit story 13.3 mais sont hors scope (R5 uniquement) :
+
+| Entité | Violation | ADR Rule | Référence |
+|--------|-----------|----------|-----------|
+| `SyncLog` | `userId` au lieu de `ownerId` | R7 | À corriger dans story dédiée |
+| `AuditLog` | `user_id` au lieu de `ownerId` | R7 | À corriger dans story dédiée |
+| `AdminUser`, `Notification`, `SyncLog`, `SyncConflict`, `AuditLog`, `ShareRole` | `@PrimaryGeneratedColumn` au lieu de `@PrimaryColumn` | R1 | Entités non-domaine — décision intentionnelle à documenter dans ADR |
+| `User.status` | `varchar` libre au lieu d'ENUM PostgreSQL | R2 | À corriger dans story dédiée |
 
 ## File List
 
@@ -174,3 +187,4 @@ ALTER TABLE captures
 ## Change Log
 
 - 2026-02-18: ADR-026 R5 compliance — Correction de 18 entités backend (timestamp → timestamptz). Migration ALTER TABLE créée pour 18 tables. Tests: 32 unit tests + 9 BDD scenarios. AC5 confirmé (FKs UUID depuis story 12.2).
+- 2026-02-19: Code review — 2H+3M corrigés. `SyncConflict.resolvedAt` changé de `@CreateDateColumn` → `@Column` (sémantique correcte). Tests: +5 entités jonction, +4 expiresAt explicites, -3 tests vacueux → 34 unit tests. Documentation colonne noms corrigée (camelCase). Violations ADR-026 résiduelles documentées (R1/R7).
