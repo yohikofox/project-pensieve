@@ -602,7 +602,9 @@ npx typeorm migration:create src/migrations/MigrationName
 4. `1738869800000-AddPushTokenAndNotificationPreferencesToUsers.ts`
 5. `1739450000000-CreateAuthorizationTables.ts` (11 tables)
 6. `1739490000000-CreateAdminUsersTable.ts`
-7. `1771900000000-RenameUserIdToOwnerId.ts` (renames `user_id` → `owner_id` on captures, thoughts, ideas, todos, notifications)
+7. `1771900000000-RenameUserIdToOwnerId.ts` (renames `"userId"` → `"owner_id"` on captures, thoughts, ideas, todos, notifications — camelCase column name from TypeORM default)
+8. `1771900000001-AddNotificationSoftDelete.ts` (drops auto-generated UUID default on notifications.id, adds `"deletedAt"` column — ADR-026 R4)
+9. `1771900000002-RenameOwnerIndexes.ts` (renames captures indexes `IDX_CAPTURES_USER_ID` → `IDX_CAPTURES_OWNER_ID`, `IDX_CAPTURES_CLIENT_USER` → `IDX_CAPTURES_CLIENT_OWNER`)
 
 **Development Server Workflow:**
 
