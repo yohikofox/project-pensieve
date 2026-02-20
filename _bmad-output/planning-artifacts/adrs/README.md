@@ -37,8 +37,9 @@ Ce dossier contient tous les ADRs (Architecture Decision Records) du projet Pens
 
 | [ADR-029](./ADR-029-auth-provider-better-auth.md) | Authentication Provider — Better Auth Self-Hosted (Révision Auth ADR-016) | ✅ Accepted | 2026-02-18 | yohikofox, Winston |
 | [ADR-030](./ADR-030-transactional-email-provider.md) | Transactional Email Provider — Resend | ✅ Accepted | 2026-02-18 | yohikofox, Winston |
+| [ADR-031](./ADR-031-rich-domain-entities-mobile.md) | Rich Domain Entities — Classes avec Invariants pour le Mobile | ✅ Accepted | 2026-02-19 | yohikofox, Winston |
 
-**Total:** 30 ADRs documentés (40+ sous-décisions architecturales)
+**Total:** 31 ADRs documentés (40+ sous-décisions architecturales)
 
 ---
 
@@ -238,5 +239,5 @@ Proposed (⏳) → Accepted (✅) → [Review après 1-3 mois] → Maintenu OU S
 
 ---
 
-**Dernière mise à jour :** 2026-02-18 (ADR-029 + ADR-030 ajoutés — remplacement Supabase Auth)
+**Dernière mise à jour :** 2026-02-19 (ADR-031 ajouté — Rich Domain Entities Mobile)
 **Maintenu par :** Winston (Architect) + yohikofox (Product Owner)
