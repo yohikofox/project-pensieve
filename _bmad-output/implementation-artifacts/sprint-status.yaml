@@ -222,3 +222,10 @@ development_status:
   15-3-web-admin-cleanup-supabase: review  # better-auth/client web+admin, @supabase/* supprimé, grep=0, builds OK (web+admin), 58 BDD verts (story-1-2: 22, story-1-3: 18, backend: 18)
   epic-15-retrospective: optional
 
+  # Epic 16: UX Guards & Feedback (1 story - Processing state guards + visual feedback)
+  # Source: Constat terrain — actions conflictuelles possibles pendant traitement
+  # Périmètre: Mobile uniquement (React Native)
+  epic-16: in-progress
+  16-1-capture-processing-guards-feedback: ready-for-dev  # Guards actions + feedback visuel pendant processing (liste + détail)
+  epic-16-retrospective: optional
+
