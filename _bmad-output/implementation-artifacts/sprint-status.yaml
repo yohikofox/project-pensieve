@@ -229,3 +229,15 @@ development_status:
   16-1-capture-processing-guards-feedback: ready-for-dev  # Guards actions + feedback visuel pendant processing (liste + détail)
   epic-16-retrospective: optional
 
+  # Epic 17: Chiffrement Côté Client Zero-Knowledge (4 stories)
+  # Source: Décision architecturale sécurité — 2026-02-23
+  # FRs: NFR12 (chiffrement stockage), NFR10 (authentification), NFR13 (isolation données)
+  # Dépendances internes: 17-1 → 17-2, 17-3, 17-4 (17.1 requis avant les autres)
+  # Périmètre: Mobile (génération clé, chiffrement OP-SQLite, biométrie, récupération) + Backend (endpoint backup)
+  epic-17: backlog
+  17-1-generation-cle-maitre-di: pending  # Refacto IEncryptionService + intégration DI + cycle de vie compte
+  17-2-chiffrement-donnees-op-sqlite: pending  # Chiffrement transparent raw_content/normalized_text/thoughts.content
+  17-3-protection-biometrique-cle: pending  # expo-local-authentication + IBiometricAuthService + Settings toggle
+  17-4-sauvegarde-recuperation-cle: pending  # PBKDF2 backup + POST/GET /users/me/key-backup + KeyRecoveryScreen
+  epic-17-retrospective: optional
+

@@ -19,7 +19,7 @@ epicsPending:
   - epic12: 4 stories (Story 12.1 - 12.4) [ADR Conformité Critique 🔴 — ADR-026 Backend Data Model]
   - epic13: 4 stories (Story 13.1 - 13.4) [ADR Conformité Moyenne 🟡 — ADR-021, ADR-023, ADR-026 R2/R5]
   - epic14: 4 stories (Story 14.1 - 14.4) [ADR Conformité Basse 🟢 — ADR-018, ADR-022, ADR-015, ADR-026 R7]
-totalStories: 60
+totalStories: 64
 totalFRsCovered: 31
 githubIssuesIntegrated: 23
 adrViolationsAddressed: 12
@@ -32,7 +32,8 @@ inputDocuments:
   - "_bmad-output/implementation-artifacts/audit-adr-2026-02-17.md"
 workflow: "create-epics-and-stories"
 agent: "pm + sm"
-lastUpdate: "2026-02-18"
+lastUpdate: "2026-02-23"
+# Epic 17 added: Zero-Knowledge Client-Side Encryption (4 stories — NFR12, NFR10, NFR13)
 ---
 
 # Pensine - Epic Breakdown
@@ -218,6 +219,7 @@ This document provides the complete epic and story breakdown for Pensine, decomp
 
 **Additional Epics:**
 - Epic 7 → Support & Observability (feature transverse, non liée à un FR spécifique du PRD)
+- Epic 17 → Chiffrement Côté Client Zero-Knowledge (NFR12, NFR10, NFR13 — sécurité avancée)
 
 ## Epic List
 
@@ -311,6 +313,23 @@ Les utilisateurs peuvent synchroniser automatiquement leurs captures et données
 - Bidirectionnel (local ↔ cloud)
 - NFR9 (automatique sans intervention)
 - Informations de statut
+
+---
+
+### Epic 17: Chiffrement Côté Client Zero-Knowledge
+
+Les données sensibles des utilisateurs (captures, transcriptions, analyses IA) sont chiffrées avec une clé générée localement — le serveur ne peut jamais déchiffrer les données (zero-knowledge architecture).
+
+**FRs couverts:** NFR12 (chiffrement stockage), NFR10 (authentification), NFR13 (isolation données)
+
+**Notes d'implémentation:**
+- Identity / Security Context (Mobile)
+- AES-256 via `crypto-js` (déjà installé)
+- `expo-secure-store` hardware-backed (déjà installé)
+- `expo-local-authentication` à installer (biométrie)
+- PBKDF2(SHA-512, 100 000 iterations) pour dérivation de clé backup
+- Endpoint backend `/users/me/key-backup` (blob opaque)
+- Dépendances : 17.1 → 17.2, 17.3, 17.4
 
 ---
 
@@ -2577,5 +2596,139 @@ So that **the entire codebase benefits from improved maintainability without a d
 - Décision documentée dans le devnotes de la story
 - Option choisie appliquée (migration ou commentaire)
 - `project-context.md` ou ADR-026 mis à jour
+
+---
+
+## Epic 17: Chiffrement Côté Client Zero-Knowledge
+
+**Source:** Décision architecturale sécurité — 2026-02-23
+**Périmètre:** Mobile (génération clé, chiffrement OP-SQLite, biométrie, récupération) + Backend NestJS (endpoint backup)
+**Rationale:** NFR12 prescrit le chiffrement des données sensibles au repos. L'architecture actuelle délègue ce chiffrement à la couche infrastructure (disk encryption). Epic 17 monte en niveau en implémentant un chiffrement **côté client (zero-knowledge)** : les clés ne transitent jamais sur le serveur. Même le backend chiffré ne peut pas lire les données utilisateurs.
+**Dépendances inter-stories:** 17.1 → 17.2 (clé dispo avant chiffrement DB) | 17.1 → 17.3 (clé dispo avant biométrie) | 17.1 → 17.4 (clé dispo avant backup)
+
+**FRs couverts :** NFR12 (chiffrement stockage), NFR10 (authentification), NFR13 (isolation données)
+
+### Story 17.1: Génération de la clé maître AES-256 et intégration dans le conteneur DI
+
+**As a** user,
+**I want** my data to be encrypted with a locally generated master key,
+**So that** the server never has access to my data in plaintext (zero-knowledge).
+
+**Acceptance Criteria:**
+- AC1: Interface `IEncryptionService` définie dans `identity/domain/`
+- AC2: `EncryptionService` injectable via tsyringe (`TOKENS.IEncryptionService`)
+- AC3: Clé maître générée au signup et stockée dans SecureStore (`pensine.master_key`)
+- AC4: Clé chargée au login depuis SecureStore
+- AC5: Absence de clé détectée → `KeyMissingEvent` déclenché (prépare Story 17.4)
+- AC6: Clé supprimée à la suppression de compte
+- AC7: Toutes les opérations retournent `Result<T>` (ADR-023)
+
+**Tasks:**
+1. Créer interface `IEncryptionService` avec `encrypt`, `decrypt`, `isReady`, `deleteKey`
+2. Refactorer `infrastructure/security/EncryptionService.ts` en classe injectable (tsyringe)
+3. Ajouter `TOKENS.IEncryptionService` et enregistrer dans `container.ts`
+4. Hook cycle de vie : génération signup, chargement login, suppression delete account
+5. Tests unitaires + Gherkin `story-17-1.feature`
+
+**Definition of Done:**
+- `IEncryptionService` résolvable via `container.resolve(TOKENS.IEncryptionService)`
+- Clé générée au signup, absente sur le serveur, supprimée au delete account
+- Result Pattern respecté, zéro `throw` non capturé
+- Tests BDD passent
+
+---
+
+### Story 17.2: Chiffrement transparent des données sensibles dans OP-SQLite
+
+**As a** user,
+**I want** my captures and transcriptions to be encrypted in the local database,
+**So that** my data is inaccessible even if the database file is physically extracted.
+
+**Acceptance Criteria:**
+- AC1: `raw_content` chiffré à l'écriture dans `CaptureRepository`
+- AC2: `raw_content` déchiffré à la lecture de façon transparente
+- AC3: `normalized_text` chiffré/déchiffré identiquement
+- AC4: `thoughts.content` chiffré dans `KnowledgeRepository`
+- AC5: Données illisibles hors app (ciphertext Base64 dans le fichier .db)
+- AC6: Migration OP-SQLite chiffre les données existantes (idempotente)
+- AC7: `Result.fail('ENCRYPTION_KEY_NOT_AVAILABLE')` si clé absente
+- AC8: Conformité Result Pattern (ADR-023)
+
+**Tasks:**
+1. Modifier `CaptureRepository` : injecter `IEncryptionService`, encrypt/decrypt colonnes sensibles
+2. Modifier `KnowledgeRepository` : idem pour `thoughts.content`
+3. Évaluer chiffrement chemin audio `audio_uri`
+4. Créer migration `migrate_encrypt_existing_captures.ts` (batch, transactions)
+5. Tests unitaires + Gherkin `story-17-2.feature`
+
+**Definition of Done:**
+- Colonnes `raw_content`, `normalized_text`, `thoughts.content` stockées chiffrées
+- Lecture transparente depuis les services/hooks/UI
+- Migration idempotente, aucune perte de données
+- Tests BDD passent
+
+---
+
+### Story 17.3: Protection biométrique de l'accès à la clé maître
+
+**As a** user,
+**I want** access to my encrypted data to require biometric authentication (Face ID / Touch ID),
+**So that** my data is protected even if someone unlocks my phone.
+
+**Acceptance Criteria:**
+- AC1: `expo-local-authentication` installé, permissions configurées (iOS + Android)
+- AC2: `IBiometricAuthService` créé et enregistré dans le conteneur DI
+- AC3: Déverrouillage biométrique demandé au lancement (si activé) et après 5 min d'inactivité
+- AC4: Fallback PIN/passcode si biométrie indisponible
+- AC5: Toggle "Protéger avec Face ID/Touch ID" dans les Settings
+- AC6: Désactivation = accès direct sans biométrie (données toujours chiffrées)
+- AC7: Préférence persistée dans AsyncStorage
+
+**Tasks:**
+1. `npx expo install expo-local-authentication` + permissions `app.config.js`
+2. Créer `IBiometricAuthService` et `BiometricAuthService` dans `infrastructure/security/`
+3. Intégrer déverrouillage dans `bootstrap.ts` + `AppState` (inactivité 5 min)
+4. Créer `BiometricLockScreen` (écran blocage si biométrie échoue)
+5. Section Sécurité dans Settings + toggle
+6. Tests unitaires + Gherkin `story-17-3.feature`
+
+**Definition of Done:**
+- Biométrie demandée au lancement si activée
+- Toggle fonctionnel dans Settings
+- Fallback PIN natif géré par `expo-local-authentication`
+- Tests BDD passent
+
+---
+
+### Story 17.4: Sauvegarde chiffrée et récupération de la clé maître après réinstallation
+
+**As a** user,
+**I want** to recover access to my data after uninstalling and reinstalling the app,
+**So that** I never lose my captures even on a new device or after reinstallation.
+
+**Acceptance Criteria:**
+- AC1: Backup blob créé au signup (PBKDF2 + AES encrypt) et envoyé au backend
+- AC2: `POST /users/me/key-backup` (upsert blob+salt, serveur ne voit pas masterKey)
+- AC3: `GET /users/me/key-backup` (retourne blob+salt pour utilisateur authentifié)
+- AC4: Table `user_key_backup` créée via migration TypeORM (ADR-026 conforme)
+- AC5: Absence de clé locale détectée → flow de récupération déclenché
+- AC6: Récupération complète avec mot de passe correct (PBKDF2 + AES decrypt)
+- AC7: Message d'erreur si mot de passe incorrect
+- AC8: Backup mis à jour au changement de mot de passe
+- AC9: Backup supprimé à la suppression de compte (RGPD)
+
+**Tasks:**
+1. Ajouter PBKDF2, `generateSalt`, `createEncryptedBlob`, `decryptBlob` dans `IEncryptionService`
+2. Créer `KeyBackupService` (mobile) : backup + récupération
+3. Intégrer dans flow auth (signup, login sans clé, changement password)
+4. Créer `KeyRecoveryScreen` (mobile)
+5. Backend : `UserKeyBackupEntity`, `KeyBackupController`, migration TypeORM
+6. Tests unitaires + BDD (mobile + backend) + scénario réinstallation simulée
+
+**Definition of Done:**
+- Récupération complète après désinstall + réinstall
+- Backend stocke blob opaque (zero-knowledge)
+- Migration TypeORM UP + DOWN
+- Tests BDD passent (mobile + backend)
 
 ---
