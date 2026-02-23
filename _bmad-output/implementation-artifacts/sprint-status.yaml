@@ -241,3 +241,17 @@ development_status:
   17-4-sauvegarde-recuperation-cle: pending  # PBKDF2 backup + POST/GET /users/me/key-backup + KeyRecoveryScreen
   epic-17-retrospective: optional
 
+  # Epic 18: Remote LLM Model Configuration Service (5 stories)
+  # Source: Plan architectural 2026-02-23 — Extraire configs LLM vers backend
+  # Motivation: paramètres sampling, prompts d'analyse et métadonnées modèles en dur dans llmModelsConfig.ts
+  # Périmètre: Backend (NestJS, 3 entités) + Admin UI (Next.js, CRUD) + Mobile (sync OP-SQLite, pipeline)
+  # Dépendances internes: 18-1 → 18-2, 18-3 | 18-2 → 18-4 → 18-5
+  # Note: 18-3 parallélisable avec 18-2 (toutes deux dépendent de 18-1)
+  epic-18: backlog
+  18-1-modele-donnees-migrations-backend: backlog  # 3 entités TypeORM (LlmModelConfig, LlmAnalysisPrompt, LlmDeviceTargetingRule) + migration + seed initial
+  18-2-api-synchronisation-mobile: backlog  # POST /api/llm-config/sync — ciblage device + résolution prompts globaux/spécifiques
+  18-3-interface-admin: backlog  # CRUD admin LlmModelConfig + prompts + règles ciblage + page preview
+  18-4-service-sync-mobile: backlog  # DeviceInfoService + ModelConfigSyncService + tables OP-SQLite + fallback SmolLM 135M
+  18-5-integration-configs-remote-pipeline: backlog  # Refacto PostProcessingService + CaptureAnalysisService → configs remote + SamplingParams dynamiques
+  epic-18-retrospective: optional
+

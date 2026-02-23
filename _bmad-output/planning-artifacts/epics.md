@@ -19,7 +19,8 @@ epicsPending:
   - epic12: 4 stories (Story 12.1 - 12.4) [ADR Conformité Critique 🔴 — ADR-026 Backend Data Model]
   - epic13: 4 stories (Story 13.1 - 13.4) [ADR Conformité Moyenne 🟡 — ADR-021, ADR-023, ADR-026 R2/R5]
   - epic14: 4 stories (Story 14.1 - 14.4) [ADR Conformité Basse 🟢 — ADR-018, ADR-022, ADR-015, ADR-026 R7]
-totalStories: 64
+  - epic18: 5 stories (Story 18.1 - 18.5) [Remote LLM Model Configuration Service]
+totalStories: 69
 totalFRsCovered: 31
 githubIssuesIntegrated: 23
 adrViolationsAddressed: 12
@@ -2730,5 +2731,175 @@ So that **the entire codebase benefits from improved maintainability without a d
 - Backend stocke blob opaque (zero-knowledge)
 - Migration TypeORM UP + DOWN
 - Tests BDD passent (mobile + backend)
+
+---
+
+## Epic 18: Remote LLM Model Configuration Service
+
+**Objectif** : Extraire la gestion des configurations de modèles LLM vers le backend, permettre à l'administrateur de les modifier sans mise à jour de l'app, et cibler les modèles par device/hardware.
+
+**Problème résolu** : Les paramètres de sampling, les system prompts d'analyse et les métadonnées de modèles sont tous en dur dans `llmModelsConfig.ts`. Toute correction nécessite actuellement une mise à jour de l'app.
+
+**Périmètre** : Backend (NestJS) + Admin UI (Next.js) + Mobile (React Native)
+
+**Dépendances inter-stories** :
+```
+18.1 (data model) ← 18.2 (API) ← 18.4 (mobile sync) ← 18.5 (intégration pipeline)
+18.1 (data model) ← 18.3 (admin UI)  [parallélisable avec 18.2]
+```
+
+**Architecture Fallback** : Config minimale hardcodée (1 modèle SmolLM 135M) garantit une fonctionnalité minimale même sans sync réussie.
+
+---
+
+### Story 18.1: Modèle de données et migrations backend
+
+**As a** backend developer,
+**I want** TypeORM entities and migrations for LLM model configurations, analysis prompts, and device targeting rules,
+**So that** administrators can manage model configurations through the database without app updates.
+
+**Acceptance Criteria:**
+- AC1: Entité `LlmModelConfig` créée (model_key unique, sampling_params jsonb, backend/promptTemplate/category enums, conformité ADR-026)
+- AC2: Entité `LlmAnalysisPrompt` créée (modelConfigId nullable = prompt global, analysis_type enum, versioning)
+- AC3: Entité `LlmDeviceTargetingRule` créée (rule_type enum, rule_value string)
+- AC4: Migration TypeORM UP et DOWN fonctionnelles
+- AC5: Seed initial reprenant toutes les configs depuis `llmModelsConfig.ts` mobile
+
+**Tasks:**
+1. Créer `src/modules/llm-config/` (nouveau bounded context NestJS)
+2. Implémenter les 3 entités TypeORM conformes ADR-026 (BaseEntity, uuidv7, pas de cascade)
+3. Générer la migration TypeORM
+4. Créer le seeder avec toutes les configs existantes
+5. Enregistrer le module dans `AppModule`
+6. Tests unitaires + BDD (3 scénarios minimum)
+
+**Definition of Done:**
+- 3 entités TypeORM conformes ADR-026
+- Migration UP + DOWN fonctionnelles
+- Seed initial complet depuis les configs actuelles
+- Tests BDD passent
+
+---
+
+### Story 18.2: API de synchronisation mobile (backend)
+
+**As a** mobile app,
+**I want** to send device information to a backend endpoint and receive a targeted list of LLM model configurations and prompts,
+**So that** the app always has up-to-date model configurations without requiring an app update.
+
+**Acceptance Criteria:**
+- AC1: `POST /api/llm-config/sync` retourne HTTP 200 avec liste modèles ciblés
+- AC2: `DeviceSyncRequestDto` validé (platform, npuType, ramMb, availableStorageMb, appVersion, locale, deviceModelPattern)
+- AC3: Filtrage par `LlmDeviceTargetingRule` (platform, npu, ram, device pattern)
+- AC4: Prompts modèle-spécifiques > globaux (fallback sur modelConfigId = null)
+- AC5: `ModelConfigResponseDto` complet (samplingParams, analysisPrompts inclus)
+- AC6: Auth JWT requis (401 sans token), 400 si body invalide, 200 + tableau vide si aucun match
+- AC7: Logging structuré Pino (platform, npuType, appVersion, model count)
+
+**Tasks:**
+1. Créer `LlmConfigController` et `LlmConfigSyncService`
+2. Définir `DeviceSyncRequestDto` et `ModelConfigResponseDto` avec class-validator
+3. Implémenter la logique de filtrage par règles de ciblage
+4. Implémenter la résolution de prompts (spécifique > global)
+5. Auth guard BetterAuth
+6. Tests BDD (4 scénarios minimum)
+
+**Definition of Done:**
+- Endpoint fonctionnel avec ciblage et résolution de prompts
+- Auth JWT requis
+- Tests BDD passent
+
+---
+
+### Story 18.3: Interface admin pour la gestion des configurations LLM
+
+**As an** administrator,
+**I want** a complete CRUD interface to manage LLM model configurations, analysis prompts, and device targeting rules,
+**So that** I can update model parameters, prompts, and device targeting without deploying a new app version.
+
+**Acceptance Criteria:**
+- AC1: Liste `/admin/llm-config` avec filtres et recherche
+- AC2: Formulaire création modèle avec validation Zod (samplingParams structuré, tags pour arrays)
+- AC3: Formulaire édition pré-rempli
+- AC4: Toggle activation/désactivation avec confirmation pour les recommandés
+- AC5: Gestion prompts par modèle (4 types, versioning, fallback global visible)
+- AC6: CRUD règles de ciblage device avec aperçu "proposé sur: ..."
+- AC7: Page prévisualisation `/admin/llm-config/preview` par profil device
+
+**Tasks:**
+1. Pages Next.js : liste, create, `[id]` (detail/edit), `[id]/prompts`, `[id]/targeting`, preview
+2. Composants Shadcn/UI : Table, Form, Switch, Badge, Tabs
+3. Validation Zod pour tous les formulaires
+4. Appels API backend (Server Actions ou API routes)
+5. Tests E2E ou composant (3 scénarios minimum)
+
+**Definition of Done:**
+- CRUD complet fonctionnel
+- Gestion prompts et règles ciblage
+- Page de prévisualisation
+- Tests passent
+
+---
+
+### Story 18.4: Service de synchronisation des configs LLM (mobile)
+
+**As a** mobile user,
+**I want** the app to automatically fetch up-to-date LLM model configurations from the backend at startup,
+**So that** I always have the best model configurations for my device without needing to update the app.
+
+**Acceptance Criteria:**
+- AC1: `DeviceInfoService.collect()` retourne platform, npuType, ramMb, availableStorageMb, appVersion, locale, deviceModelPattern
+- AC2: `ModelConfigSyncService.sync()` upsert résultats dans tables OP-SQLite
+- AC3: Sync déclenchée au démarrage de façon non-bloquante (silent failure)
+- AC4: Fallback `MINIMAL_FALLBACK_CONFIG` (SmolLM 135M) si aucune sync réussie
+- AC5: Tables OP-SQLite `llm_model_configs_remote` + `llm_analysis_prompts_remote` créées par migration
+- AC6: `getActiveConfigs()` retourne remote en priorité, fallback sinon
+- AC7: `IDeviceInfoService` et `IModelConfigSyncService` injectables (ADR-021 Transient First)
+
+**Tasks:**
+1. Créer `DeviceInfoService` (expo-device, expo-constants, expo-localization)
+2. Créer `ModelConfigSyncService` avec upsert OP-SQLite
+3. Migration OP-SQLite pour les 2 nouvelles tables
+4. Définir `MINIMAL_FALLBACK_CONFIG` (SmolLM 135M)
+5. Intégrer sync dans `bootstrap.ts` (async non-bloquant)
+6. Tests BDD (4 scénarios : sync OK, offline, fail, fallback)
+
+**Definition of Done:**
+- Sync fonctionnelle et non-bloquante
+- Fallback minimal défini et fonctionnel
+- Tables OP-SQLite créées
+- Tests BDD passent
+
+---
+
+### Story 18.5: Intégration des configs remote dans le pipeline LLM (mobile)
+
+**As a** user,
+**I want** the app to use the remotely-synchronized LLM configurations for transcription analysis,
+**So that** improvements to AI prompts and model parameters are applied automatically without a new app release.
+
+**Acceptance Criteria:**
+- AC1: `PostProcessingService` lit les configs depuis `IModelConfigSyncService.getActiveConfigs()`
+- AC2: `CaptureAnalysisService` utilise les prompts remote (modèle-spécifique > global)
+- AC3: Fallback transparent sur `MINIMAL_FALLBACK_CONFIG` si aucune config remote
+- AC4: `samplingParams` remote appliqués dynamiquement à l'appel d'inférence LLM
+- AC5: `ModelPromptProfile` construit depuis les configs remote (promptTemplate + systemPrompt + samplingParams)
+- AC6: Tests BDD — chemin remote (2 scénarios minimum)
+- AC7: Tests BDD — chemin fallback (2 scénarios minimum)
+
+**Tasks:**
+1. Définir types `SamplingParams` et `ModelPromptProfile` dans le domaine
+2. Refactoriser `PostProcessingService` (inject `IModelConfigSyncService`)
+3. Refactoriser `CaptureAnalysisService` (utiliser prompts remote + substitution `{{CURRENT_DATE}}`)
+4. Mettre à jour les adapters LLM (llamarn, mediapipe, litert-lm) pour `SamplingParams` dynamiques
+5. Tests BDD chemins remote + fallback
+6. Code review adversariale
+
+**Definition of Done:**
+- Pipeline LLM utilise configs remote en priorité
+- Fallback transparent
+- `llmModelsConfig.ts` n'est plus utilisé directement dans le pipeline
+- Tests BDD passent (remote + fallback)
+- Code review adversariale complète
 
 ---
