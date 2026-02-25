@@ -1,6 +1,6 @@
 # Story 15.3: Migration Web + Admin — Better Auth Client + Suppression Supabase
 
-Status: review
+Status: done
 
 ## Story
 
@@ -58,9 +58,13 @@ so that all clients use the same self-hosted auth provider and the Supabase depe
 - [x] Task 6 — Tests (AC: 9)
   - [x] `admin npm run build` : **✅ Succès** — toutes les routes compilées
   - [x] `web npm run build` : **✅ Succès** — toutes les pages statiques générées
-  - [x] Tests unitaires backend : 18 passed (admin-users.controller + rgpd.service)
+  - [x] Tests unitaires backend : 25 passed (admin-users.controller : 8, rgpd.service : 17) — corrigés code-review
   - [x] Tests acceptance mobile story-1-2 : 22 passed
   - [x] Tests acceptance mobile story-1-3 : 18 passed
+
+### Review Follow-ups (AI)
+
+- [ ] [AI-Review][HIGH] AC9 — Tests d'intégration login web/session SSR non implémentés : le package `web/` n'a pas de framework de test installé et n'a pas encore de page /login ni de route /dashboard. Implémenter quand les routes /dashboard seront créées (ajouter jest + @testing-library/next + @testing-library/react). [web/lib/auth.ts, web/middleware.ts]
 
 ## Dev Notes
 
@@ -239,6 +243,8 @@ claude-sonnet-4-6
 - `lib/auth.ts` — NEW : Better Auth client (`better-auth/client`)
 - `middleware.ts` — NEW : Route protection middleware (pass-through pour l'instant)
 - `.env.example` — NEW : `NEXT_PUBLIC_API_URL` uniquement
+- `package.json` — MODIFIED : better-auth ajouté (découvert code-review)
+- `app/privacy/page.tsx` — MODIFIED (hors-scope story, découvert code-review)
 
 **Admin (pensieve/admin/):**
 - `lib/auth.ts` — MODIFIED : Better Auth client + adminClient plugin + getAccessToken/signOut localStorage
@@ -254,8 +260,15 @@ claude-sonnet-4-6
 - `src/modules/rgpd/application/services/better-auth-admin.service.ts` — MODIFIED : comment nettoyé
 - `src/modules/admin-auth/infrastructure/controllers/admin-users.controller.ts` — MODIFIED : route + méthode renommés
 - `src/modules/admin-auth/application/dtos/reset-user-password.dto.ts` — MODIFIED : comment
-- `src/modules/rgpd/application/services/rgpd.service.spec.ts` — MODIFIED : mocks renommés
-- `src/modules/admin-auth/infrastructure/controllers/admin-users.controller.spec.ts` — MODIFIED : mock syncUsers
+- `src/modules/rgpd/application/services/rgpd.service.spec.ts` — MODIFIED : mocks + tests syncUsers (code-review fix)
+- `src/modules/admin-auth/infrastructure/controllers/admin-users.controller.spec.ts` — MODIFIED : mock updateFeatures + tests syncUsers (code-review fix)
+- `src/app.controller.ts` — MODIFIED (hors-scope story, découvert code-review)
+- `src/auth/guards/better-auth.guard.ts` — MODIFIED (hors-scope story, découvert code-review)
+- `src/modules/authorization/authorization.module.ts` — MODIFIED (hors-scope story, découvert code-review)
+- `src/modules/authorization/core/interfaces/authorization.interface.ts` — MODIFIED (hors-scope story, découvert code-review)
+- `src/modules/authorization/infrastructure/decorators/current-user.decorator.ts` — MODIFIED (hors-scope story, découvert code-review)
+- `src/modules/identity/application/services/user-features.service.ts` — MODIFIED (hors-scope story, découvert code-review)
+- `src/modules/shared/infrastructure/persistence/typeorm/entities/user.entity.ts` — MODIFIED (hors-scope story, découvert code-review)
 - `test/sync-e2e.spec.ts` — MODIFIED : SupabaseAuthGuard → BetterAuthGuard
 - `test/acceptance/story-7-1.test.ts` — MODIFIED : comments
 - `test/acceptance/features/story-15-1-better-auth.feature` — MODIFIED : description
@@ -265,6 +278,13 @@ claude-sonnet-4-6
 **Infrastructure:**
 - `infrastructure/docker-compose.yml` — MODIFIED : SUPABASE_* → BETTER_AUTH_*
 - `infrastructure/.env.example` — MODIFIED : section Supabase → Better Auth
+
+**Documentation (code-review fix — H1):**
+- `admin/README.md` — MODIFIED : refs Supabase → Better Auth
+- `admin/QUICKSTART.md` — MODIFIED : refs Supabase → Better Auth
+- `admin/IMPLEMENTATION_SUMMARY.md` — MODIFIED : refs Supabase → Better Auth
+- `backend/CLAUDE.md` — MODIFIED : SupabaseAuthGuard → BetterAuthGuard, External Services
+- `backend/test/README-SYNC-E2E.md` — MODIFIED : SupabaseAuthGuard → BetterAuthGuard
 
 **Mobile (nettoyage commentaires story 15.2 manqués):**
 - `src/infrastructure/auth/BetterAuthService.ts` — MODIFIED : comment
