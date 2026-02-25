@@ -1,6 +1,6 @@
 # Story 8.20: Fix Transcription Native — Résultat Tronqué pour Audio Long
 
-Status: review
+Status: done
 
 ## Story
 
@@ -39,7 +39,7 @@ afin de ne pas perdre le début de mes idées.
   - [x] 2.3 : Faire passer le test (GREEN)
 
 - [x] Task 3 — Vérification et nettoyage (AC5)
-  - [x] 3.1 : Lancer `npm run test:unit` dans `pensieve/mobile/` — zéro régression
+  - [x] 3.1 : Lancer `npm run test:unit` dans `pensieve/mobile/` — zéro régression introduite par ce fix (nota : 184 échecs pré-existants dans la suite globale, non causés par story 8.20 — voir Completion Notes)
   - [x] 3.2 : Mettre à jour le File List
 
 ## Dev Notes
@@ -121,11 +121,14 @@ claude-sonnet-4-6
 - ✅ AC2 : `startRealTime` — `accumulatedText` accumule les `isFinal` avec espace (`l.305-307`)
 - ✅ AC3 : Test "un seul isFinal" vert avant et après fix (non régressé)
 - ✅ AC4 : Séparateur espace simple, pas de doublon — vérifié par `not.toContain("  ")`
-- ✅ AC5 : 8 tests unitaires créés dans `NativeTranscriptionEngine.test.ts` — tous verts
+- ✅ AC5 : 9 tests unitaires dans `NativeTranscriptionEngine.test.ts` + 7 tests BDD dans `story-8-20.test.ts` — tous verts
 - ✅ Cohérence : branche partielle (`isFinal=false`) ne modifie plus `accumulatedText` — évite corruption de l'accumulation entre segments finaux
-- ✅ Régression : 184 échecs après fix vs 190 avant (6 réparations additionnelles, 0 régression)
+- ✅ Régression globale : 184 échecs pré-existants (non causés par ce fix — suite globale dysfonctionnelle avant story 8.20)
+- ✅ Code-review fixes : M1 (assertions callback onFinalResult), M2 (tests BDD créés), M3 (doc clarifiée), L2 (commentaire nativeResults), L3 (test sélection multi-alternatives), L4 (assertion cleanupTempFile)
 
 ### File List
 
 - `pensieve/mobile/src/contexts/Normalization/services/NativeTranscriptionEngine.ts` (modifié)
-- `pensieve/mobile/src/contexts/Normalization/services/__tests__/NativeTranscriptionEngine.test.ts` (créé)
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/NativeTranscriptionEngine.test.ts` (modifié — code-review fixes)
+- `pensieve/mobile/tests/acceptance/features/story-8-20.feature` (créé — code-review fix M2)
+- `pensieve/mobile/tests/acceptance/story-8-20.test.ts` (créé — code-review fix M2)

@@ -103,7 +103,7 @@ development_status:
   # Epic 7: Support & Observability (3 stories - Support tools + DevTools)
   epic-7: in-progress
   7-1-support-mode-avec-permissions-backend: done  # Backend: 13 unit tests, BDD tests created. Mobile: 35 unit tests (repository, service, store). UI Settings conditional display implemented.
-  7-2-logs-devtools-rotation-fifo: backlog  # Issue GitHub #10
+  7-2-logs-devtools-rotation-fifo: ready-for-dev  # Issue GitHub #10
   7-3-llm-logs-analysis-github-issues: backlog  # Issue GitHub #17
   epic-7-retrospective: optional
 
@@ -125,13 +125,13 @@ development_status:
   8-11-suppression-compte-avec-anonymisation: backlog  # Issue #5 - Backlog
   8-12-export-rgpd-asynchrone: backlog  # Issue #4 - Backlog
   # Quick Wins Tab Actions (source: discovery session power user 2026-02-17)
-  8-13-supprimer-une-tache: backlog  # Hard delete d'une tâche (swipe + bouton détail) - Quick Win
-  8-14-abandonner-une-tache: backlog  # État sémantique "abandonné" (soft state, historique préservé) - Quick Win
-  8-15-priorisation-visuelle-des-taches: backlog  # Highlights couleur (retard/prioritaire/approchant/normal) - Quick Win
+  8-13-supprimer-une-tache: ready-for-dev  # Hard delete d'une tâche (swipe + bouton détail) - Quick Win
+  8-14-abandonner-une-tache: ready-for-dev  # État sémantique "abandonné" (soft state, historique préservé) - Quick Win
+  8-15-priorisation-visuelle-des-taches: ready-for-dev  # Highlights couleur (retard/prioritaire/approchant/normal) - Quick Win
   # Performance fix (analysis session 2026-02-18)
   8-16-performance-latence-capture-screen: ready-for-dev  # Latence ~1s premier load CaptureScreen — viole NFR1 (<500ms)
   # Native transcription bug fix (2026-02-20) — BLOQUANT UX
-  8-20-fix-native-transcription-resultat-tronque: review  # NativeTranscriptionEngine écrase finalText au lieu d'accumuler — audio >15s tronqué au dernier segment
+  8-20-fix-native-transcription-resultat-tronque: done  # NativeTranscriptionEngine écrase finalText au lieu d'accumuler — audio >15s tronqué au dernier segment
   # Email infrastructure (2026-02-18) — DÉPRÉCIÉE
   # ⚠️ Story 8-17 SUPERSEDÉE par Epic 15 (ADR-029 remplace Supabase Auth entièrement)
   8-17-configuration-smtp-email-transactionnel: deprecated  # Supersedée par 15-1 — Better Auth + Resend remplace le bandaid SMTP Supabase
