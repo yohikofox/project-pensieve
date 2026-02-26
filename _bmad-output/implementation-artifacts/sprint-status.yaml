@@ -361,3 +361,18 @@ development_status:
   23-24-rss-web-monitoring: backlog            # Veille automatique RSS/web → captures filtrées par pertinence LLM
   23-25-github-linear-sync: backlog            # Issues assignées GitHub/Linear → Todos bidirectionnels
 
+  # Epic 24: Beta Distribution Readiness — Feature Flag System + First Launch Automation
+  # Source: Session architecture 2026-02-26 — préparation distribution app (frère)
+  # Objectif: Remplacer les colonnes booléennes legacy (debug_mode_access, data_mining_access) par un
+  #           système de feature flags générique (référentiel + assignations user/role/permission + deny-wins),
+  #           gater les tabs Actualités/Projets et boutons capture média, et automatiser la config
+  #           optimale au premier lancement sur Pixel 9+ (native recognition + Gemma 3 1B MediaPipe).
+  # Dépendances: Epic 7 (UserFeaturesService existant — remplacé), Epic 1 (auth)
+  # Priorité: Avant distribution externe
+  epic-24: in-progress
+  24-1-feature-flag-system-backend: done  # Backend: tables features + assignations + FeatureResolutionService (deny-wins) + migration legacy columns
+  24-2-feature-flag-admin-api-ui: review    # Admin API + UI: gestion catalogue features + assignations user/role/permission + trace résolution
+  24-3-feature-flag-mobile-adaptation: ready-for-dev  # Mobile: UserFeatures dynamique + settingsStore refactoré + UI gating tabs + capture media buttons
+  24-4-first-launch-pixel-defaults: ready-for-dev  # Mobile: FirstLaunchInitializer + détection Pixel 9+ + native recognition + Gemma 3 1B + auto-transcription
+  epic-24-retrospective: optional
+
