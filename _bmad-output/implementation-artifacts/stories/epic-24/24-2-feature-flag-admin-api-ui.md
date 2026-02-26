@@ -1,6 +1,6 @@
 # Story 24.2: Feature Flag System — Admin API & Interface d'Administration
 
-Status: review
+Status: done
 
 ## Story
 
@@ -222,6 +222,16 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+**Code Review — Fixes appliqués (2026-02-26)**
+
+- **C1 (CRITIQUE)** — `getUserFeatures` retournait `Record<string, boolean>` au lieu de `{ resolved, sources }`. Corrigé dans `admin-feature-flags.service.ts` + `admin-user-features.controller.ts`. La requête SQL ajoute maintenant `'user'/'role'/'permission' AS "sourceType"`. Tests unitaires mis à jour.
+- **C2 (CRITIQUE)** — Algorithm deny-wins ignorait `defaultValue`. Corrigé : fallback sur `f.defaultValue` quand `sources.length === 0`.
+- **H1 (HAUT)** — AC6 partiellement non implémenté (pas de trace source, pas de bouton delete). Corrigé dans `users/page.tsx` : affichage `resolved`, badges source (direct/rôle/permission/non défini), bouton ✕ pour supprimer assignation directe.
+- **H2 (HAUT)** — Zéro scénario BDD pour AC3 (rôle) et AC4 (permission). Ajouté Scénarios 4 et 5 dans `story-24-2.feature` + step definitions dans `story-24-2.test.ts`.
+- **H3 (HAUT)** — Bouton inline edit toujours invisible (missing `group` class). Corrigé dans `features/page.tsx` ligne 143.
+- **M2 (MOYEN)** — `@IsNotEmpty()` sur boolean supprimé dans `upsert-feature-assignment.dto.ts`.
+- **M1 (MOYEN — non corrigé)** — Double `@Controller('api/admin/users')` entre `AdminUserFeaturesController` et `AdminUsersController` : anti-pattern NestJS. Refactoring scope > cette story.
+
 ### File List
 
 **Backend — Nouveaux fichiers**
@@ -258,8 +268,9 @@ claude-sonnet-4-6
 - `pensieve/admin/components/admin/feature-flag-assignments.tsx`
 
 **Admin UI — Fichiers modifiés**
-- `pensieve/admin/lib/api-client.ts` (nouveaux endpoints + types + 204 handling)
-- `pensieve/admin/app/(dashboard)/users/page.tsx` (remplacement legacy toggles par trace UI)
+- `pensieve/admin/lib/api-client.ts` (nouveaux endpoints + types + 204 handling + UserFeatureResolution type)
+- `pensieve/admin/app/(dashboard)/users/page.tsx` (trace UI avec sources + bouton delete assignation directe)
 - `pensieve/admin/app/(dashboard)/roles/page.tsx` (bouton Feature Flags + Dialog)
 - `pensieve/admin/app/(dashboard)/permissions/page.tsx` (bouton Feature Flags + Dialog)
 - `pensieve/admin/components/admin/sidebar-nav.tsx` (ajout lien Feature Flags)
+- `pensieve/admin/app/(dashboard)/features/page.tsx` (fix group-hover inline edit)
