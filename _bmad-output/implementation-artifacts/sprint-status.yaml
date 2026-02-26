@@ -372,7 +372,7 @@ development_status:
   epic-24: in-progress
   24-1-feature-flag-system-backend: done  # Backend: tables features + assignations + FeatureResolutionService (deny-wins) + migration legacy columns
   24-2-feature-flag-admin-api-ui: done    # Admin API + UI: gestion catalogue features + assignations user/role/permission + trace résolution
-  24-3-feature-flag-mobile-adaptation: ready-for-dev  # Mobile: UserFeatures dynamique + settingsStore refactoré + UI gating tabs + capture media buttons
+  24-3-feature-flag-mobile-adaptation: done  # Mobile: UserFeatures dynamique + settingsStore refactoré + UI gating tabs + capture media buttons. Code review: 7/7 fixes (1C+3H+3M) — legacy import, isDataMiningEnabled, réactivité features, forceRefresh offline, test toggleDebugMode, commentaires AC.
   24-4-first-launch-pixel-defaults: ready-for-dev  # Mobile: FirstLaunchInitializer + détection Pixel 9+ + native recognition + Gemma 3 1B + auto-transcription
   epic-24-retrospective: optional
 
