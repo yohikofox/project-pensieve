@@ -104,7 +104,7 @@ development_status:
   epic-7: in-progress
   7-1-support-mode-avec-permissions-backend: done  # Backend: 13 unit tests, BDD tests created. Mobile: 35 unit tests (repository, service, store). UI Settings conditional display implemented.
   7-2-logs-devtools-rotation-fifo: done  # Issue GitHub #10 — code review fixes appliqués
-  7-3-llm-logs-analysis-github-issues: backlog  # Issue GitHub #17
+  7-3-llm-logs-analysis-github-issues: done  # Issue GitHub #17 — code review fixes appliqués (H1 Singleton LLM, H2 BDD AC6+AC7, H3 DI SettingsScreen, M4 timeout, M5 coverage, M6 dead code, M7 is:open)
   epic-7-retrospective: optional
 
   # Epic 8: GitHub Issues Resolution (15 stories - Bug fixes + features from GitHub issues + Quick Wins)
