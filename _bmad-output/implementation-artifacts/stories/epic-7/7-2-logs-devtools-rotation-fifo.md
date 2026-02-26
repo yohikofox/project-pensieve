@@ -1,6 +1,6 @@
 # Story 7.2: Logs DevTools — Rotation FIFO (limite 100 entrées)
 
-Status: ready-for-dev
+Status: review
 
 <!-- Source: Issue GitHub #10 — https://github.com/yohikofox/pensieve/issues/10 -->
 
@@ -52,11 +52,11 @@ So that **l'app ne consomme pas de mémoire excessive en capturant des logs en c
 
 ### Mobile Tasks (seul périmètre concerné)
 
-- [ ] **Task 1 : Implémenter la rotation FIFO dans logsDebugStore** (AC: 1, 2, 3, 5)
-  - [ ] Subtask 1.1 : Ajouter la constante `MAX_LOGS = 100` dans `logsDebugStore.ts`
+- [x] **Task 1 : Implémenter la rotation FIFO dans logsDebugStore** (AC: 1, 2, 3, 5)
+  - [x] Subtask 1.1 : Ajouter la constante `MAX_LOGS = 100` dans `logsDebugStore.ts`
     - Placer la constante avant la définition du store (exportable si besoin de tests)
     - Valeur fixe : 100 (pas configurable pour cette story)
-  - [ ] Subtask 1.2 : Modifier l'action `addLog` pour appliquer la limite FIFO
+  - [x] Subtask 1.2 : Modifier l'action `addLog` pour appliquer la limite FIFO
     - Logique : si `state.logs.length >= MAX_LOGS`, supprimer le premier élément avant d'ajouter
     - Implementation suggérée :
       ```typescript
@@ -72,8 +72,8 @@ So that **l'app ne consomme pas de mémoire excessive en capturant des logs en c
 
 ### Testing Tasks
 
-- [ ] **Task 2 : Tests unitaires logsDebugStore** (AC: 1, 2, 3, 4, 5)
-  - [ ] Subtask 2.1 : Créer `mobile/src/components/dev/stores/__tests__/logsDebugStore.test.ts`
+- [x] **Task 2 : Tests unitaires logsDebugStore** (AC: 1, 2, 3, 4, 5)
+  - [x] Subtask 2.1 : Créer `mobile/src/components/dev/stores/__tests__/logsDebugStore.test.ts`
     - Test : addLog sous le seuil (ex: 5 entrées → 6 entrées)
     - Test : addLog à exactement la limite (100 → 100, pas 101)
     - Test : addLog au-delà de la limite (100 entrées + 1 → oldest supprimé)
@@ -82,13 +82,13 @@ So that **l'app ne consomme pas de mémoire excessive en capturant des logs en c
     - Test : clearLogs vide complètement (unrelated, non-regression)
     - Test : setSniffing non affecté par la limite (non-regression)
 
-- [ ] **Task 3 : Scénario BDD Gherkin** (AC: 1, 2, 3, 4, 5)
-  - [ ] Subtask 3.1 : Créer `mobile/tests/acceptance/features/story-7-2.feature`
+- [x] **Task 3 : Scénario BDD Gherkin** (AC: 1, 2, 3, 4, 5)
+  - [x] Subtask 3.1 : Créer `mobile/tests/acceptance/features/story-7-2.feature`
     - Scénario 1 : Rotation FIFO — insertion de la 101ème entrée
     - Scénario 2 : Buffer sous seuil — pas de suppression
     - Scénario 3 : Préservation des logs les plus récents
     - Scénario 4 : Non-régression clearLogs
-  - [ ] Subtask 3.2 : Créer `mobile/tests/acceptance/story-7-2.test.ts`
+  - [x] Subtask 3.2 : Créer `mobile/tests/acceptance/story-7-2.test.ts`
     - Implémenter les step definitions avec jest-cucumber
     - Utiliser des instances directes du store (pas de mocks complexes)
 
@@ -228,6 +228,20 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+- Correction d'un test unitaire mal rédigé (attendu 6 au lieu de 5 pour 5 insertions)
+- `jest.config.acceptance.js` ne chargeait pas `jest-setup.js` → `__DEV__` non défini → ajout `setupFilesAfterEnv`
+- Échecs `npm run test:architecture` préexistants (ADR-022 x9, ADR-028 x68, ADR-019 x31, ADR-031 x7) — non liés à cette story
+
 ### Completion Notes List
 
+- **Task 1** : `logsDebugStore.ts` modifié — `MAX_LOGS = 100` exporté + `addLog` avec `Array.slice(-MAX_LOGS)`. `clearLogs` et `setSniffing` inchangés. Conforme ADR-028 (pas de `any`), ADR-022 (pas d'AsyncStorage).
+- **Task 2** : 13 tests unitaires (babel-jest) couvrant AC1-AC5 + non-régressions. Tous GREEN.
+- **Task 3** : 4 scénarios Gherkin BDD (jest-cucumber) couvrant AC1-AC5. Tous GREEN. Fix collatéral : ajout `setupFilesAfterEnv` dans `jest.config.acceptance.js` pour exposer `__DEV__` global.
+
 ### File List
+
+- `pensieve/mobile/src/components/dev/stores/logsDebugStore.ts` (modifié)
+- `pensieve/mobile/src/components/dev/stores/__tests__/logsDebugStore.test.ts` (créé)
+- `pensieve/mobile/tests/acceptance/features/story-7-2.feature` (créé)
+- `pensieve/mobile/tests/acceptance/story-7-2.test.ts` (créé)
+- `pensieve/mobile/jest.config.acceptance.js` (modifié — ajout setupFilesAfterEnv)

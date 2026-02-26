@@ -103,7 +103,7 @@ development_status:
   # Epic 7: Support & Observability (3 stories - Support tools + DevTools)
   epic-7: in-progress
   7-1-support-mode-avec-permissions-backend: done  # Backend: 13 unit tests, BDD tests created. Mobile: 35 unit tests (repository, service, store). UI Settings conditional display implemented.
-  7-2-logs-devtools-rotation-fifo: ready-for-dev  # Issue GitHub #10
+  7-2-logs-devtools-rotation-fifo: review  # Issue GitHub #10
   7-3-llm-logs-analysis-github-issues: backlog  # Issue GitHub #17
   epic-7-retrospective: optional
 
@@ -254,4 +254,110 @@ development_status:
   18-4-service-sync-mobile: backlog  # DeviceInfoService + ModelConfigSyncService + tables OP-SQLite + fallback SmolLM 135M
   18-5-integration-configs-remote-pipeline: backlog  # Refacto PostProcessingService + CaptureAnalysisService → configs remote + SamplingParams dynamiques
   epic-18-retrospective: optional
+
+  # Epic 19: Delegation Core — Fondations, Intégrations, Trust Model (12 stories)
+  # Source: Session architecturale 2026-02-25 — Winston (Architect) + yohikofox
+  # Motivation: PRD mis à jour (FR32-FR49, NFR17-NFR22) — Mode Délégation, nouveau BC Delegation
+  # Décisions clés:
+  #   - Refactoring préliminaire: Action BC → Task BC (vocabulaire DDD précis)
+  #   - Modèle sémantique: Action (intent détecté) → Todo (Task BC) | ExecutionJob (Delegation BC)
+  #   - Knowledge BC classifie les actions — fallback Todo sur ambiguïté (jamais de LLM à deux passes)
+  #   - Option A chorégraphie: CaptureDigested event → Task BC + Delegation BC subscribent
+  #   - Trust model: niveau 1 défaut (validation obligatoire) → 2 (délai de grâce) → 3 (fire & forget)
+  #   - Exception universelle: Delayed Send email obligatoire à tous les niveaux (FR42)
+  #   - Offline queue: ExecutionJobs persistants (NFR20: 0 perte)
+  # Dépendances internes: 19-1 → 19-2 → 19-3, 19-4 → 19-5 → 19-6, 19-7 → 19-8, 19-9, 19-10 → 19-11 → 19-12
+  # FRs couverts: FR37-FR49 (sauf FR41 → Epic 21)
+  epic-19: backlog
+  19-1-refactoring-action-bc-task-bc: backlog           # Renommage Action BC → Task BC — vocabulaire DDD précis
+  19-2-knowledge-bc-emission-actions: backlog           # Knowledge BC: extractedActions dans CaptureDigested + fallback Todo
+  19-3-task-bc-materialisation-todo: backlog            # Task BC: subscription CaptureDigested → création Todo depuis Action
+  19-4-delegation-bc-execution-job: backlog             # Delegation BC: entité ExecutionJob + machine d'états + persistance OP-SQLite
+  19-5-trust-model-niveau-1: backlog                    # Trust model N1: validation obligatoire + ambiguïté bloquante (NFR19)
+  19-6-ui-actions-en-attente: backlog                   # UI: section "En attente de validation" dans onglet Actions + badge counter
+  19-7-oauth2-google-shared: backlog                    # OAuth2 Google scope partagé Calendar + Gmail
+  19-8-google-calendar-integration: backlog             # Google Calendar: créer un RDV depuis ExecutionJob validé
+  19-9-gmail-delayed-send: backlog                      # Gmail: rédiger + Delayed Send toujours actif (FR42, NFR21)
+  19-10-apple-calendar-reminders: backlog               # Apple Calendar + Apple Reminders via EventKit (iOS)
+  19-11-offline-queue: backlog                          # Offline queue: persistance + retry à la reconnexion (FR48, FR49, NFR20)
+  19-12-trust-model-niveaux-2-3: backlog                # Trust model N2 (délai de grâce) + N3 (fire & forget) + exception email
+  19-13-contact-resolution-pipeline: backlog            # ContactResolver: Google Contacts → local → ambiguous + notification utilisateur
+  epic-19-retrospective: optional
+
+  # Epic 20: Delegation Triggers — Widget, Back Tap, Siri, Google Actions (5 stories)
+  # Source: Session architecturale 2026-02-25
+  # Motivation: FR32-FR36 — déclencher une capture sans ouvrir l'app
+  # Note: FR35 (Wake Word) → Spike dédié, hors scope de cet epic
+  # Dépendances: Epic 19 (pipeline capture + delegation) | 20-1 → 20-2, 20-3, 20-4, 20-5
+  epic-20: backlog
+  20-1-settings-declencheurs: backlog                   # Settings: panneau de configuration des modes de déclenchement (FR36)
+  20-2-widget-ios-android: backlog                      # Widget home screen + lock screen (FR34)
+  20-3-back-tap-quick-tap: backlog                      # Back Tap iOS + Quick Tap Pixel 9/10 Pro Phase 1 (FR33)
+  20-4-siri-app-intents: backlog                        # Siri App Intents Framework (FR32 — iOS)
+  20-5-google-app-actions: backlog                      # Google App Actions + Gemini Pixel (FR32 — Android)
+  epic-20-retrospective: optional
+
+  # Epic 21: Delegation Messaging — Telegram (2 stories)
+  # Source: Session architecturale 2026-02-25
+  # Motivation: FR41 — envoyer un message Telegram depuis un intent capturé
+  # Note: API Telegram Bot gratuite, pas d'OAuth, pas de rollback nécessaire
+  # Dépendances: Epic 19 (ExecutionJob + offline queue)
+  epic-21: backlog
+  21-1-telegram-bot-send: backlog                       # Telegram Bot: rédiger + envoyer depuis ExecutionJob validé (FR41)
+  21-2-telegram-erreurs-ambiguite: backlog              # Gestion erreurs + ambiguïté destinataire (NFR19)
+  epic-21-retrospective: optional
+
+  # SPIKE: Wake Word "Hey Pensine" — R&D Custom DSP
+  # Source: Feature spec delegation mode 2026-02-25 — FR35, NFR17, NFR18, NFR22
+  # Statut: R&D pure — non planifié. À lancer après validation d'Epic 19 en production.
+  # Objectif: Valider faisabilité custom DSP Android (Tensor G4), mesurer batterie réelle, évaluer portabilité iOS
+  # Note: Picovoice Porcupine écarté (licence commerciale incompatible)
+  spike-wake-word-hey-pensine: not-started
+
+  # Epic 22: LLM Power User — BYOK OpenAI + "Sign in with ChatGPT" (post-monétisation)
+  # Source: ADR-036 (2026-02-26) + recherche web "Sign in with ChatGPT" officiel OpenAI (juin 2025)
+  # Objectif: Permettre aux utilisateurs exigeants d'utiliser leurs propres crédits LLM (OpenAI API key ou compte ChatGPT)
+  # Priorité: Post-monétisation — ne pas implémenter avant d'avoir un revenu
+  # Dépendances: Epic 18 (infrastructure LLM config), Epic 19 (LLM pipeline opérationnel)
+  # Statut "Sign in with ChatGPT": Feature OFFICIELLE OpenAI (juin 2025) — OAuth2 PKCE — enregistrement via formulaire développeur requis
+  # 22-1 est un spike time-boxé (2-3 jours) avant toute implémentation
+  epic-22: backlog
+  22-1-spike-signin-with-chatgpt-oauth: not-started   # Spike: valider OAuth "Sign in with ChatGPT" + portée tokens + adaptation React Native
+
+  # Epic 23: Platform Extensions & Smart Integrations — Exploration backlog
+  # Source: Session exploration 2026-02-26
+  # Objectif: Étendre Pensine au-delà de la voix — capacités Android natives + intégrations tierces cohérentes
+  # Priorité: Post-Epic 19 (Delegation BC doit être opérationnel pour la plupart des capabilities)
+  # Android-specific: 23-1 (Notification Listener), 23-4 (Quick Settings), 23-5 (Android Auto), 23-6 (Wear OS)
+  epic-23: backlog
+  23-1-notification-listener: backlog          # Android NotificationListenerService — capture passive depuis autres apps
+  23-2-camera-multimodal-capture: backlog      # Camera + ML Kit on-device — cartes de visite, tableaux blancs, reçus
+  23-3-location-geofencing: backlog            # Geofencing + enrichissement contextuel des captures avec localisation
+  23-4-quick-settings-tile: backlog            # Tuile Quick Settings Android — capture 1-tap depuis panneau notifications
+  23-5-android-auto: backlog                   # Capture vocale + validation ExecutionJobs mains-libres en voiture
+  23-6-wear-os: backlog                        # Capture + validation ExecutionJobs depuis montre Android
+  23-7-whatsapp-integration: backlog           # Capability WhatsAppMessage — deep link ou Business API (futur)
+  23-8-home-assistant-integration: backlog     # Capability HomeAutomation — API REST HA locale, zero cloud
+  23-9-notion-obsidian-sync: backlog           # Sync ideas → Notion API ou Obsidian via Google Drive
+  23-10-webhook-make-ifttt: backlog            # Capability WebhookSend — bridge universel Make/IFTTT/Zapier/n8n
+  23-11-google-drive-docs: backlog             # Capabilities DriveDocCreate + DriveFileShare — scope drive.file
+  # — Intelligence proactive & apprentissage —
+  23-12-project-clustering: backlog            # Regroupement sémantique des captures en projets émergents (embeddings on-device)
+  23-13-meeting-prep-assistant: backlog        # Brief contextuel auto avant chaque réunion Google Calendar
+  23-14-follow-up-tracker: backlog             # Détection d'engagements non suivis dans les captures passées
+  23-15-daily-briefing: backlog                # Résumé matinal automatique : todos, réunions, ExecutionJobs, TTS
+  23-22-recurring-pattern-automation: backlog  # Détection de todos récurrentes → proposition d'automatisation
+  23-23-accountability-nudges: backlog         # Nudges contextuels (créneau libre, fin de journée) — pas de rappels bêtes
+  # — Nouvelles modalités de capture —
+  23-16-email-action-extraction: backlog       # Gmail read → extraction d'actions attendues de l'utilisateur
+  23-17-url-web-capture: backlog               # Partager une URL → scraping + digest LLM → capture actionnable
+  23-18-pdf-document-analysis: backlog         # Partager un PDF → extraction dates, montants, actions (ML Kit)
+  23-21-speaker-diarization: backlog           # Diarization multi-speaker → attribution actions par locuteur (spike requis)
+  # — Intelligence sur les données —
+  23-19-semantic-search: backlog               # Recherche sémantique dans l'historique (embeddings + sqlite-vec)
+  23-20-action-dependency-chaining: backlog    # Détection de séquences → Todos ordonnées avec dépendances
+  23-26-multi-capture-synthesis: backlog       # Synthèse N captures → document structuré → export Notion/GDocs
+  # — Intégrations dev & veille —
+  23-24-rss-web-monitoring: backlog            # Veille automatique RSS/web → captures filtrées par pertinence LLM
+  23-25-github-linear-sync: backlog            # Issues assignées GitHub/Linear → Todos bidirectionnels
 
