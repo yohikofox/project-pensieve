@@ -1,6 +1,6 @@
 # Story 7.2: Logs DevTools — Rotation FIFO (limite 100 entrées)
 
-Status: review
+Status: done
 
 <!-- Source: Issue GitHub #10 — https://github.com/yohikofox/pensieve/issues/10 -->
 
@@ -143,6 +143,19 @@ Le composant `LogsViewer` (dans `InAppLogger.tsx`) affiche `logs.length` dans le
 ```
 → Avec la rotation FIFO, ce compteur affichera ≤ 100 naturellement. **Aucune modification UI nécessaire.**
 
+### earlyConsoleSetup.ts — Interception console.error avant LogBox
+
+**Fichier créé hors périmètre initial** (identifié et documenté lors du code review) :
+`mobile/src/components/dev/earlyConsoleSetup.ts`
+
+**Problème résolu** : `LogBox` de React Native enveloppe `console.error` après le chargement initial. L'interception standard dans `logsDebugStore.ts` arrive trop tard → les stack traces des erreurs précoces sont perdues dans l'overlay LogBox.
+
+**Solution** : `earlyConsoleSetup.ts` capture `console.error` natif (avant LogBox) dès le premier import dans `index.ts`. Les erreurs précoces sont bufferisées jusqu'à ce que `installErrorForwarder()` soit appelé dans `setupConsoleInterception()`.
+
+**Note de gouvernance** : Ce pattern constitue un nouveau mécanisme d'infrastructure. Il devrait être documenté dans un ADR dédié (ADR-03x) pour aligner l'équipe. La story 7.3 ou une story de maintenance est recommandée.
+
+**Fix code review** : L'auto-setup au niveau module (`if (__DEV__) { setupConsoleInterception(); }`) a été supprimé de `logsDebugStore.ts` et remplacé par un appel explicite dans `bootstrap.ts` (étape 4). Cela évite les effets de bord lors des tests unitaires.
+
 ### Intégration avec Story 7.1
 
 L'interception console est déjà protégée par le debug mode (Story 7.1) :
@@ -237,11 +250,23 @@ claude-sonnet-4-6
 - **Task 1** : `logsDebugStore.ts` modifié — `MAX_LOGS = 100` exporté + `addLog` avec `Array.slice(-MAX_LOGS)`. `clearLogs` et `setSniffing` inchangés. Conforme ADR-028 (pas de `any`), ADR-022 (pas d'AsyncStorage).
 - **Task 2** : 13 tests unitaires (babel-jest) couvrant AC1-AC5 + non-régressions. Tous GREEN.
 - **Task 3** : 4 scénarios Gherkin BDD (jest-cucumber) couvrant AC1-AC5. Tous GREEN. Fix collatéral : ajout `setupFilesAfterEnv` dans `jest.config.acceptance.js` pour exposer `__DEV__` global.
+- **Code Review Fixes** :
+  - H2 supprimé : auto-setup `if (__DEV__) { setupConsoleInterception(); }` retiré du niveau module de `logsDebugStore.ts` → appel explicite dans `bootstrap.ts` (étape 4). Élimine effets de bord en tests.
+  - M3 résolu : scénario BDD 5 ajouté (`Non-régression — toggle sniffing`) couvrant AC4 setSniffing. 5/5 BDD GREEN.
+  - M4 résolu : `CaptureDevTools.tsx` — `expo-file-system/legacy` remplacé par API moderne (`Directory`, `File`, `Paths`). Conforme règle absolue CLAUDE.md.
+  - M1+M2 résolu : File List complétée avec 5 fichiers manquants (earlyConsoleSetup, index.ts, InAppLogger, CaptureDevTools, Swift). bootstrap.ts ajouté.
+  - Note AC4 UI (couleurs log, auto-scroll, header count) : non couvrable par tests unitaires/BDD → nécessite tests Detox E2E ou validation manuelle.
 
 ### File List
 
 - `pensieve/mobile/src/components/dev/stores/logsDebugStore.ts` (modifié)
 - `pensieve/mobile/src/components/dev/stores/__tests__/logsDebugStore.test.ts` (créé)
-- `pensieve/mobile/tests/acceptance/features/story-7-2.feature` (créé)
-- `pensieve/mobile/tests/acceptance/story-7-2.test.ts` (créé)
+- `pensieve/mobile/tests/acceptance/features/story-7-2.feature` (créé + fix CR: scénario AC4 toggle Sniff)
+- `pensieve/mobile/tests/acceptance/story-7-2.test.ts` (créé + fix CR: step definitions toggle Sniff)
 - `pensieve/mobile/jest.config.acceptance.js` (modifié — ajout setupFilesAfterEnv)
+- `pensieve/mobile/src/components/dev/earlyConsoleSetup.ts` (créé — interception console.error avant LogBox, requis par logsDebugStore)
+- `pensieve/mobile/index.ts` (modifié — import earlyConsoleSetup en premier, avant reflect-metadata)
+- `pensieve/mobile/src/config/bootstrap.ts` (modifié — fix CR: appel explicite setupConsoleInterception() vs auto-setup implicite)
+- `pensieve/mobile/src/components/dev/InAppLogger.tsx` (modifié — fix: new Date(log.timestamp) pour sérialisation Zustand)
+- `pensieve/mobile/src/components/dev/CaptureDevTools.tsx` (modifié — fix: duration/fileSize != null; fix CR: expo-file-system/legacy → moderne)
+- `pensieve/mobile/modules/expo-waveform-extractor/ios/ExpoWaveformExtractorModule.swift` (modifié — fix collatéral: @convention(block) + sendEvent body cast; hors scope story, commit groupé)

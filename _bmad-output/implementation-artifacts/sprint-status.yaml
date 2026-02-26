@@ -103,7 +103,7 @@ development_status:
   # Epic 7: Support & Observability (3 stories - Support tools + DevTools)
   epic-7: in-progress
   7-1-support-mode-avec-permissions-backend: done  # Backend: 13 unit tests, BDD tests created. Mobile: 35 unit tests (repository, service, store). UI Settings conditional display implemented.
-  7-2-logs-devtools-rotation-fifo: review  # Issue GitHub #10
+  7-2-logs-devtools-rotation-fifo: done  # Issue GitHub #10 — code review fixes appliqués
   7-3-llm-logs-analysis-github-issues: backlog  # Issue GitHub #17
   epic-7-retrospective: optional
 
