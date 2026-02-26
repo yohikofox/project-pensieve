@@ -1,6 +1,6 @@
 # Story 24.4: First Launch Initializer — Défauts Automatiques sur Pixel 9+
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -83,51 +83,51 @@ So that **je bénéficie immédiatement de la reconnaissance native et du modèl
 
 ### Mobile — Service
 
-- [ ] **Task 1: FirstLaunchInitializer Service** (AC1-AC9)
-  - [ ] Subtask 1.1: Créer `mobile/src/contexts/identity/services/FirstLaunchInitializer.ts`
+- [x] **Task 1: FirstLaunchInitializer Service** (AC1-AC9)
+  - [x] Subtask 1.1: Créer `mobile/src/contexts/identity/services/FirstLaunchInitializer.ts`
     - Méthode `run(): Promise<void>`
     - Injecte : `NPUDetectionService`, `TranscriptionEngineService`, `LLMModelService`, `settingsStore`
     - Logique : check → detect → apply → mark
-  - [ ] Subtask 1.2: Constante AsyncStorage key : `@pensieve/first_launch_completed`
-  - [ ] Subtask 1.3: Détection Pixel 9+ — liste des modèles à matcher (AC2)
+  - [x] Subtask 1.2: Constante AsyncStorage key : `@pensieve/first_launch_completed`
+  - [x] Subtask 1.3: Détection Pixel 9+ — liste des modèles à matcher (AC2)
     ```
     'Pixel 9', 'Pixel 9 Pro', 'Pixel 9 Pro XL', 'Pixel 9 Pro Fold', 'Pixel 9a',
     'Pixel 10', 'Pixel 10 Pro', ... (pattern : manufacturer=Google + Tensor G4+)
     ```
-  - [ ] Subtask 1.4: Gestion erreurs téléchargement (catch silencieux + log)
-  - [ ] Subtask 1.5: Enregistrer `FirstLaunchInitializer` dans `container.ts` (singleton)
+  - [x] Subtask 1.4: Gestion erreurs téléchargement (catch silencieux + log)
+  - [x] Subtask 1.5: Enregistrer `FirstLaunchInitializer` dans `container.ts` (singleton)
 
-- [ ] **Task 2: Enregistrement DI** (AC1)
-  - [ ] Subtask 2.1: Token DI dans `tokens.ts`
-  - [ ] Subtask 2.2: Enregistrement dans `container.ts`
+- [x] **Task 2: Enregistrement DI** (AC1)
+  - [x] Subtask 2.1: Token DI dans `tokens.ts`
+  - [x] Subtask 2.2: Enregistrement dans `container.ts`
 
 ### Mobile — Intégration MainApp
 
-- [ ] **Task 3: Appel dans MainApp.tsx** (AC1)
-  - [ ] Subtask 3.1: Résoudre `FirstLaunchInitializer` depuis le container après auth réussie
-  - [ ] Subtask 3.2: Appeler `initializer.run()` une fois l'utilisateur authentifié
-  - [ ] Subtask 3.3: Passer le callback `onProgress` à l'UI (via state ou context)
+- [x] **Task 3: Appel dans MainApp.tsx** (AC1)
+  - [x] Subtask 3.1: Résoudre `FirstLaunchInitializer` depuis le container après auth réussie
+  - [x] Subtask 3.2: Appeler `initializer.run()` une fois l'utilisateur authentifié
+  - [x] Subtask 3.3: Passer le callback `onProgress` à l'UI (via state ou context)
 
 ### Mobile — UI
 
-- [ ] **Task 4: Composant FirstLaunchScreen / BottomSheet** (AC6)
-  - [ ] Subtask 4.1: Créer composant `FirstLaunchProgressScreen` (ou bottom sheet)
-  - [ ] Subtask 4.2: Afficher : titre "Optimisation pour votre Pixel 9" + barre de progression + taille modèle
-  - [ ] Subtask 4.3: Bouton "Continuer en arrière-plan" (skip)
-  - [ ] Subtask 4.4: Auto-dismiss quand téléchargement terminé
-  - [ ] Subtask 4.5: Ne pas afficher sur appareils non-Pixel (AC8)
+- [x] **Task 4: Composant FirstLaunchScreen / BottomSheet** (AC6)
+  - [x] Subtask 4.1: Créer composant `FirstLaunchProgress` (modal overlay)
+  - [x] Subtask 4.2: Afficher : titre "Optimisation pour votre Pixel 9" + barre de progression + taille modèle
+  - [x] Subtask 4.3: Bouton "Continuer en arrière-plan" (skip)
+  - [x] Subtask 4.4: Auto-dismiss quand téléchargement terminé
+  - [x] Subtask 4.5: Ne pas afficher sur appareils non-Pixel (AC8)
 
 ### Tests
 
-- [ ] **Task 5: Tests** (AC1-AC9)
-  - [ ] Subtask 5.1: Tests unitaires `FirstLaunchInitializer`
+- [x] **Task 5: Tests** (AC1-AC9)
+  - [x] Subtask 5.1: Tests unitaires `FirstLaunchInitializer`
     - Test : premier lancement → run exécute les étapes
     - Test : `first_launch_completed = 'true'` → run ne fait rien
     - Test : Pixel 9 détecté → AC3 + AC4 + AC5 appelés
     - Test : Non-Pixel → aucun setting modifié, marqué completed
     - Test : échec download → settings quand même persistés + marqué completed
     - Test : modèle déjà téléchargé → download skippé, assignation faite
-  - [ ] Subtask 5.2: Tests BDD `story-24-4.feature`
+  - [x] Subtask 5.2: Tests BDD `story-24-4.feature`
     - Scénario: premier lancement Pixel 9 → native recognition activé
     - Scénario: second lancement → initializer no-op
     - Scénario: premier lancement Samsung → pas de changement
@@ -213,16 +213,16 @@ L'ID `'gemma3-1b-mediapipe'` doit correspondre exactement à la clé dans `llmMo
 
 ## Definition of Done
 
-- [ ] `FirstLaunchInitializer` service créé et enregistré en DI
-- [ ] Appelé dans `MainApp.tsx` après auth
-- [ ] Pixel 9+ détecté → native recognition + auto-transcription + Gemma configurés
-- [ ] Non-Pixel → marqué completed sans modification
-- [ ] UI progress visible sur Pixel 9+ pendant téléchargement
-- [ ] Skip possible (background download)
-- [ ] Second lancement → no-op garanti
-- [ ] Échec download → non-bloquant
-- [ ] Tests unitaires (≥ 6 cas) passent
-- [ ] Tests BDD (3 scénarios) passent
+- [x] `FirstLaunchInitializer` service créé et enregistré en DI
+- [x] Appelé dans `MainApp.tsx` après auth
+- [x] Pixel 9+ détecté → native recognition + auto-transcription + Gemma configurés
+- [x] Non-Pixel → marqué completed sans modification
+- [x] UI progress visible sur Pixel 9+ pendant téléchargement
+- [x] Skip possible (background download)
+- [x] Second lancement → no-op garanti
+- [x] Échec download → non-bloquant
+- [x] Tests unitaires (≥ 6 cas) passent — **14/14 (6 cas + 8 cas limites isPixel9Plus)**
+- [x] Tests BDD (3 scénarios) passent — **3/3**
 
 ## Dev Notes
 
@@ -282,4 +282,43 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+1. **API NPUInfo corrigée** : La story utilisait des noms de propriétés incorrects dans le pseudocode (`manufacturer === 'Google'` au lieu de `'google'`, `npu.model` au lieu de `npu.deviceModel`, `chipsetGeneration >= 4` au lieu du parsing regex de `npu.generation`). L'implémentation utilise l'API réelle de `NPUDetectionService`.
+
+2. **settingsStore API** : La story référençait `setAutoTranscriptionEnabled()` mais la vraie méthode Zustand est `setAutoTranscription()`. Corrigé dans l'implémentation.
+
+3. **Pattern spy Zustand** : Le pattern `jest.spyOn(useSettingsStore.getState(), 'setAutoTranscription')` est instable entre tests en raison de l'immuabilité Zustand. Solution adoptée : `useSettingsStore.setState({ autoTranscriptionEnabled: false })` dans `beforeEach` + vérification directe de `getState().autoTranscriptionEnabled` (pattern établi en story 24.3).
+
+4. **Correction NPUDetectionService** : Correction d'une erreur TypeScript préexistante ligne 126 (`Platform.constants?.Model` → `(Platform.constants as Record<string, unknown>)?.['Model'] as string`). Cette erreur était silencieuse en runtime mais bloquait la compilation ts-jest des tests BDD.
+
+5. **Download callback** : `run()` reçoit un `onProgress?` optionnel. Pour les tests BDD, le `when` step passe `jest.fn()` à `run()` pour que `downloadModel` reçoive un callback (nécessaire pour que `expect.any(Function)` matche).
+
+6. **Pixel 10+ via génération** : `isPixel9Plus()` détecte les futurs modèles Pixel en parsant `npu.generation` (regex `/Tensor G(\d+)/i`, vérifiant `>= 4`), en plus de la liste explicite des modèles connus.
+
+7. **[Code Review] Guard auth HF (C1)** : `gemma3-1b-mediapipe` a `requiresAuth: true` dans `llmModelsConfig.ts`. Sans guard préalable, `downloadModel()` throwait silencieusement ET `onProgress(0)` causait un flash UI à 0% avant l'échec. Fix : `canDownloadModel()` vérifié avant tout download ; si absent → skip propre sans callback ni flash. Nouveau test unitaire (Cas 7) + mock BDD mis à jour.
+
+8. **[Code Review] Cleanup unmount hook (M2)** : `runFirstLaunch` étant module-level, `setIsVisible`/`setProgress` pouvaient être appelés sur un composant démonté. Fix : `isMountedRef` + setters guardés dans le hook.
+
+9. **[Code Review] Taille Gemma depuis config (M1)** : `GEMMA_SIZE_MB = 555` hardcodé remplacé par `Math.round(MODEL_CONFIGS['gemma3-1b-mediapipe'].expectedSize / (1024 * 1024))` — source de vérité unique.
+
+10. **[Code Review] Tests hook (H1)** : `useFirstLaunchInitialization` n'avait aucun test. Créé `__tests__/useFirstLaunchInitialization.test.ts` avec 6 cas via `renderHook` (@testing-library/react-native).
+
+11. **[Code Review] testID + accessibilité (M3)** : `testID` ajoutés sur titre, barre de progression, texte de progression et bouton skip. `accessibilityRole` + `accessibilityLabel` ajoutés sur le bouton.
+
+12. **[Code Review] Commentaire JSDoc + nommage test (M4)** : Commentaire sur `PIXEL_9_PLUS_MODELS` corrigé (Pixel 9a est dans la liste explicite ET couvert par le fallback génération). Test `isPixel9Plus` renommé en conséquence.
+
 ### File List
+
+**Fichiers créés :**
+- `pensieve/mobile/src/contexts/identity/services/FirstLaunchInitializer.ts`
+- `pensieve/mobile/src/hooks/initialization/useFirstLaunchInitialization.ts`
+- `pensieve/mobile/src/components/FirstLaunchProgress.tsx`
+- `pensieve/mobile/src/contexts/identity/services/__tests__/FirstLaunchInitializer.test.ts`
+- `pensieve/mobile/src/hooks/initialization/__tests__/useFirstLaunchInitialization.test.ts`
+- `pensieve/mobile/tests/acceptance/features/story-24-4-first-launch.feature`
+- `pensieve/mobile/tests/acceptance/story-24-4.test.ts`
+
+**Fichiers modifiés :**
+- `pensieve/mobile/src/infrastructure/di/tokens.ts` — ajout token `FirstLaunchInitializer`
+- `pensieve/mobile/src/infrastructure/di/container.ts` — enregistrement `registerSingleton`
+- `pensieve/mobile/src/components/MainApp.tsx` — intégration hook + composant
+- `pensieve/mobile/src/contexts/Normalization/services/NPUDetectionService.ts` — correction erreur TS préexistante ligne 126

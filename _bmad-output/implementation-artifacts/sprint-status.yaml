@@ -373,6 +373,19 @@ development_status:
   24-1-feature-flag-system-backend: done  # Backend: tables features + assignations + FeatureResolutionService (deny-wins) + migration legacy columns
   24-2-feature-flag-admin-api-ui: done    # Admin API + UI: gestion catalogue features + assignations user/role/permission + trace résolution
   24-3-feature-flag-mobile-adaptation: done  # Mobile: UserFeatures dynamique + settingsStore refactoré + UI gating tabs + capture media buttons. Code review: 7/7 fixes (1C+3H+3M) — legacy import, isDataMiningEnabled, réactivité features, forceRefresh offline, test toggleDebugMode, commentaires AC.
-  24-4-first-launch-pixel-defaults: ready-for-dev  # Mobile: FirstLaunchInitializer + détection Pixel 9+ + native recognition + Gemma 3 1B + auto-transcription
+  24-4-first-launch-pixel-defaults: done  # Mobile: FirstLaunchInitializer + détection Pixel 9+ + native recognition + Gemma 3 1B + auto-transcription
   epic-24-retrospective: optional
+
+  # Epic 25: UX Onboarding & Demo Tour (3 stories)
+  # Source: Session architecturale 2026-02-26 — Winston (Architect) + yohikofox
+  # Objectif: Guide interactif overlay/spotlight au premier lancement ou depuis Settings.
+  #           Couvre Capture Screen + CaptureDetail Screen.
+  # Périmètre: Mobile (React Native, implémentation custom, TourProvider + SpotlightOverlay)
+  #            + Backend Identity (3 colonnes User entity + PATCH /api/users/:userId/tour)
+  # Dépendances internes: 25-1 → 25-2 → 25-3
+  epic-25: in-progress
+  25-1-tour-demo-ui-overlay-spotlight: ready-for-dev     # TourProvider + SpotlightOverlay custom + steps Capture + CaptureDetail
+  25-2-tour-demo-persistance-sync: ready-for-dev          # Persistance locale OP-SQLite + sync backend (User entity + endpoint)
+  25-3-tour-demo-settings-retrigger: ready-for-dev        # Re-déclenchement manuel depuis Settings + tourVersion
+  epic-25-retrospective: optional
 
