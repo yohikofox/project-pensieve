@@ -20,8 +20,11 @@ epicsPending:
   - epic13: 4 stories (Story 13.1 - 13.4) [ADR Conformité Moyenne 🟡 — ADR-021, ADR-023, ADR-026 R2/R5]
   - epic14: 4 stories (Story 14.1 - 14.4) [ADR Conformité Basse 🟢 — ADR-018, ADR-022, ADR-015, ADR-026 R7]
   - epic18: 5 stories (Story 18.1 - 18.5) [Remote LLM Model Configuration Service]
-totalStories: 69
-totalFRsCovered: 31
+  - epic19: 12 stories (Story 19.1 - 19.12) [Delegation Core — Fondations, Intégrations, Trust Model]
+  - epic20: 5 stories (Story 20.1 - 20.5) [Delegation Triggers — Widget, Back Tap, Siri, Google Actions]
+  - epic21: 2 stories (Story 21.1 - 21.2) [Delegation Messaging — Telegram]
+totalStories: 88
+totalFRsCovered: 49
 githubIssuesIntegrated: 23
 adrViolationsAddressed: 12
 coveragePercentage: 100
@@ -92,6 +95,30 @@ This document provides the complete epic and story breakdown for Pensine, decomp
 - FR30: Le système peut synchroniser les données cloud vers l'appareil
 - FR31: L'utilisateur peut être informé du statut de synchronisation
 
+**Mode Délégation — Déclenchement (FR32-FR36):**
+- FR32: L'utilisateur peut déclencher une capture Pensine via l'assistant système (Siri / Google Assistant) sans ouvrir l'app
+- FR33: L'utilisateur peut déclencher une capture via un déclencheur physique (Back Tap iOS / Quick Tap Android) sans ouvrir l'app
+- FR34: L'utilisateur peut déclencher une capture via un widget depuis l'écran d'accueil ou verrouillé
+- FR35: L'utilisateur peut déclencher une capture via un wake word ("Hey Pensine") sans aucune interaction physique
+- FR36: L'utilisateur peut configurer le(s) mode(s) de déclenchement actif(s) dans les paramètres (options cumulables)
+
+**Mode Délégation — Extraction et Exécution (FR37-FR42):**
+- FR37: Le système peut extraire un intent d'action exécutable depuis une capture (distinct des todos internes)
+- FR38: Le système peut créer un événement dans Google Calendar ou Apple Calendar à partir d'un intent capturé
+- FR39: Le système peut rédiger un email Gmail à partir d'un intent capturé
+- FR40: Le système peut créer un rappel (Apple Reminders) à partir d'un intent capturé
+- FR41: Le système peut envoyer un message via un bot Telegram à partir d'un intent capturé
+- FR42: Pour les emails, le système peut différer l'envoi d'une durée configurable avec fenêtre d'annulation active (Delayed Send — obligatoire même au niveau de confiance 3)
+
+**Mode Délégation — Validation et Confiance (FR43-FR49):**
+- FR43: L'utilisateur peut configurer son niveau de confiance pour l'exécution autonome des actions (niveau 1 : validation obligatoire / niveau 2 : délai de grâce / niveau 3 : fire & forget)
+- FR44: Le niveau de confiance par défaut est 1 (validation obligatoire) — la progression est toujours à l'initiative explicite de l'utilisateur
+- FR45: Le système peut stocker les actions en attente de validation en base de données locale (état persistant entre sessions)
+- FR46: L'utilisateur peut consulter, valider, rejeter ou modifier toute action en attente depuis une notification push ou l'onglet Actions
+- FR47: Le système peut notifier l'utilisateur d'une ambiguïté détectée dans un intent capturé sans jamais tenter d'exécuter une action incertaine
+- FR48: Le système peut exécuter les actions validées en queue locale au retour de la connectivité réseau
+- FR49: Les actions intrinsèquement dépendantes du réseau (email, Telegram) restent en attente jusqu'à la reconnexion
+
 ### Non-Functional Requirements
 
 **Performance (NFR1-NFR5):**
@@ -117,6 +144,14 @@ This document provides the complete epic and story breakdown for Pensine, decomp
 **Scalability (NFR15-NFR16):**
 - NFR15: Architecture prête pour 100+ utilisateurs sans refonte
 - NFR16: Pas de limite artificielle de stockage MVP, monitoring usage
+
+**Mode Délégation — NFRs spécifiques (NFR17-NFR22):**
+- NFR17: Consommation batterie wake word (Android DSP) < 3% / heure
+- NFR18: Consommation batterie wake word (iOS CPU, opt-in) < 7% / heure — avertissement utilisateur obligatoire
+- NFR19: Fiabilité exécution d'actions — 0 action exécutée sans intent confirmé — intégrité avant commodité
+- NFR20: Persistance des actions en attente — 0 perte d'action en attente, même après crash ou redémarrage
+- NFR21: Délai Delayed Send email configurable : 5 / 10 / 30 minutes — valeur par défaut : 10 minutes
+- NFR22: Traitement wake word — 100% on-device — l'audio ne transite jamais vers un serveur tiers avant détection
 
 ### Additional Requirements
 
@@ -215,12 +250,34 @@ This document provides the complete epic and story breakdown for Pensine, decomp
 - FR29 → Epic 6 (Sync local → cloud)
 - FR30 → Epic 6 (Sync cloud → local)
 - FR31 → Epic 6 (Informer statut sync)
+- FR32 → Epic 20 (Siri / Google Assistant App Actions)
+- FR33 → Epic 20 (Back Tap iOS / Quick Tap Android)
+- FR34 → Epic 20 (Widget home screen / lock screen)
+- FR35 → Spike Wake Word (hors scope epic — R&D)
+- FR36 → Epic 20 (Settings — panneau de déclenchement)
+- FR37 → Epic 19 (Knowledge BC — extraction intent exécutable)
+- FR38 → Epic 19 (Google Calendar + Apple Calendar)
+- FR39 → Epic 19 (Gmail + Delayed Send)
+- FR40 → Epic 19 (Apple Reminders)
+- FR41 → Epic 21 (Telegram bot)
+- FR42 → Epic 19 (Delayed Send — exception universelle email)
+- FR43 → Epic 19 (Trust model — configuration niveaux)
+- FR44 → Epic 19 (Trust model — défaut niveau 1)
+- FR45 → Epic 19 (ExecutionJob — persistance BDD locale)
+- FR46 → Epic 19 (UI validation — onglet Actions)
+- FR47 → Epic 19 (Ambiguïté — notification sans exécution)
+- FR48 → Epic 19 (Offline queue — retry à la reconnexion)
+- FR49 → Epic 19 (Offline queue — actions réseau en attente)
 
-**Coverage Summary:** All 31 FRs are mapped to Epics 1-6.
+**Coverage Summary:** Tous les 49 FRs sont mappés. FR1-FR31 → Epics 1-6. FR32-FR49 → Epics 19-21 + Spike Wake Word. NFR17-NFR22 → Epics 19-20.
 
 **Additional Epics:**
 - Epic 7 → Support & Observability (feature transverse, non liée à un FR spécifique du PRD)
 - Epic 17 → Chiffrement Côté Client Zero-Knowledge (NFR12, NFR10, NFR13 — sécurité avancée)
+- Epic 19 → Delegation Core — Fondations + Intégrations + Trust Model (FR37-FR49)
+- Epic 20 → Delegation Triggers — Widget, Back Tap, Siri, Google Actions (FR32-FR36 sauf FR35)
+- Epic 21 → Delegation Messaging — Telegram (FR41)
+- Spike → Wake Word "Hey Pensine" — R&D custom DSP (FR35, NFR17, NFR18, NFR22)
 
 ## Epic List
 
@@ -331,6 +388,58 @@ Les données sensibles des utilisateurs (captures, transcriptions, analyses IA) 
 - PBKDF2(SHA-512, 100 000 iterations) pour dérivation de clé backup
 - Endpoint backend `/users/me/key-backup` (blob opaque)
 - Dépendances : 17.1 → 17.2, 17.3, 17.4
+
+---
+
+### Epic 19: Delegation Core — Fondations, Intégrations, Trust Model
+
+L'utilisateur peut capturer une intention et déléguer son exécution à Pensine (calendrier, email, rappels) avec validation explicite. Introduit le nouveau Bounded Context `Delegation` et affine le modèle sémantique Action/Todo.
+
+**FRs couverts:** FR37, FR38, FR39, FR40, FR42, FR43, FR44, FR45, FR46, FR47, FR48, FR49
+
+**Notes d'implémentation:**
+- Refactoring préliminaire : renommage `Action BC → Task BC` (Story 19.1)
+- Nouveau modèle sémantique : `Action` (intent détecté par Knowledge) → `Todo` (matérialisé par Task BC) ou `ExecutionJob` (pris en charge par Delegation BC)
+- Knowledge BC émet `CaptureDigested` avec `extractedActions[]` classifiés (fallback Todo sur ambiguïté)
+- Delegation BC : entité `ExecutionJob` avec machine d'états complète
+- Trust model progressif : niveau 1 (défaut) → 2 (délai de grâce) → 3 (fire & forget)
+- Intégrations : OAuth2 Google (Calendar + Gmail scope partagé), Apple Calendar + Reminders (EventKit)
+- Delayed Send email : obligatoire à tous les niveaux de confiance (NFR21)
+- Offline queue : persistance locale + retry à la reconnexion (NFR20)
+- NFRs : NFR19 (0 action sans intent confirmé), NFR20 (0 perte), NFR21 (Delayed Send configurable)
+- Dépendances : 19.1 → 19.2 → 19.3, 19.4 → 19.5 → 19.6, 19.7 → 19.8, 19.9, 19.10 → 19.11 → 19.12
+
+---
+
+### Epic 20: Delegation Triggers — Widget, Back Tap, Siri, Google Actions
+
+L'utilisateur peut déclencher une capture Pensine sans ouvrir l'app, depuis plusieurs points d'entrée système configurables.
+
+**FRs couverts:** FR32, FR33, FR34, FR36
+
+**Notes d'implémentation:**
+- Settings : panneau de configuration des modes de déclenchement (options cumulables)
+- Widget iOS (tap → ouvre app en mode capture) + Android (capture en arrière-plan directe)
+- iOS : Back Tap (2x/3x, iOS 14+, universel) + Action Button (iPhone 15+)
+- Android Phase 1 : Quick Tap Pixel 9/10 Pro uniquement (Pixel 5+)
+- iOS : App Intents Framework (Siri — intents prédéfinis strict)
+- Android : App Actions + `shortcuts.xml` (Gemini — langage naturel riche sur Pixel)
+- FR35 (wake word) → Spike dédié, hors scope de cet epic
+- Dépendances : 20.1 (Settings) → 20.2, 20.3, 20.4, 20.5
+
+---
+
+### Epic 21: Delegation Messaging — Telegram
+
+L'utilisateur peut envoyer un message Telegram via un bot depuis une intention capturée.
+
+**FRs couverts:** FR41
+
+**Notes d'implémentation:**
+- Intégration Telegram Bot API (gratuite, pas d'OAuth)
+- Pas de rollback nécessaire (usage bot uniquement)
+- Comportement offline : message en queue locale jusqu'à reconnexion
+- Dépendances : Epic 19 (ExecutionJob + offline queue)
 
 ---
 
@@ -2900,6 +3009,681 @@ So that **the entire codebase benefits from improved maintainability without a d
 - Fallback transparent
 - `llmModelsConfig.ts` n'est plus utilisé directement dans le pipeline
 - Tests BDD passent (remote + fallback)
+- Code review adversariale complète
+
+---
+
+## Epic 19: Delegation Core — Fondations, Intégrations, Trust Model
+
+L'utilisateur peut capturer une intention et déléguer son exécution à Pensine avec validation explicite. Cet epic introduit le BC `Delegation`, affine le modèle sémantique (Action/Todo), et intègre les premiers services externes (Google Calendar, Gmail, Apple Calendar, Apple Reminders).
+
+### Story 19.1: Refactoring — Renommage Action BC → Task BC
+
+As a **developer**,
+I want **the Action Bounded Context to be renamed to Task BC and the concept of "Action" to be reserved for detected intents from captures**,
+So that **the domain vocabulary is precise — Action = what the AI detected, Todo = what materializes from it — and the Delegation BC can be implemented consistently with this model**.
+
+**Acceptance Criteria:**
+- Given the codebase uses "Action BC" for todos
+- When the refactoring is complete
+- Then all references to "ActionBC", "action_context", file paths, class names, and interfaces are renamed to "TaskBC", "task_context"
+- And the domain concept "Action" is documented as a detected intent (output of Knowledge BC)
+- And "Todo" refers to the concrete work item in Task BC
+- And all existing tests pass without modification to their business logic
+- And sprint-status.yaml reflects the rename
+
+**Tasks:**
+1. Inventaire exhaustif des fichiers/modules/classes à renommer (Action BC → Task BC)
+2. Renommage des fichiers, dossiers, classes, interfaces, symboles DI
+3. Mise à jour de tous les imports dans la codebase mobile + backend
+4. Vérification que les tests unitaires et BDD passent
+5. Mise à jour de la documentation technique (CLAUDE.md, architecture.md si nécessaire)
+6. Code review adversariale
+
+**Definition of Done:**
+- 0 référence à "ActionBC" ou "action_context" dans le code (hors commentaires historiques)
+- Tous les tests unitaires et BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.2: Knowledge BC — Émission d'Actions (intents détectés) avec fallback Todo
+
+As a **system**,
+I want **the Knowledge BC AI digestion pipeline to classify extracted actions and emit them typed in the CaptureDigested event**,
+So that **Task BC creates Todos from non-executable actions, and Delegation BC picks up executable intents — with a strict fallback-to-Todo rule on any ambiguity**.
+
+**Acceptance Criteria:**
+- Given a capture has been successfully digested
+- When the LLM extracts actions from the capture
+- Then the `CaptureDigested` event includes `extractedActions: Action[]`
+- And each `Action` carries `{ description, isExecutable: boolean, executionCapability?: CalendarCreate | EmailSend | ReminderCreate | TelegramMessage }`
+- Given the LLM is uncertain about whether an action is executable
+- When `isExecutable` classification is ambiguous
+- Then `isExecutable` is set to `false` (fallback → Todo in Task BC)
+- And no ExecutionJob is created in Delegation BC
+- Given `isExecutable = true`
+- When Delegation BC receives the event
+- Then an ExecutionJob is created — Task BC does NOT create a Todo for this action
+
+**Tasks:**
+1. Définir les types `Action` et `ExecutionCapability` dans le domaine Knowledge BC
+2. Mettre à jour le prompt de digestion LLM pour classer les actions (executable vs non-executable)
+3. Implémenter la règle de fallback : ambiguïté → `isExecutable = false`
+4. Mettre à jour l'événement `CaptureDigested` pour inclure `extractedActions`
+5. Tests BDD — chemin executable (min 2 scénarios)
+6. Tests BDD — chemin fallback Todo (min 2 scénarios)
+7. Code review adversariale
+
+**Definition of Done:**
+- Knowledge BC émet des Actions classifiées dans `CaptureDigested`
+- Règle de fallback Todo sur ambiguïté validée et testée
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.3: Task BC — Matérialisation d'un Todo depuis une Action
+
+As a **system**,
+I want **the Task BC to subscribe to CaptureDigested and create Todos from non-executable Actions**,
+So that **the existing todo workflow is preserved while the new semantic model (Action → Todo) is properly implemented and backward-compatible**.
+
+**Acceptance Criteria:**
+- Given Knowledge BC emits `CaptureDigested` with `extractedActions`
+- When Task BC receives the event
+- Then for each Action where `isExecutable = false`, a Todo is created with description, suggested deadline, and priority
+- And the Todo is linked to the source Capture (traceability)
+- And the Todo appears in the user's Actions tab exactly as before
+- Given an Action where `isExecutable = true`
+- When Task BC processes the event
+- Then no Todo is created for that action (Delegation BC owns it)
+
+**Tasks:**
+1. Implémenter le subscriber `CaptureDigested` dans Task BC
+2. Implémenter la factory `Todo.fromAction(action: Action)`
+3. Vérifier que les todos apparaissent dans le Feed et l'onglet Actions comme avant
+4. Tests BDD — Todo créé depuis Action non-exécutable (min 2 scénarios)
+5. Tests BDD — pas de Todo pour une Action exécutable (min 1 scénario)
+6. Code review adversariale
+
+**Definition of Done:**
+- Comportement todos identique à avant pour les actions non-exécutables
+- Pas de Todo créée pour les actions exécutables (Delegation BC)
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.4: Delegation BC — Modèle de données ExecutionJob
+
+As a **developer**,
+I want **the Delegation BC to own an ExecutionJob entity with its complete state machine and local persistence**,
+So that **the execution lifecycle of delegated actions is properly modeled and survives app restart without data loss (NFR20)**.
+
+**Acceptance Criteria:**
+- Given the Delegation BC receives an executable Action
+- When an ExecutionJob is created
+- Then it persists in local DB (OP-SQLite) with status `pending_validation`
+- And the state machine supports the following transitions:
+  - `pending_validation → validated | rejected | ambiguous`
+  - `validated → queued → executed`
+  - `ambiguous → pending_validation` (after user clarification)
+  - `queued → failed` (on unrecoverable error)
+- Given the app crashes with ExecutionJobs in any state
+- When the app restarts
+- Then all ExecutionJobs are recovered with their last persisted state (NFR20: 0 perte)
+
+**Tasks:**
+1. Définir l'entité `ExecutionJob` dans le domaine Delegation BC
+2. Implémenter la machine d'états et ses transitions
+3. Créer la table OP-SQLite (migration)
+4. Implémenter le repository `IExecutionJobRepository` + adaptateur OP-SQLite
+5. Tests unitaires sur les transitions d'état
+6. Test de survie au restart (simulation crash)
+7. Code review adversariale
+
+**Definition of Done:**
+- ExecutionJob persiste en local et survit au restart
+- Machine d'états validée avec tests unitaires
+- NFR20 vérifié (0 perte)
+- Code review adversariale complète
+
+---
+
+### Story 19.5: Delegation BC — Trust Model Niveau 1 (Validation obligatoire)
+
+As a **user**,
+I want **every action delegated to Pensine to require my explicit validation before any execution**,
+So that **I maintain full control — nothing happens without my approval, which is the safety default (FR44)**.
+
+**Acceptance Criteria:**
+- Given trust level is 1 (default for all new users — FR44)
+- When an ExecutionJob is created
+- Then its status is `pending_validation`
+- And a push notification is sent: "Action en attente : [résumé de l'action]"
+- When I tap the notification or open the Actions tab
+- Then I see the action details with options [✅ Valider] [❌ Rejeter] [✏️ Modifier]
+- When I tap Valider
+- Then the ExecutionJob transitions to `validated → queued`
+- When I tap Rejeter
+- Then the ExecutionJob transitions to `rejected` and is archived
+- Given an ambiguous intent (e.g., "Pierre" = multiple contacts)
+- When the ExecutionJob is created
+- Then its status is `ambiguous` — no execution is attempted (FR47, NFR19)
+- And a notification prompts for clarification
+
+**Tasks:**
+1. Implémenter le handler de notification pour les jobs `pending_validation`
+2. Implémenter les actions Valider / Rejeter / Modifier sur un ExecutionJob
+3. Implémenter la détection d'ambiguïté et le flow de clarification
+4. Tests BDD — validation complète (min 3 scénarios)
+5. Tests BDD — ambiguïté → pas d'exécution (min 2 scénarios)
+6. Code review adversariale
+
+**Definition of Done:**
+- Aucune action ne s'exécute sans validation explicite en niveau 1
+- Ambiguïté correctement détectée et gérée (NFR19)
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.6: UI — Section "Actions en attente de validation" dans l'onglet Actions
+
+As a **user**,
+I want **to see all pending delegated actions in a dedicated section at the top of my Actions screen**,
+So that **I can review and process them in batch when I return from an activity where interaction was impossible**.
+
+**Acceptance Criteria:**
+- Given I have pending ExecutionJobs
+- When I open the Actions tab
+- Then a section "En attente de validation" appears at the top, above the Todos
+- And each item shows: [icône type d'action] [résumé] [service cible] [Valider] [Rejeter]
+- And a counter badge on the tab icon shows the number of pending items
+- When I tap an item
+- Then I see the full detail : intent source, action parameters, date de capture
+- Given there are no pending ExecutionJobs
+- When I open the Actions tab
+- Then the section is hidden (no empty state clutter)
+
+**Tasks:**
+1. Ajouter la section "En attente de validation" dans l'écran Actions/Todos
+2. Implémenter le composant `ExecutionJobCard`
+3. Ajouter le counter badge sur l'icône du tab Actions
+4. Implémenter la navigation vers le détail d'un ExecutionJob
+5. Tests BDD — affichage + interactions + badge (min 3 scénarios)
+6. Code review adversariale
+
+**Definition of Done:**
+- Section visible uniquement si actions en attente
+- Badge counter fonctionnel
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.7: OAuth2 Google — Scope partagé Calendar + Gmail
+
+As a **developer**,
+I want **a single Google OAuth2 integration with shared scopes for Calendar and Gmail**,
+So that **the user authenticates once with Google and both integrations work without additional login — and we don't pay the OAuth implementation cost twice**.
+
+**Acceptance Criteria:**
+- Given the user navigates to Settings → Integrations
+- When they tap "Connecter Google"
+- Then a single OAuth2 flow requests scopes: `https://www.googleapis.com/auth/calendar` + `https://www.googleapis.com/auth/gmail.compose`
+- And tokens are stored securely via `expo-secure-store` (hardware-backed)
+- And token refresh is handled automatically and transparently
+- Given a token expires during an API call
+- When Pensine attempts execution
+- Then the token is refreshed silently
+- And if refresh fails, the user is notified and prompted to reconnect
+- When the user taps "Déconnecter Google"
+- Then tokens are revoked and deleted locally
+
+**Tasks:**
+1. Configurer les credentials OAuth2 Google (Google Cloud Console — scopes Calendar + Gmail)
+2. Implémenter le flow OAuth2 avec `expo-auth-session`
+3. Implémenter le stockage sécurisé et le refresh automatique des tokens
+4. UI Settings — bouton Connecter / état connecté / Déconnecter
+5. Tests unitaires sur le flow de tokens (refresh, revocation)
+6. Code review adversariale
+
+**Definition of Done:**
+- OAuth2 flow complet : auth → store → refresh → revoke
+- Tokens sécurisés (expo-secure-store)
+- UI Settings connecté/déconnecté
+- Code review adversariale complète
+
+---
+
+### Story 19.8: Google Calendar — Créer un RDV depuis un intent
+
+As a **user**,
+I want **Pensine to create a Google Calendar event from a validated delegated intent**,
+So that **I don't have to open Google Calendar manually after capturing a scheduling intention**.
+
+**Acceptance Criteria:**
+- Given I have a validated ExecutionJob of type `CalendarCreate` (Google)
+- When Pensine executes the job
+- Then a Google Calendar event is created with title, date/time, and optional description extracted from the intent
+- And a confirmation notification is sent: "RDV créé : [titre] le [date/heure]"
+- And the ExecutionJob transitions to `executed`
+- Given the network is unavailable at execution time
+- When the job is validated
+- Then it remains in `queued` state (FR49) and executes at reconnection
+- Given the Google Calendar API returns an error
+- When execution fails
+- Then the job transitions to `failed` and the user is notified with actionable information
+
+**Tasks:**
+1. Implémenter `GoogleCalendarAdapter` (Google Calendar API v3)
+2. Implémenter le parsing des paramètres depuis l'intent (titre, date, heure, description)
+3. Implémenter l'exécution du `CalendarCreate` ExecutionJob
+4. Notification de confirmation post-exécution
+5. Gestion des erreurs API + transition `failed`
+6. Tests BDD — création réussie + offline + erreur API (min 3 scénarios)
+7. Code review adversariale
+
+**Definition of Done:**
+- RDV créé dans Google Calendar depuis un intent validé
+- Comportement offline correct (queue + retry)
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.9: Gmail — Rédiger + Delayed Send
+
+As a **user**,
+I want **Pensine to draft and send an email via Gmail from a captured intent, with a mandatory cancellation window regardless of my trust level**,
+So that **I can send emails hands-free while always keeping a safety window to cancel (Delayed Send is never bypassable for emails — FR42, NFR21)**.
+
+**Acceptance Criteria:**
+- Given I have a validated ExecutionJob of type `EmailSend`
+- When Pensine prepares the email
+- Then a notification is sent: "Email prêt — envoi dans [X] min — À : [destinataire] / Objet : [objet]"
+- And a visible countdown is available in the notification and in the Actions tab
+- When the countdown expires without cancellation
+- Then the email is sent via Gmail API
+- And a confirmation notification is sent: "Email envoyé à [destinataire]"
+- When the user taps "Annuler" before expiration
+- Then the email is saved as a draft in Gmail (not discarded)
+- And the ExecutionJob transitions to `cancelled`
+- Given the Delayed Send delay is configurable (5 / 10 / 30 min — default: 10 min — NFR21)
+- Then this setting applies to ALL email jobs regardless of trust level
+
+**Tasks:**
+1. Implémenter `GmailAdapter` (Gmail API — scope `gmail.compose`)
+2. Implémenter le flow Delayed Send (countdown + notification interactive avec bouton Annuler)
+3. Implémenter l'annulation vers brouillon Gmail
+4. UI countdown dans l'onglet Actions
+5. Setting Delayed Send dans les paramètres (5 / 10 / 30 min)
+6. Tests BDD — envoi complet + annulation + countdown + niveau 3 toujours Delayed Send (min 4 scénarios)
+7. Code review adversariale
+
+**Definition of Done:**
+- Email envoyé ou sauvé en brouillon selon l'action utilisateur
+- Delayed Send toujours actif — même au niveau de confiance 3
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.10: Apple Calendar + Apple Reminders (EventKit, iOS)
+
+As a **user on iOS**,
+I want **Pensine to create Apple Calendar events and Apple Reminders from validated intents**,
+So that **users who prefer the Apple ecosystem can benefit from delegation without connecting Google services**.
+
+**Acceptance Criteria:**
+- Given I have a validated ExecutionJob of type `CalendarCreate` (Apple)
+- When Pensine executes the job
+- Then an Apple Calendar event is created via EventKit with title and date/time
+- Given I have a validated ExecutionJob of type `ReminderCreate`
+- When Pensine executes the job
+- Then an Apple Reminder is created via EventKit with title and optional due date
+- Given the user has not yet granted calendar/reminders permission
+- When Pensine attempts execution
+- Then the system permission dialog is shown
+- And if the user denies, the job transitions to `failed_permissions` with a helpful notification
+- Given Apple Calendar and Apple Reminders are local (no network required)
+- When executing offline
+- Then execution proceeds immediately (no queuing needed)
+
+**Tasks:**
+1. Implémenter `AppleCalendarAdapter` (EventKit via Expo native module ou react-native-calendar-events)
+2. Implémenter `AppleRemindersAdapter` (EventKit)
+3. Implémenter la gestion des permissions (request + denied → failed_permissions)
+4. Tests BDD — création RDV + rappel + permissions refusées (min 3 scénarios)
+5. Code review adversariale
+
+**Definition of Done:**
+- EventKit intégré pour Calendar + Reminders (iOS)
+- Gestion des permissions complète
+- Exécution offline immédiate
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.11: Offline Queue — Persistance des ExecutionJobs + Retry à la reconnexion
+
+As a **system**,
+I want **all validated ExecutionJobs requiring network to persist locally and execute automatically when connectivity is restored**,
+So that **no delegated action is ever lost because the device was offline — not even after a crash (FR48, FR49, NFR20)**.
+
+**Acceptance Criteria:**
+- Given validated ExecutionJobs requiring network (Gmail, Telegram)
+- When the device is offline
+- Then jobs remain in `queued` state in local DB
+- When connectivity is restored
+- Then jobs execute automatically in creation order
+- And the user receives a confirmation notification for each executed job
+- Given the app crashes with jobs in `queued` state
+- When the app restarts
+- Then all queued jobs are recovered and executed at next connectivity (NFR20: 0 perte)
+- Given a network-independent job (Apple Calendar, Apple Reminders)
+- When validated offline
+- Then it executes immediately without queuing
+
+**Tasks:**
+1. Implémenter le service `ExecutionQueue` (gestion de la queue locale)
+2. Implémenter le listener de connectivité réseau (`@react-native-community/netinfo`)
+3. Implémenter l'exécution automatique à la reconnexion (job runner)
+4. Distinguer les jobs réseau vs locaux dans la stratégie d'exécution
+5. Tests BDD — offline + reconnexion + crash recovery (min 3 scénarios)
+6. Code review adversariale
+
+**Definition of Done:**
+- 0 ExecutionJob perdu après crash ou reconnexion réseau
+- Exécution automatique à la reconnexion validée
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 19.12: Delegation BC — Trust Model Niveaux 2 et 3
+
+As a **user**,
+I want **to optionally upgrade my trust level (level 2: grace period, level 3: fire & forget) for delegated actions**,
+So that **I can reduce validation friction for actions I regularly approve, while keeping level 1 as the immutable default**.
+
+**Acceptance Criteria:**
+- Given I navigate to Settings → Validation des actions
+- When I set trust level to 2
+- Then recurring validated jobs execute after a configurable grace period (default: 30s countdown)
+- And a notification with countdown + "Annuler" button is shown during the grace period
+- When I set trust level to 3
+- Then jobs execute immediately after extraction + queuing
+- And a post-execution notification is sent: "Action exécutée : [résumé]"
+- Given ANY trust level (1, 2, or 3)
+- When an email job is executed
+- Then Delayed Send is ALWAYS applied (exception FR42 — no bypass)
+- Given any trust level
+- When the intent is ambiguous
+- Then the job is NEVER executed automatically — clarification required regardless of level (NFR19)
+
+**Tasks:**
+1. Implémenter la logique trust level 2 (grace period + notification countdown interactive)
+2. Implémenter la logique trust level 3 (exécution directe post-validation)
+3. Appliquer l'exception Delayed Send email pour tous les niveaux
+4. UI Settings — sélecteur de niveau de confiance avec description des implications
+5. Tests BDD — niveaux 2 et 3 + exception email + ambiguïté toujours bloquante (min 4 scénarios)
+6. Code review adversariale
+
+**Definition of Done:**
+- Trust levels 2 et 3 fonctionnels
+- Exception Delayed Send email toujours active (NFR21)
+- Ambiguïté toujours bloquante (NFR19)
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+## Epic 20: Delegation Triggers — Widget, Back Tap, Siri, Google Actions
+
+L'utilisateur peut déclencher une capture Pensine depuis plusieurs points d'entrée système sans ouvrir l'app. Toutes les options sont cumulables et configurables dans les Settings.
+
+### Story 20.1: Settings — Panneau de configuration des déclencheurs
+
+As a **user**,
+I want **a dedicated settings panel to enable and configure each trigger option independently**,
+So that **I can choose which trigger methods are active and customize their behavior without needing to navigate multiple settings screens**.
+
+**Acceptance Criteria:**
+- Given I open Settings → Mode de déclenchement
+- Then I see all available trigger options with ON/OFF toggles
+- And each option shows a short description of how it works
+- When I enable an option that requires a system permission
+- Then the permission is requested inline
+- And if denied, the option shows "Permission requise" with a link to system settings
+- Given I enable Widget
+- Then I see sub-options: home screen / lock screen
+- Given I enable Back Tap (iOS) or Quick Tap (Android)
+- Then I see a sensitivity slider (low ← → high)
+
+**Tasks:**
+1. Créer l'écran Settings → Mode de déclenchement
+2. Implémenter les toggles pour chaque option (Widget, Back Tap/Quick Tap, Siri, Google Actions)
+3. Implémenter la gestion des permissions système inline
+4. Implémenter les sous-options (Widget contenu, sensibilité Back Tap)
+5. Tests BDD — affichage + toggles + permissions (min 2 scénarios)
+6. Code review adversariale
+
+**Definition of Done:**
+- Panneau Settings fonctionnel avec toutes les options
+- Gestion permissions inline
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 20.2: Widget iOS + Android
+
+As a **user**,
+I want **a Pensine widget on my home screen and lock screen showing a capture button and pending actions count**,
+So that **I can trigger a capture and check pending delegated actions without unlocking my phone**.
+
+**Acceptance Criteria:**
+- Given the widget is enabled in Settings
+- When I add the Pensine widget to my home screen
+- Then I see: [🎤 Capturer] button + [⏳ X actions en attente] counter
+- On Android: tapping "Capturer" starts capture in the background (no app open)
+- On iOS: tapping "Capturer" opens the app in capture mode (Apple limitation — no background capture from widget)
+- When pending actions count changes
+- Then the widget counter updates dynamically
+- Given iOS 16+ / Android 14+
+- Then a lock screen widget variant is available (smaller, capture button only)
+
+**Tasks:**
+1. Implémenter le widget iOS (WidgetKit — SwiftUI) via Expo Config Plugin
+2. Implémenter le widget Android (Glance / AppWidget) via Expo Config Plugin
+3. Implémenter la communication widget → app (deep link capture mode)
+4. Implémenter la mise à jour dynamique du counter d'actions en attente
+5. Variante lock screen (iOS 16+ / Android 14+)
+6. Tests BDD — widget home + lock screen + counter (min 2 scénarios)
+7. Code review adversariale
+
+**Definition of Done:**
+- Widget fonctionnel iOS + Android (home screen + lock screen)
+- Counter d'actions en attente dynamique
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 20.3: Back Tap iOS + Quick Tap Android (Pixel)
+
+As a **user**,
+I want **to trigger a Pensine capture by tapping the back of my phone**,
+So that **I can start capturing hands-free without looking at the screen — especially useful while driving or in meetings**.
+
+**Acceptance Criteria:**
+- Given I have enabled Back Tap in Settings (iOS 14+)
+- When I double-tap the back of my iPhone
+- Then Pensine capture mode is triggered without opening the app
+- And a brief haptic feedback confirms the trigger
+- Given I have enabled Quick Tap in Settings (Pixel 5+ — Android Phase 1)
+- When I double-tap the back of my Pixel
+- Then Pensine capture mode is triggered
+- Given the sensitivity is set to Low
+- Then accidental triggers (pocket, table) are minimized
+- Given the sensitivity is set to High
+- Then triggers are detected more reliably
+
+**Tasks:**
+1. Implémenter Back Tap iOS via `CMMotionManager` + `Shortcut` App Intent (Expo Config Plugin)
+2. Implémenter Quick Tap Android Pixel via `ACTION_ASSIST` / Quick Tap API
+3. Implémenter le déclenchement de capture en arrière-plan (notification + recording)
+4. Implémenter le réglage de sensibilité
+5. Tests BDD — trigger détecté + haptic + sensibilité (min 2 scénarios)
+6. Code review adversariale
+
+**Definition of Done:**
+- Back Tap iOS fonctionnel (iOS 14+, tous iPhones)
+- Quick Tap Pixel fonctionnel (Pixel 5+, Phase 1 Android)
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 20.4: Siri App Intents (iOS)
+
+As a **user on iOS**,
+I want **to say "Hey Siri, dis à Pensine de..." to trigger a capture delegation**,
+So that **I can delegate actions to Pensine using my voice via Siri without unlocking my phone or touching a screen**.
+
+**Acceptance Criteria:**
+- Given I have enabled Siri integration in Settings
+- When I say "Hey Siri, dis à Pensine de [action]"
+- Then Siri invokes the corresponding Pensine App Intent
+- And Pensine captures the audio/text of the action in the background
+- And the normal delegation pipeline is triggered (transcription → extraction → ExecutionJob)
+- And Siri provides a voice confirmation: "Pensine a capturé votre action"
+- Given the Siri intent is predefined (strict matching — no free-form NLP)
+- Then supported intents are: CaptureAction, CreateReminder, CreateCalendarEvent
+- Given an unsupported command
+- Then Siri responds: "Cette action n'est pas encore supportée par Pensine"
+
+**Tasks:**
+1. Implémenter les Pensine App Intents (App Intents Framework — iOS 16+)
+2. Déclarer les intents supportés dans `AppShortcutsProvider`
+3. Intégrer le déclenchement avec le pipeline de capture Pensine existant
+4. Tests BDD — intent reconnu + capture déclenchée (min 2 scénarios)
+5. Code review adversariale
+
+**Definition of Done:**
+- App Intents déclarés et fonctionnels avec Siri
+- Pipeline de capture déclenché depuis Siri
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 20.5: Google App Actions + Gemini (Android)
+
+As a **user on Android**,
+I want **to say "Hey Google, dis à Pensine de..." to trigger a capture delegation**,
+So that **I can delegate actions to Pensine using natural language via Google Assistant / Gemini on my Pixel**.
+
+**Acceptance Criteria:**
+- Given I have enabled Google Actions integration in Settings
+- When I say "Hey Google, dis à Pensine de [action en langage naturel]"
+- Then Google Assistant invokes the corresponding Pensine App Action
+- And Pensine captures the intent in the background
+- On Pixel with Gemini: full natural language processing is available
+- On other Android: predefined intents via `shortcuts.xml`
+- And a voice confirmation is provided: "Pensine a capturé votre action"
+- Given an unsupported command
+- Then Google responds gracefully: "Cette action n'est pas encore supportée"
+
+**Tasks:**
+1. Implémenter les App Actions via `shortcuts.xml` (intents prédéfinis)
+2. Implémenter l'intégration Gemini Extensions pour Pixel (langage naturel riche)
+3. Intégrer avec le pipeline de capture Pensine
+4. Tests BDD — App Action reconnue + capture déclenchée (min 2 scénarios)
+5. Code review adversariale
+
+**Definition of Done:**
+- App Actions fonctionnels (shortcuts.xml)
+- Intégration Gemini Pixel opérationnelle
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+## Epic 21: Delegation Messaging — Telegram
+
+L'utilisateur peut envoyer un message via un bot Telegram depuis une intention capturée. Première intégration messaging de Pensine.
+
+### Story 21.1: Telegram Bot — Rédiger et envoyer un message depuis un intent
+
+As a **user**,
+I want **Pensine to send a Telegram message via a configured bot from a captured intent**,
+So that **I can communicate via Telegram hands-free when I'm in a context where typing is impossible**.
+
+**Acceptance Criteria:**
+- Given I have configured a Telegram bot token in Settings
+- And I have a validated ExecutionJob of type `TelegramMessage`
+- When Pensine executes the job
+- Then a message is sent via the Telegram Bot API to the configured recipient/channel
+- And a confirmation notification is sent: "Message Telegram envoyé à [destinataire]"
+- And the ExecutionJob transitions to `executed`
+- Given the network is unavailable
+- When the job is validated
+- Then it remains in `queued` state and sends at reconnection (FR49)
+- Note: No rollback mechanism needed (bot messages — not a recoverable action)
+
+**Tasks:**
+1. Implémenter `TelegramAdapter` (Telegram Bot API — `sendMessage`)
+2. Implémenter la configuration du token bot dans Settings
+3. Implémenter l'exécution du `TelegramMessage` ExecutionJob
+4. Notification de confirmation post-envoi
+5. Intégration avec l'offline queue (story 19.11)
+6. Tests BDD — envoi réussi + offline (min 2 scénarios)
+7. Code review adversariale
+
+**Definition of Done:**
+- Message Telegram envoyé depuis un intent validé
+- Comportement offline correct
+- Tests BDD passent
+- Code review adversariale complète
+
+---
+
+### Story 21.2: Gestion des erreurs Telegram + ambiguïté destinataire
+
+As a **user**,
+I want **Pensine to handle Telegram errors gracefully and prompt me when the recipient is ambiguous**,
+So that **no message is ever sent to the wrong person or silently dropped**.
+
+**Acceptance Criteria:**
+- Given an intent mentioning a recipient that matches multiple Telegram contacts
+- When the ExecutionJob is created
+- Then its status is `ambiguous` — no message is sent (NFR19)
+- And a notification prompts: "Pensine a besoin de précisions : plusieurs destinataires possibles pour [nom]"
+- Given the Telegram Bot API returns an error (invalid token, bot blocked, etc.)
+- When execution fails
+- Then the job transitions to `failed`
+- And a notification explains the issue with an actionable suggestion
+- Given the Telegram bot token is not configured
+- When a TelegramMessage intent is extracted
+- Then the user is prompted to configure Telegram in Settings before the job is created
+
+**Tasks:**
+1. Implémenter la détection d'ambiguïté destinataire Telegram
+2. Implémenter la gestion des erreurs API Telegram (codes + messages utilisateur)
+3. Implémenter le check "bot configuré" avant création d'ExecutionJob
+4. Tests BDD — ambiguïté + erreur API + token manquant (min 3 scénarios)
+5. Code review adversariale
+
+**Definition of Done:**
+- Ambiguïté destinataire gérée (NFR19)
+- Erreurs API Telegram gérées proprement
+- Check configuration bot préalable
+- Tests BDD passent
 - Code review adversariale complète
 
 ---

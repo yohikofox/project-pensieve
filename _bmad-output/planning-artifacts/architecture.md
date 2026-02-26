@@ -69,14 +69,22 @@ Le système doit supporter un workflow complet de gestion d'idées :
 - Création compte, login/logout
 - Récupération mot de passe oublié
 
-**Non-Functional Requirements (16 NFRs identifiées):**
+**Mode Délégation (FR32-FR49) — Ajout 2026-02-26 :**
+- Déclenchement sans interaction écran : assistant système (Siri/Google), déclencheur physique (Back Tap/Quick Tap), widget, wake word
+- Extraction d'intents exécutables depuis captures (distinct des todos internes)
+- Exécution : Google Calendar, Gmail (Delayed Send obligatoire), Apple Calendar, Apple Reminders, Telegram
+- Trust model progressif : niveau 1 (validation obligatoire, défaut) → 2 (délai de grâce) → 3 (fire & forget)
+- Persistance des ExecutionJobs en BDD locale — 0 perte même après crash
+- Offline queue : exécution automatique à la reconnexion
 
-**Performance (NFR1-NFR5):**
+**Non-Functional Requirements (22 NFRs identifiées):**
+
+**Performance (NFR1-NFR5) — Dual SLA local/cloud :**
 - Capture audio : < 500ms après tap
 - Transcription Whisper : < 2x durée audio
-- Digestion IA : < 30s pour capture standard
+- Digestion IA : **local < 60s** / cloud < 15s (⚠️ révisé 2026-02-26 — voir ADR-032)
 - Chargement liste : < 1s (cache local)
-- Latence perçue : feedback visuel obligatoire, jamais d'attente
+- Latence perçue : feedback visuel obligatoire, jamais d'attente sans progression visible
 
 **Reliability (NFR6-NFR9):**
 - **Critique** : 0 capture perdue, jamais (tolérance zéro)
@@ -453,10 +461,17 @@ Enrichissement intentionnel du contexte
 - **Ubiquitous Language:** Transcription, OCR, TextExtraction, WebScraping
 - **Aggregates:** Aucun (Domain Services stateless)
 
-**5. Action Context**
-- **Responsabilité:** Gestion cycle de vie des actions (GTD)
-- **Ubiquitous Language:** Todo, Task, Action, Deadline, Priority, Completion
+**5. Task Context** _(ex-Action Context — renommé 2026-02-26, voir ADR-028)_
+- **Responsabilité:** Matérialisation et cycle de vie des todos assignées à l'humain
+- **Ubiquitous Language:** Todo, Task, Deadline, Priority, Completion
 - **Aggregates:** `Todo`
+- **Note:** Le terme "Action" désigne désormais un intent détecté par Knowledge BC (output de digestion), pas une todo.
+
+**6. Delegation Context** _(nouveau BC — 2026-02-26, voir ADR-029)_
+- **Responsabilité:** Exécution d'intents délégués au système (calendrier, email, rappels, messaging)
+- **Ubiquitous Language:** ExecutionJob, Intent, TrustLevel, ExecutionCapability, DelayedSend, OfflineQueue
+- **Aggregates:** `ExecutionJob`
+- **Intégrations:** Google Calendar, Gmail, Apple Calendar, Apple Reminders, Telegram Bot
 
 ---
 
@@ -514,15 +529,51 @@ Thought {
 }
 ```
 
-**3. Todo (Supporting - Action Context)**
+**3. Todo (Supporting - Task Context)** _(ex-Action Context — ADR-028)_
 ```typescript
 Todo {
   id: UUID
   thoughtId: UUID
+  actionId: UUID  // Action (intent détecté) qui a généré ce Todo
   state: 'extracted' | 'launched' | 'in_progress' | 'completed' | 'abandoned'
   description: string
   deadline?: DateTime
   priority?: 'low' | 'medium' | 'high'
+  // assignee: Human (toujours — les intents système → ExecutionJob dans Delegation BC)
+}
+```
+
+**3b. Action (Output Knowledge - intent détecté)** _(nouveau concept — ADR-030)_
+```typescript
+Action {
+  // Produit par Knowledge BC dans CaptureDigested event
+  // N'est PAS un aggregate — c'est un value object dans l'event
+  description: string
+  isExecutable: boolean  // false = Todo dans Task BC | true = ExecutionJob dans Delegation BC
+  executionCapability?: 'CalendarCreate' | 'EmailSend' | 'ReminderCreate' | 'TelegramMessage'
+  extractedParams: {
+    deadline_date?: DateTime
+    target?: string  // contact, email, etc.
+    title?: string
+  }
+  // Règle: ambiguïté → isExecutable = false (fallback Todo) — jamais de double passe LLM
+}
+```
+
+**3c. ExecutionJob (Delegation BC)** _(nouveau aggregate — ADR-029)_
+```typescript
+ExecutionJob {
+  id: UUID
+  captureId: UUID
+  action: Action  // intent source
+  capability: 'CalendarCreate' | 'EmailSend' | 'ReminderCreate' | 'TelegramMessage'
+  state: 'pending_validation' | 'ambiguous' | 'validated' | 'rejected'
+        | 'queued' | 'executed' | 'failed' | 'cancelled'
+  trustLevel: 1 | 2 | 3
+  params: Record<string, unknown>  // paramètres extraits
+  delayedSendExpiry?: DateTime  // email uniquement — toujours présent
+  createdAt: DateTime
+  executedAt?: DateTime
 }
 ```
 
@@ -756,7 +807,8 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 
 **Pour l'index complet et tous les ADRs, voir : [Index ADR](./adrs/README.md)**
 
-**Total : 25 ADRs documentés (40+ sous-décisions architecturales)**
+**Total : 36 ADRs documentés (40+ sous-décisions architecturales)**
+_(+5 ADRs ajoutés le 2026-02-26 — Session Architecture Mode Délégation)_
 
 ---
 
@@ -791,7 +843,14 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 - [ADR-024](./adrs/ADR-024-clean-code-standards.md) - Standards Clean Code Appliqués au Projet Pensieve
 - [ADR-025](./adrs/ADR-025-http-client-strategy.md) - HTTP Client Strategy - fetch natif + wrapper custom (Supersedes Technology Stack - HTTP Client)
 - [ADR-026](./adrs/ADR-026-backend-data-model-design-rules.md) - Backend Data Model Design Rules - Règles canoniques MCD
-- [ADR-027](./adrs/ADR-027-unit-cache-strategy.md) - Unit Cache Strategy - Cache unitaire opt-in par héritage de repository ⚠️ **NOUVEAU**
+- [ADR-027](./adrs/ADR-027-unit-cache-strategy.md) - Unit Cache Strategy - Cache unitaire opt-in par héritage de repository
+
+**Mode Délégation & Bounded Contexts (ADR-032 à ADR-036) — Session 2026-02-26 :**
+- [ADR-032](./adrs/ADR-032-action-bc-rename-task-bc.md) - Renommage Action BC → Task BC — Vocabulaire DDD précis ⚠️ **NOUVEAU**
+- [ADR-033](./adrs/ADR-033-delegation-bounded-context.md) - Nouveau BC Delegation — Frontières, ExecutionJob, intégrations tierces ⚠️ **NOUVEAU**
+- [ADR-034](./adrs/ADR-034-action-todo-executionjob-semantic-model.md) - Modèle sémantique Action/Todo/ExecutionJob — Pipeline de délégation ⚠️ **NOUVEAU**
+- [ADR-035](./adrs/ADR-035-delegation-choreography-option-a.md) - Chorégraphie CaptureDigested — Option A event-driven (vs orchestration) ⚠️ **NOUVEAU**
+- [ADR-036](./adrs/ADR-036-llm-local-first-byok.md) - LLM Local-First Strategy — Contrainte économique pré-revenue + BYOK optionnel ⚠️ **NOUVEAU**
 
 ---
 
@@ -824,5 +883,12 @@ Toutes les décisions architecturales ont été documentées sous forme d'ADRs s
 - [ADR-010](./adrs/ADR-010-security-encryption.md) - Encryption at rest & in transit
 - [ADR-015](./adrs/ADR-015-observability-strategy.md) - Monitoring & logging
 - [ADR-016](./adrs/ADR-016-hybrid-architecture.md) - Cloud + Homelab architecture
+
+**Epics 19-21 (Mode Délégation) :**
+- ⚠️ [ADR-032](./adrs/ADR-032-action-bc-rename-task-bc.md) - Renommage Task BC (refactoring préalable)
+- ⚠️ [ADR-033](./adrs/ADR-033-delegation-bounded-context.md) - BC Delegation (frontières et ExecutionJob)
+- ⚠️ [ADR-034](./adrs/ADR-034-action-todo-executionjob-semantic-model.md) - Modèle sémantique (pipeline complet)
+- ⚠️ [ADR-035](./adrs/ADR-035-delegation-choreography-option-a.md) - Chorégraphie event-driven (pattern d'intégration)
+- ⚠️ [ADR-036](./adrs/ADR-036-llm-local-first-byok.md) - LLM Local-First + dual SLA performance
 
 ---

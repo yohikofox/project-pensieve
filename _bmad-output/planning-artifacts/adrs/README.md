@@ -239,5 +239,13 @@ Proposed (⏳) → Accepted (✅) → [Review après 1-3 mois] → Maintenu OU S
 
 ---
 
-**Dernière mise à jour :** 2026-02-19 (ADR-031 ajouté — Rich Domain Entities Mobile)
+| [ADR-032](./ADR-032-action-bc-rename-task-bc.md) | Renommage Action BC → Task BC — Vocabulaire DDD précis | ✅ Accepted | 2026-02-26 | yohikofox, Winston |
+| [ADR-033](./ADR-033-delegation-bounded-context.md) | Nouveau BC Delegation — Frontières, ExecutionJob, intégrations tierces | ✅ Accepted | 2026-02-26 | yohikofox, Winston |
+| [ADR-034](./ADR-034-action-todo-executionjob-semantic-model.md) | Modèle sémantique Action/Todo/ExecutionJob — Pipeline de délégation | ✅ Accepted | 2026-02-26 | yohikofox, Winston |
+| [ADR-035](./ADR-035-delegation-choreography-option-a.md) | Chorégraphie CaptureDigested — Option A event-driven (vs orchestration) | ✅ Accepted | 2026-02-26 | yohikofox, Winston |
+| [ADR-036](./ADR-036-llm-local-first-byok.md) | LLM Local-First Strategy — Contrainte économique pré-revenue + BYOK optionnel | ✅ Accepted | 2026-02-26 | yohikofox, Winston |
+
+---
+
+**Dernière mise à jour :** 2026-02-26 (ADR-032 à ADR-036 ajoutés — Session Architecture Mode Délégation)
 **Maintenu par :** Winston (Architect) + yohikofox (Product Owner)

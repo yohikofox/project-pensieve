@@ -189,3 +189,9 @@ Ce repository est la **source de vérité** pour toutes les décisions de concep
 ---
 
 **Créé avec ❤️ en suivant la méthodologie BMAD**
+
+# noms des apps
+
+- Pensine capture
+- Omnio révèle et connecte
+- Aloho débloque et exécute

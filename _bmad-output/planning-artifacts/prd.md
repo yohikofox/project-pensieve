@@ -180,7 +180,23 @@ Il utilise la fonction "Enrichir" pour ajouter une note vocale de contexte : *"C
 
 Le lendemain, la digestion combinée texte + audio lui donne un résumé exploitable. Leçon apprise : la capture texte c'est bien pour le contexte social, mais enrichir après c'est mieux que rien.
 
-### Journey 3 : Bastien — Le destinataire d'une idée filtrée
+### Journey 3 : Marc — Le Nomade Cognitif (Mode Délégation)
+
+Marc est chauffeur de poids lourd longue distance. Durant ses trajets, son cerveau tourne à plein régime : idées, listes de courses, rendez-vous à planifier, messages à envoyer. Mais il est légalement et physiquement dans l'impossibilité de toucher son téléphone.
+
+Avant Pensine, tout partait à la trappe. Après Pensine en mode délégation, son autoroute est devenue son bureau.
+
+*Mardi matin, 300km de bitume devant lui :*
+
+Il dit simplement "Hey Pensine" — le wake word active l'app sans qu'il touche rien. "Cale un rendez-vous avec Paul jeudi à 14h pour la révision du camion." Bip de confirmation. Pensine crée la capture, extrait l'intent, stocke l'action en attente.
+
+Une heure plus tard : "Envoie un email à ma femme pour lui dire que je rentrerai vendredi soir, pas jeudi." Même flow. L'email est rédigé par Pensine, mis en attente avec une fenêtre de 10 minutes avant envoi automatique.
+
+À la pause déjeuner, Marc consulte l'onglet Actions. Trois actions l'attendent. Il valide le RDV calendrier, relit l'email (impeccable), le laisse partir. Rejette la troisième car entre temps la situation a changé.
+
+Il retourne dans son camion avec la satisfaction d'avoir géré sa journée administrative sans jamais quitter la route des yeux.
+
+### Journey 4 : Bastien — Le destinataire d'une idée filtrée
 
 Bastien est designer produit et ami de Yoann depuis des années. Il reçoit régulièrement des messages de Yoann du style "J'ai une idée, t'en penses quoi ?" — mais 90% du temps c'est du brainstorming brut, pas mûr, qui lui prend du temps à évaluer.
 
@@ -199,6 +215,7 @@ Il répond avec des questions design pertinentes. La conversation est productive
 |---------|-------------------|
 | **Yoann - Happy path** | Capture audio 1-tap, transcription auto, digestion IA enrichie, todo-list générée, consultation fil + actions, détection récurrence (V2), marquage "Lancé" (V1.5) |
 | **Yoann - Edge case** | Capture texte rapide, todo-list générée, enrichissement post-capture (V1.5), digestion multi-source |
+| **Marc - Nomade Cognitif** | Wake word, déclenchement sans interaction écran, extraction d'intents exécutables, actions en attente de validation, exécution calendrier + email, Delayed Send, comportement offline |
 | **Bastien - Destinataire** | Export/partage d'idée (V2+), vue "idée filtrée" avec contexte et score |
 
 ---
@@ -278,11 +295,14 @@ Pensine est une **application mobile cross-platform (React Native)** avec un **b
 
 | Permission | Usage | Phase |
 |------------|-------|-------|
-| **Microphone** | Capture audio | MVP |
+| **Microphone** | Capture audio, wake word (Option 4) | MVP |
 | **Storage** | Cache offline, fichiers audio | MVP |
 | **Network** | Sync, API calls, IA distante | MVP |
 | **Camera** | Capture photo | V2 |
-| **Notifications** | Push pour process IA longs, rappels | MVP |
+| **Notifications** | Push pour process IA longs, actions en attente, Delayed Send | MVP |
+| **Calendrier** | Lecture/écriture Google Calendar + Apple Calendar | V1.5-V2 |
+| **Contacts** | Résolution des noms dans les intents (RDV, email) | V1.5-V2 |
+| **Background audio** | Wake word actif écran éteint (iOS — opt-in explicite) | V2 |
 
 ### Offline Strategy
 
@@ -359,6 +379,18 @@ Pensine est une **application mobile cross-platform (React Native)** avec un **b
 - Toggle "Lancé" + feedback loop
 - Brainstorm guidé (mode solo IA)
 - Enrichissement post-capture (audio sur texte existant)
+
+**Phase 2bis — Mode Délégation (V1.5-V2) :**
+- Extraction d'intents exécutables depuis les captures
+- Intégrations calendrier : Google Calendar + Apple Calendar
+- Intégration email : Gmail (Delayed Send inclus)
+- Intégrations rappels : Apple Reminders
+- Actions en attente de validation (onglet Todos étendu)
+- Modèle de confiance progressive (niveaux 1/2/3)
+- Déclencheurs : Widget + Back Tap iOS + Quick Tap Pixel
+- Intégration Assistant système : Siri App Intents + Google App Actions
+- Intégration messaging : Telegram (bots uniquement)
+- Wake word "Hey Pensine" — implémentation custom DSP (Android d'abord, iOS opt-in)
 
 **Phase 3 — Expansion (V2-V3) :**
 - Capture photo
@@ -441,6 +473,33 @@ Pensine est une **application mobile cross-platform (React Native)** avec un **b
 - FR30: Le système peut synchroniser les données cloud vers l'appareil
 - FR31: L'utilisateur peut être informé du statut de synchronisation
 
+### Mode Délégation — Déclenchement
+
+- FR32: L'utilisateur peut déclencher une capture Pensine via l'assistant système (Siri / Google Assistant) sans ouvrir l'app
+- FR33: L'utilisateur peut déclencher une capture via un déclencheur physique (Back Tap iOS / Quick Tap Android) sans ouvrir l'app
+- FR34: L'utilisateur peut déclencher une capture via un widget depuis l'écran d'accueil ou verrouillé
+- FR35: L'utilisateur peut déclencher une capture via un wake word ("Hey Pensine") sans aucune interaction physique
+- FR36: L'utilisateur peut configurer le(s) mode(s) de déclenchement actif(s) dans les paramètres (options cumulables)
+
+### Mode Délégation — Extraction et Exécution d'Actions
+
+- FR37: Le système peut extraire un intent d'action exécutable depuis une capture (distinct des todos internes)
+- FR38: Le système peut créer un événement dans Google Calendar ou Apple Calendar à partir d'un intent capturé
+- FR39: Le système peut rédiger un email Gmail à partir d'un intent capturé
+- FR40: Le système peut créer un rappel (Apple Reminders) à partir d'un intent capturé
+- FR41: Le système peut envoyer un message via un bot Telegram à partir d'un intent capturé
+- FR42: Pour les emails, le système peut différer l'envoi d'une durée configurable avec fenêtre d'annulation active (Delayed Send — minimum applicable même au niveau de confiance 3)
+
+### Mode Délégation — Validation et Confiance
+
+- FR43: L'utilisateur peut configurer son niveau de confiance pour l'exécution autonome des actions (niveau 1 : validation obligatoire / niveau 2 : délai de grâce / niveau 3 : fire & forget)
+- FR44: Le niveau de confiance par défaut est 1 (validation obligatoire) — la progression est toujours à l'initiative explicite de l'utilisateur
+- FR45: Le système peut stocker les actions en attente de validation en base de données locale (état persistant entre sessions)
+- FR46: L'utilisateur peut consulter, valider, rejeter ou modifier toute action en attente depuis une notification push ou l'onglet Actions
+- FR47: Le système peut notifier l'utilisateur d'une ambiguïté détectée dans un intent capturé sans jamais tenter d'exécuter une action incertaine
+- FR48: Le système peut exécuter les actions validées en queue locale au retour de la connectivité réseau
+- FR49: Les actions intrinsèquement dépendantes du réseau (email, Telegram) restent en attente jusqu'à la reconnexion
+
 ---
 
 ## Non-Functional Requirements
@@ -479,4 +538,15 @@ Pensine est une **application mobile cross-platform (React Native)** avec un **b
 | NFR | Critère | Cible MVP |
 |-----|---------|-----------|
 | NFR15 | Capacité utilisateurs | Architecture prête pour 100+ utilisateurs sans refonte |
-| NFR16 | Stockage par utilisateur | Pas de limite artificielle MVP, monitoring usage
+| NFR16 | Stockage par utilisateur | Pas de limite artificielle MVP, monitoring usage |
+
+### Mode Délégation — NFRs spécifiques
+
+| NFR | Critère | Cible |
+|-----|---------|-------|
+| NFR17 | Consommation batterie wake word (Android DSP) | < 3% / heure |
+| NFR18 | Consommation batterie wake word (iOS CPU, opt-in) | < 7% / heure — avertissement utilisateur obligatoire |
+| NFR19 | Fiabilité exécution d'actions | 0 action exécutée sans intent confirmé — intégrité avant commodité |
+| NFR20 | Persistance des actions en attente | 0 perte d'action en attente, même après crash ou redémarrage |
+| NFR21 | Délai Delayed Send email | Configurable : 5 / 10 / 30 minutes — valeur par défaut : 10 minutes |
+| NFR22 | Traitement wake word | 100% on-device — l'audio ne transite jamais vers un serveur tiers avant détection |
