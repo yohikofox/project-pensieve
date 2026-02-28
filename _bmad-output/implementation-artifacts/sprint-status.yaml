@@ -118,7 +118,7 @@ development_status:
   8-4-transcription-native-par-defaut: done  # Issue #12 - Code review: 6 issues H/M corrigées (AC2 robustesse, dead code, test dupliqué, error path tests, auteur)
   8-5-guide-config-modele-si-absent: done  # Issue #2 - 5/5 BDD + 4/4 unit tests passent. hasLLMModelAvailable store + checkLLMModelAvailability hook + banner AnalysisCard + SettingsScreen label "Aucun modèle"
   8-6-transcription-live-avec-waveform: done  # Issue #11 - Code review adversarial: 2H+4M corrigés (H1 subscription leak+stale ref, H2 BDD AC1, M1 cancel interface, M2 useCallback deps, M3 langue i18n, M4 saveError i18n). 8/8 BDD + 8/8 unit ✅
-  8-7-download-modeles-en-background: ready-for-dev  # Issue #18 - Story créée 2026-02-28
+  8-7-download-modeles-en-background: review  # Issue #18 - Story créée 2026-02-28
   8-8-suggestion-suppression-modeles-inutilises: ready-for-dev  # Issue #8 - Story créée 2026-02-28
   8-9-verification-maj-modeles: backlog  # Issue #6 - Backlog
   8-10-ocr-manuscrit-capture-photo: backlog  # Issue #7 - Backlog
@@ -132,6 +132,10 @@ development_status:
   8-16-performance-latence-capture-screen: ready-for-dev  # Latence ~1s premier load CaptureScreen — viole NFR1 (<500ms)
   # Native transcription bug fix (2026-02-20) — BLOQUANT UX
   8-20-fix-native-transcription-resultat-tronque: done  # NativeTranscriptionEngine écrase finalText au lieu d'accumuler — audio >15s tronqué au dernier segment
+  # Feature flag Live transcription (2026-02-28) — gap identifié Story 8.6 sans feature flag
+  8-21-feature-flag-live-transcription: ready-for-dev  # Bouton Live OFF par défaut — feature flag live_transcription (pattern Epic 24)
+  # Refactoring feature flags orientation capacité produit (2026-03-01)
+  8-22-refactoring-feature-flags-orientation-fonctionnalite: ready-for-dev  # news_tab→news, projects_tab→projects, capture_media_buttons→4 flags granulaires
   # Email infrastructure (2026-02-18) — DÉPRÉCIÉE
   # ⚠️ Story 8-17 SUPERSEDÉE par Epic 15 (ADR-029 remplace Supabase Auth entièrement)
   8-17-configuration-smtp-email-transactionnel: deprecated  # Supersedée par 15-1 — Better Auth + Resend remplace le bandaid SMTP Supabase
