@@ -116,8 +116,8 @@ development_status:
   8-2-standardize-type-constants-pattern: done  # Issue #24 - HAUTE
   8-3-fix-audio-trim-truncating-transcriptions: done  # Issue #16 - Code review: 5/8 fixes (H2+H3+M1+M2+M3). Test device 49s ✅. AC7 validé.
   8-4-transcription-native-par-defaut: done  # Issue #12 - Code review: 6 issues H/M corrigées (AC2 robustesse, dead code, test dupliqué, error path tests, auteur)
-  8-5-guide-config-modele-si-absent: ready-for-dev  # Issue #2 - Sprint suivant
-  8-6-transcription-live-avec-waveform: backlog  # Issue #11 - Backlog
+  8-5-guide-config-modele-si-absent: done  # Issue #2 - 5/5 BDD + 4/4 unit tests passent. hasLLMModelAvailable store + checkLLMModelAvailability hook + banner AnalysisCard + SettingsScreen label "Aucun modèle"
+  8-6-transcription-live-avec-waveform: ready-for-dev  # Issue #11 - Story créée 2026-02-28
   8-7-download-modeles-en-background: backlog  # Issue #18 - Backlog
   8-8-suggestion-suppression-modeles-inutilises: backlog  # Issue #8 - Backlog
   8-9-verification-maj-modeles: backlog  # Issue #6 - Backlog

@@ -1,6 +1,6 @@
 # Story 8.5 : Guide Config Modèle LLM Si Absent
 
-Status: ready-for-dev
+Status: done
 
 <!-- Validation optionnelle : run validate-create-story avant dev-story -->
 
@@ -120,28 +120,28 @@ S'appuyer sur le **pattern établi par Story 2.7** :
 
 ### Task 1 : Ajouter `hasLLMModelAvailable` dans `captureDetailStore` (AC1)
 
-- [ ] Subtask 1.1 : Ouvrir `mobile/src/stores/captureDetailStore.ts`
-- [ ] Subtask 1.2 : Ajouter le state initial :
+- [x] Subtask 1.1 : Ouvrir `mobile/src/stores/captureDetailStore.ts`
+- [x] Subtask 1.2 : Ajouter le state initial :
   ```typescript
   hasLLMModelAvailable: null as boolean | null,
   ```
-- [ ] Subtask 1.3 : Ajouter le setter dans les actions du store :
+- [x] Subtask 1.3 : Ajouter le setter dans les actions du store :
   ```typescript
   setHasLLMModelAvailable: (available: boolean | null) => set({ hasLLMModelAvailable: available }),
   ```
-- [ ] Subtask 1.4 : Ajouter `hasLLMModelAvailable` et `setHasLLMModelAvailable` à l'interface `CaptureDetailState`
-- [ ] Subtask 1.5 : Vérifier que `resetStore()` réinitialise `hasLLMModelAvailable` à `null`
+- [x] Subtask 1.4 : Ajouter `hasLLMModelAvailable` et `setHasLLMModelAvailable` à l'interface `CaptureDetailState`
+- [x] Subtask 1.5 : Vérifier que `resetStore()` réinitialise `hasLLMModelAvailable` à `null`
 
 ### Task 2 : Ajouter `checkLLMModelAvailability()` dans `useCaptureDetailInit.ts` (AC1)
 
-- [ ] Subtask 2.1 : Ouvrir `mobile/src/hooks/useCaptureDetailInit.ts`
-- [ ] Subtask 2.2 : Ajouter le setter depuis le store :
+- [x] Subtask 2.1 : Ouvrir `mobile/src/hooks/useCaptureDetailInit.ts`
+- [x] Subtask 2.2 : Ajouter le setter depuis le store :
   ```typescript
   const setStoreHasLLMModelAvailable = useCaptureDetailStore(
     (state) => state.setHasLLMModelAvailable,
   );
   ```
-- [ ] Subtask 2.3 : Implémenter la fonction de check (après `checkModelAvailability`) :
+- [x] Subtask 2.3 : Implémenter la fonction de check (après `checkModelAvailability`) :
   ```typescript
   /**
    * Check if an LLM model is available for digestion/analysis
@@ -160,40 +160,40 @@ S'appuyer sur le **pattern établi par Story 2.7** :
     }
   }, [setStoreHasLLMModelAvailable]);
   ```
-- [ ] Subtask 2.4 : Ajouter l'Effect 5 (renommer l'existing Effect 5 → 6) :
+- [x] Subtask 2.4 : Ajouter l'Effect 5 (renommer l'existing Effect 5 → 6) :
   ```typescript
   // Effect 5: Check LLM model availability (for AnalysisCard guide)
   useEffect(() => {
     checkLLMModelAvailability();
   }, [checkLLMModelAvailability]);
   ```
-- [ ] Subtask 2.5 : Ajouter `hasLLMModelAvailable` au return de `useCaptureDetailInit` (si utilisé directement)
-- [ ] Subtask 2.6 : Vérifier les imports — `ILLMModelService` depuis `../../contexts/Normalization/domain/ILLMModelService`, `TOKENS` depuis `../../infrastructure/di/tokens`
+- [x] Subtask 2.5 : Ajouter `hasLLMModelAvailable` au return de `useCaptureDetailInit` (si utilisé directement)
+- [x] Subtask 2.6 : Vérifier les imports — `ILLMModelService` depuis `../../contexts/Normalization/domain/ILLMModelService`, `TOKENS` depuis `../../infrastructure/di/tokens`
 
 ### Task 3 : Ajouter le guide LLM dans `AnalysisCard.tsx` (AC2, AC3)
 
-- [ ] Subtask 3.1 : Ouvrir `mobile/src/components/capture/AnalysisCard.tsx`
-- [ ] Subtask 3.2 : Lire `hasLLMModelAvailable` et `isPostProcessingEnabled` depuis les stores :
+- [x] Subtask 3.1 : Ouvrir `mobile/src/components/capture/AnalysisCard.tsx`
+- [x] Subtask 3.2 : Lire `hasLLMModelAvailable` et `isPostProcessingEnabled` depuis les stores :
   ```typescript
   const hasLLMModelAvailable = useCaptureDetailStore((state) => state.hasLLMModelAvailable);
   const isLLMEnabled = useSettingsStore((state) => state.llm.isEnabled);
   ```
-- [ ] Subtask 3.3 : Importer `useNavigation` depuis React Navigation :
+- [x] Subtask 3.3 : Importer `useNavigation` depuis React Navigation :
   ```typescript
   import { useNavigation } from '@react-navigation/native';
   ```
-- [ ] Subtask 3.4 : Ajouter le handler de navigation :
+- [x] Subtask 3.4 : Ajouter le handler de navigation :
   ```typescript
   const navigation = useNavigation();
   const handleConfigureLLM = useCallback(() => {
     navigation.navigate('LLMSettings' as never);
   }, [navigation]);
   ```
-- [ ] Subtask 3.5 : Calculer la condition d'affichage du guide :
+- [x] Subtask 3.5 : Calculer la condition d'affichage du guide :
   ```typescript
   const showLLMGuide = hasLLMModelAvailable === false && isLLMEnabled;
   ```
-- [ ] Subtask 3.6 : Ajouter le composant guide **avant** les sections d'analyse (si `showLLMGuide`) :
+- [x] Subtask 3.6 : Ajouter le composant guide **avant** les sections d'analyse (si `showLLMGuide`) :
   ```tsx
   {showLLMGuide && (
     <View style={[styles.llmGuideContainer, { backgroundColor: themeColors.cardBg, borderColor: themeColors.borderDefault }]}>
@@ -216,8 +216,8 @@ S'appuyer sur le **pattern établi par Story 2.7** :
     </View>
   )}
   ```
-- [ ] Subtask 3.7 : Ajouter les styles correspondants dans `StyleSheet.create()`
-- [ ] Subtask 3.8 : Conditionner l'affichage des boutons d'analyse — les masquer quand `showLLMGuide` est `true` :
+- [x] Subtask 3.7 : Ajouter les styles correspondants dans `StyleSheet.create()`
+- [x] Subtask 3.8 : Conditionner l'affichage des boutons d'analyse — les masquer quand `showLLMGuide` est `true` :
   ```tsx
   {!showLLMGuide && (
     // ... boutons handleGenerateAnalysis, handleAnalyzeAll existants
@@ -226,9 +226,9 @@ S'appuyer sur le **pattern établi par Story 2.7** :
 
 ### Task 4 : Mise à jour `SettingsScreen.tsx` — label LLM (AC4)
 
-- [ ] Subtask 4.1 : Ouvrir `mobile/src/screens/settings/SettingsScreen.tsx`
-- [ ] Subtask 4.2 : Localiser la logique qui initialise `llmStatusLabel` (dans un `useEffect` ou équivalent)
-- [ ] Subtask 4.3 : Mettre à jour la logique pour distinguer "Aucun modèle" vs "Désactivé" :
+- [x] Subtask 4.1 : Ouvrir `mobile/src/screens/settings/SettingsScreen.tsx`
+- [x] Subtask 4.2 : Localiser la logique qui initialise `llmStatusLabel` (dans un `useEffect` ou équivalent)
+- [x] Subtask 4.3 : Mettre à jour la logique pour distinguer "Aucun modèle" vs "Désactivé" :
   ```typescript
   // Logique mise à jour pour llmStatusLabel
   // Lire isPostProcessingEnabled ET hasDownloadedModels()
@@ -246,32 +246,32 @@ S'appuyer sur le **pattern établi par Story 2.7** :
       : t('common.enabled', 'Activé'));
   }
   ```
-- [ ] Subtask 4.4 : Importer les dépendances nécessaires si pas déjà présentes (`hasDownloadedModels`, `ILLMModelService`, `TOKENS`)
+- [x] Subtask 4.4 : Importer les dépendances nécessaires si pas déjà présentes (`hasDownloadedModels`, `ILLMModelService`, `TOKENS`)
 
 ### Task 5 : Tests BDD — Scénarios story 8.5 (AC5)
 
-- [ ] Subtask 5.1 : Créer `mobile/tests/acceptance/features/story-8-5-guide-config-modele-si-absent.feature`
-- [ ] Subtask 5.2 : Écrire les scénarios Gherkin (voir section "Scénarios BDD" ci-dessous)
-- [ ] Subtask 5.3 : Créer `mobile/tests/acceptance/story-8-5-guide-config-modele-si-absent.test.ts` avec les step definitions
-- [ ] Subtask 5.4 : Mocker `ILLMModelService` via `TOKENS.ILLMModelService` dans le container TSyringe
+- [x] Subtask 5.1 : Créer `mobile/tests/acceptance/features/story-8-5-guide-config-modele-si-absent.feature`
+- [x] Subtask 5.2 : Écrire les scénarios Gherkin (voir section "Scénarios BDD" ci-dessous)
+- [x] Subtask 5.3 : Créer `mobile/tests/acceptance/story-8-5-guide-config-modele-si-absent.test.ts` avec les step definitions
+- [x] Subtask 5.4 : Mocker `ILLMModelService` via `TOKENS.ILLMModelService` dans le container TSyringe
 
 ### Task 6 : Tests unitaires — `checkLLMModelAvailability` (AC5)
 
-- [ ] Subtask 6.1 : Ouvrir ou créer `mobile/src/hooks/__tests__/useCaptureDetailInit.test.ts`
-- [ ] Subtask 6.2 : Ajouter les tests pour `checkLLMModelAvailability` :
+- [x] Subtask 6.1 : Ouvrir ou créer `mobile/src/hooks/__tests__/useCaptureDetailInit.test.ts`
+- [x] Subtask 6.2 : Ajouter les tests pour `checkLLMModelAvailability` :
   ```
   Cas 1 — getBestAvailableModel retourne un id → hasLLMModelAvailable = true
   Cas 2 — getBestAvailableModel retourne null → hasLLMModelAvailable = false
   Cas 3 — getBestAvailableModel lève une erreur → hasLLMModelAvailable = null
   ```
-- [ ] Subtask 6.3 : Pattern de mock `ILLMModelService` identique au mock existant pour `TranscriptionModelService`
+- [x] Subtask 6.3 : Pattern de mock `ILLMModelService` identique au mock existant pour `TranscriptionModelService`
 
 ### Task 7 : Validation finale (AC5)
 
-- [ ] Subtask 7.1 : `npm run test:unit` dans `pensieve/mobile/` — zéro régression
-- [ ] Subtask 7.2 : `npm run test:acceptance` dans `pensieve/mobile/` — zéro régression
-- [ ] Subtask 7.3 : `npm run test:architecture` — conformité ADR maintenue
-- [ ] Subtask 7.4 : Fermer l'issue GitHub #2 avec référence au commit
+- [x] Subtask 7.1 : `npm run test:unit` dans `pensieve/mobile/` — zéro régression
+- [x] Subtask 7.2 : `npm run test:acceptance` dans `pensieve/mobile/` — zéro régression
+- [x] Subtask 7.3 : `npm run test:architecture` — conformité ADR maintenue
+- [x] Subtask 7.4 : Fermer l'issue GitHub #2 avec référence au commit
 
 ## Scénarios BDD (Feature File)
 
@@ -463,10 +463,30 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Implémentation complète suivant le pattern Story 2.7 (Whisper) pour LLM.
+- `hasLLMModelAvailable` ajouté dans `captureDetailStore` avec valeurs `true/false/null`.
+- `checkLLMModelAvailability()` dans `useCaptureDetailInit` — résolution lazy de `ILLMModelService` via `container.resolve()` dans `useCallback` (conforme ADR-021).
+- Banner LLM guide dans `AnalysisCard.tsx` avec condition `showLLMGuide = hasLLMModelAvailable === false && isLLMEnabled`. Boutons d'analyse masqués quand guide affiché.
+- `SettingsScreen.tsx` : cas "Aucun modèle" ajouté quand LLM activé mais `getBestAvailableModel()` retourne null.
+- 5 scénarios BDD passent (100%). 4 tests unitaires `checkLLMModelAvailability` passent.
+- Aucune régression introduite — les 11 échecs unit et 6 échecs architecture préexistaient (APIs stale + ADR-031 violations hors scope).
+
 ### File List
+
+**Fichiers modifiés :**
+- `pensieve/mobile/src/stores/captureDetailStore.ts`
+- `pensieve/mobile/src/hooks/useCaptureDetailInit.ts`
+- `pensieve/mobile/src/components/capture/AnalysisCard.tsx`
+- `pensieve/mobile/src/screens/settings/SettingsScreen.tsx`
+- `pensieve/mobile/src/hooks/__tests__/useCaptureDetailInit.test.ts`
+
+**Fichiers créés :**
+- `pensieve/mobile/tests/acceptance/features/story-8-5-guide-config-modele-si-absent.feature`
+- `pensieve/mobile/tests/acceptance/story-8-5-guide-config-modele-si-absent.test.ts`
 
 ## Change Log
 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-28 | Story créée depuis issue GitHub #2 — analyse approfondie du code existant (story 2.7 pattern, captureDetailStore, useCaptureDetailInit, AnalysisCard, SettingsScreen), stratégie parallèle Whisper→LLM définie | yohikofox |
+| 2026-02-28 | Implémentation complète — Tasks 1-7 réalisées, 5/5 BDD passent, 4/4 tests unitaires passent, aucune régression | yohikofox |
