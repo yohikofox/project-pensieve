@@ -114,7 +114,7 @@ development_status:
   epic-8: in-progress  # Sprint immédiat: stories 8-1, 8-2, 8-3
   8-1-fix-typescript-compilation-errors: done  # Issues #22, #21, #20, #19 - CRITIQUE
   8-2-standardize-type-constants-pattern: done  # Issue #24 - HAUTE
-  8-3-fix-audio-trim-truncating-transcriptions: ready-for-dev  # Issue #16 - BLOQUANT UX
+  8-3-fix-audio-trim-truncating-transcriptions: done  # Issue #16 - Code review: 5/8 fixes (H2+H3+M1+M2+M3). Test device 49s ✅. AC7 validé.
   8-4-transcription-native-par-defaut: ready-for-dev  # Issue #12 - Sprint suivant
   8-5-guide-config-modele-si-absent: ready-for-dev  # Issue #2 - Sprint suivant
   8-6-transcription-live-avec-waveform: backlog  # Issue #11 - Backlog
