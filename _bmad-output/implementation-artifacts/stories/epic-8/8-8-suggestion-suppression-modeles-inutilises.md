@@ -159,7 +159,7 @@ Utilisateur :
 
 ### Task 1 : Créer `ModelUsageTrackingService` (AC1, AC2, AC3, AC7)
 
-- [ ] Subtask 1.1 : Créer l'interface `mobile/src/contexts/Normalization/domain/IModelUsageTrackingService.ts` :
+- [x] Subtask 1.1 : Créer l'interface `mobile/src/contexts/Normalization/domain/IModelUsageTrackingService.ts` :
   ```typescript
   export type ModelType = 'llm' | 'whisper';
 
@@ -184,7 +184,7 @@ Utilisateur :
   }
   ```
 
-- [ ] Subtask 1.2 : Créer `mobile/src/contexts/Normalization/services/ModelUsageTrackingService.ts` :
+- [x] Subtask 1.2 : Créer `mobile/src/contexts/Normalization/services/ModelUsageTrackingService.ts` :
   ```typescript
   // Constante centrale
   export const MODEL_INACTIVITY_THRESHOLD_DAYS = 15;
@@ -203,12 +203,12 @@ Utilisateur :
   - `clearModelTracking()` : supprimer les deux clés (appelé lors de `deleteModel()`)
   - Toutes les méthodes retournent `Result<T>` (ADR-023)
 
-- [ ] Subtask 1.3 : Ajouter le token dans `mobile/src/infrastructure/di/tokens.ts` :
+- [x] Subtask 1.3 : Ajouter le token dans `mobile/src/infrastructure/di/tokens.ts` :
   ```typescript
-  IModelUsageTrackingService: Symbol('IModelUsageTrackingService'),
+  IModelUsageTrackingService: Symbol.for('IModelUsageTrackingService'),
   ```
 
-- [ ] Subtask 1.4 : Enregistrer dans `mobile/src/infrastructure/di/container.ts` comme **Transient** (ADR-021) :
+- [x] Subtask 1.4 : Enregistrer dans `mobile/src/infrastructure/di/container.ts` comme **Transient** (ADR-021) :
   ```typescript
   container.register<IModelUsageTrackingService>(
     TOKENS.IModelUsageTrackingService,
@@ -218,14 +218,14 @@ Utilisateur :
 
 ### Task 2 : Intégrer le tracking dans `LLMModelService` (AC1)
 
-- [ ] Subtask 2.1 : Injecter `IModelUsageTrackingService` dans le constructeur de `LLMModelService`
-- [ ] Subtask 2.2 : Dans le handler `.done()` de `downloadModel()`, appeler :
+- [x] Subtask 2.1 : Injecter `IModelUsageTrackingService` dans le constructeur de `LLMModelService`
+- [x] Subtask 2.2 : Dans le handler `.done()` de `downloadModel()`, appeler :
   ```typescript
   await this.usageTrackingService.trackModelUsed(modelId, 'llm');
   ```
-- [ ] Subtask 2.3 : Dans `setModelForTask()`, appeler `trackModelUsed(modelId, 'llm')` après la persistance
-- [ ] Subtask 2.4 : Dans `deleteModel()`, appeler `clearModelTracking(modelId, 'llm')` après suppression du fichier
-- [ ] Subtask 2.5 : Exposer une méthode `getDownloadedModelIds(): Promise<string[]>` (liste des modelId avec fichier sur disque) — nécessaire pour `getUnusedModels()` dans le screen store
+- [x] Subtask 2.3 : Dans `setModelForTask()`, appeler `trackModelUsed(modelId, 'llm')` après la persistance
+- [x] Subtask 2.4 : Dans `deleteModel()`, appeler `clearModelTracking(modelId, 'llm')` après suppression du fichier
+- [x] Subtask 2.5 : Exposer une méthode `getDownloadedModelIds(): Promise<string[]>` (liste des modelId avec fichier sur disque) — nécessaire pour `getUnusedModels()` dans le screen store
 
 ### Task 3 : Intégrer le tracking dans `TranscriptionModelService` (AC2)
 
@@ -619,10 +619,47 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+**Task 2 — Intégration du tracking dans `LLMModelService` (2026-03-01)**
+
+- `IModelUsageTrackingService` injecté via `@inject(TOKENS.IModelUsageTrackingService)` dans le constructeur (Subtask 2.1)
+- `trackModelUsed(modelId, 'llm')` appelé dans le handler `.done()` de `downloadModel()` : initialise `lastUsed` dès la fin du téléchargement (AC1)
+- `trackModelUsed(modelId, 'llm')` appelé dans `setModelForTask()` (branche `else`, quand `modelId !== null`) : met à jour `lastUsed` à chaque sélection (AC1)
+- `clearModelTracking(modelId, 'llm')` appelé dans `deleteModel()` après suppression fichier : nettoie les clés AsyncStorage du modèle (AC6)
+- `getDownloadedModelIds(): Promise<string[]>` ajouté à `ILLMModelService` (interface) et implémenté dans `LLMModelService` (délègue à `getDownloadedModels()`) — Subtask 2.5
+- Tous les appels au tracking sont fire-and-forget (`.catch(() => {})`) pour ne pas bloquer le flux principal
+- 11/11 tests `ModelUsageTrackingService` passent, 0 régression, TypeScript conforme
+
+**Task 1 — Implémentation de `ModelUsageTrackingService` (2026-03-01)**
+
+- Interface `IModelUsageTrackingService` créée avec 6 méthodes + types `ModelType` et `UnusedModel`
+- Implémentation `ModelUsageTrackingService` : service stateless, `@injectable()`, toutes méthodes retournent `Result<T>` (ADR-023)
+- Constante `MODEL_INACTIVITY_THRESHOLD_DAYS = 15` (AC3)
+- Pattern AsyncStorage : `@pensieve/model_last_used_{type}_{id}` et `@pensieve/model_suggestion_dismissed_{type}_{id}`
+- Logique `hasDismissedSuggestion()` : temporelle — dismissed seulement si `dismissedDate > lastUsedDate` (réinitialisation implicite à la réutilisation)
+- Comportement prudent dans `getUnusedModels()` : si pas de lastUsed → non inclus (évite faux positifs pour modèles pré-story)
+- Token `IModelUsageTrackingService` ajouté dans `tokens.ts` via `Symbol.for()`
+- Enregistrement Transient dans `container.ts` (ADR-021 — service stateless sans état partagé)
+- 11/11 tests unitaires passent (0 régression sur la suite complète préexistante)
+
 ### File List
+
+**Fichiers créés (Task 1) :**
+- `pensieve/mobile/src/contexts/Normalization/domain/IModelUsageTrackingService.ts`
+- `pensieve/mobile/src/contexts/Normalization/services/ModelUsageTrackingService.ts`
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/ModelUsageTrackingService.test.ts`
+
+**Fichiers modifiés (Task 1) :**
+- `pensieve/mobile/src/infrastructure/di/tokens.ts` — ajout token `IModelUsageTrackingService`
+- `pensieve/mobile/src/infrastructure/di/container.ts` — enregistrement Transient
+
+**Fichiers modifiés (Task 2) :**
+- `pensieve/mobile/src/contexts/Normalization/domain/ILLMModelService.ts` — ajout `getDownloadedModelIds(): Promise<string[]>`
+- `pensieve/mobile/src/contexts/Normalization/services/LLMModelService.ts` — injection `IModelUsageTrackingService`, tracking dans `.done()` + `setModelForTask()` + `deleteModel()`, implémentation `getDownloadedModelIds()`
 
 ## Change Log
 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-28 | Story créée depuis issue GitHub #8 — analyse exhaustive : aucun tracking lastUsed existant dans LLMModelService ni TranscriptionModelService, service dédié ModelUsageTrackingService créé (SRP ADR-024), AsyncStorage pour cohérence avec les services existants (note ADR-022), Result Pattern ADR-023, Transient ADR-021. UI : extension props LLMModelCard + WhisperModelCard, confirmation Alert.alert, dismiss persisté. | yohikofox |
+| 2026-03-01 | Task 1 implémentée — IModelUsageTrackingService + ModelUsageTrackingService + token DI + enregistrement container Transient. 11/11 tests unitaires verts. | yohikofox |
+| 2026-03-01 | Task 2 implémentée — Intégration tracking dans LLMModelService : injection DI, trackModelUsed au téléchargement + sélection, clearModelTracking à la suppression, getDownloadedModelIds() exposé. 0 régression, TypeScript conforme. | yohikofox |
