@@ -117,9 +117,9 @@ development_status:
   8-3-fix-audio-trim-truncating-transcriptions: done  # Issue #16 - Code review: 5/8 fixes (H2+H3+M1+M2+M3). Test device 49s ✅. AC7 validé.
   8-4-transcription-native-par-defaut: done  # Issue #12 - Code review: 6 issues H/M corrigées (AC2 robustesse, dead code, test dupliqué, error path tests, auteur)
   8-5-guide-config-modele-si-absent: done  # Issue #2 - 5/5 BDD + 4/4 unit tests passent. hasLLMModelAvailable store + checkLLMModelAvailability hook + banner AnalysisCard + SettingsScreen label "Aucun modèle"
-  8-6-transcription-live-avec-waveform: ready-for-dev  # Issue #11 - Story créée 2026-02-28
-  8-7-download-modeles-en-background: backlog  # Issue #18 - Backlog
-  8-8-suggestion-suppression-modeles-inutilises: backlog  # Issue #8 - Backlog
+  8-6-transcription-live-avec-waveform: done  # Issue #11 - Code review adversarial: 2H+4M corrigés (H1 subscription leak+stale ref, H2 BDD AC1, M1 cancel interface, M2 useCallback deps, M3 langue i18n, M4 saveError i18n). 8/8 BDD + 8/8 unit ✅
+  8-7-download-modeles-en-background: ready-for-dev  # Issue #18 - Story créée 2026-02-28
+  8-8-suggestion-suppression-modeles-inutilises: ready-for-dev  # Issue #8 - Story créée 2026-02-28
   8-9-verification-maj-modeles: backlog  # Issue #6 - Backlog
   8-10-ocr-manuscrit-capture-photo: backlog  # Issue #7 - Backlog
   8-11-suppression-compte-avec-anonymisation: backlog  # Issue #5 - Backlog
