@@ -113,10 +113,10 @@ development_status:
   # Quick wins ajoutés: 8-13, 8-14, 8-15 (discovery session power user 2026-02-17)
   epic-8: in-progress  # Sprint immédiat: stories 8-1, 8-2, 8-3
   8-1-fix-typescript-compilation-errors: done  # Issues #22, #21, #20, #19 - CRITIQUE
-  8-2-standardize-type-constants-pattern: ready-for-dev  # Issue #24 - HAUTE
+  8-2-standardize-type-constants-pattern: in-progress  # Issue #24 - HAUTE
   8-3-fix-audio-trim-truncating-transcriptions: ready-for-dev  # Issue #16 - BLOQUANT UX
   8-4-transcription-native-par-defaut: ready-for-dev  # Issue #12 - Sprint suivant
-  8-5-guide-config-modele-si-absent: backlog  # Issue #2 - Sprint suivant
+  8-5-guide-config-modele-si-absent: ready-for-dev  # Issue #2 - Sprint suivant
   8-6-transcription-live-avec-waveform: backlog  # Issue #11 - Backlog
   8-7-download-modeles-en-background: backlog  # Issue #18 - Backlog
   8-8-suggestion-suppression-modeles-inutilises: backlog  # Issue #8 - Backlog
