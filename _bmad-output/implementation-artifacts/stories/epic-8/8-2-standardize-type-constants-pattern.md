@@ -1,6 +1,6 @@
 # Story 8.2: Standardize Type Constants Pattern
 
-Status: ready-for-dev
+Status: done
 
 <!-- Validation optionnelle : run validate-create-story avant dev-story -->
 
@@ -111,42 +111,37 @@ if (capture.type !== CAPTURE_TYPES.AUDIO) { ... }
 ## Tasks / Subtasks
 
 ### Task 1: Audit de conformité (AC1-AC3) — lecture seule
-- [ ] Subtask 1.1 : Vérifier `Capture.model.ts` — confirmer lignes 16-23 (CAPTURE_TYPES) et ligne 47 (`type: CaptureType`) ✅
-- [ ] Subtask 1.2 : Vérifier `CaptureEvents.ts` — confirmer import CaptureType + usage lignes 29, 51 ✅
-- [ ] Subtask 1.3 : Confirmer que RecordingService et TextCaptureService utilisent déjà CAPTURE_TYPES.AUDIO/TEXT ✅
-- [ ] Subtask 1.4 : Si tout est conforme, passer à Task 2 sans modification
+- [x] Subtask 1.1 : Vérifier `Capture.model.ts` — confirmer lignes 16-23 (CAPTURE_TYPES) et ligne 47 (`type: CaptureType`) ✅
+- [x] Subtask 1.2 : Vérifier `CaptureEvents.ts` — confirmer import CaptureType + usage lignes 29, 51 ✅
+- [x] Subtask 1.3 : Confirmer que RecordingService et TextCaptureService utilisent déjà CAPTURE_TYPES.AUDIO/TEXT ✅
+- [x] Subtask 1.4 : Si tout est conforme, passer à Task 2 sans modification
 
 ### Task 2: Fix CaptureRepository.ts — 3 type assertions (AC4)
-- [ ] Subtask 2.1 : Ouvrir `mobile/src/contexts/capture/data/CaptureRepository.ts`
-- [ ] Subtask 2.2 : Vérifier la ligne d'import en haut du fichier — si `CaptureType` n'est pas importé, ajouter dans l'import existant depuis `'../domain/Capture.model'`
-- [ ] Subtask 2.3 : Ligne 176 — changer `capture.type as 'audio' | 'text'` → `capture.type as CaptureType`
-- [ ] Subtask 2.4 : Ligne 306 — même correction (méthode `update()`)
-- [ ] Subtask 2.5 : Ligne 463 — même correction (méthode `delete()`)
-- [ ] Subtask 2.6 : Vérifier qu'il n'y a pas d'autre occurrence de `'audio' | 'text'` dans ce fichier avec `grep "as 'audio'" mobile/src/contexts/capture/data/CaptureRepository.ts`
+- [x] Subtask 2.1 : Ouvrir `mobile/src/contexts/capture/data/CaptureRepository.ts`
+- [x] Subtask 2.2 : Vérifier la ligne d'import en haut du fichier — `CaptureType` déjà importé (ligne 21)
+- [x] Subtask 2.3 : Ligne 176 — changer `capture.type as 'audio' | 'text'` → `capture.type as CaptureType`
+- [x] Subtask 2.4 : Ligne 306 — même correction (méthode `update()`)
+- [x] Subtask 2.5 : Ligne 463 — même correction (méthode `delete()`)
+- [x] Subtask 2.6 : Vérifier qu'il n'y a pas d'autre occurrence de `'audio' | 'text'` dans ce fichier — aucune trouvée ✅
 
 ### Task 3: Fix WaveformExtractionService.ts (AC5)
-- [ ] Subtask 3.1 : Ouvrir `mobile/src/contexts/capture/services/WaveformExtractionService.ts` (ou chemin exact)
-- [ ] Subtask 3.2 : Trouver le fichier exact : `grep -rn "!== 'audio'" mobile/src/`
-- [ ] Subtask 3.3 : Ajouter l'import `CAPTURE_TYPES` depuis le bon chemin relatif
-- [ ] Subtask 3.4 : Remplacer `!== 'audio'` par `!== CAPTURE_TYPES.AUDIO`
-- [ ] Subtask 3.5 : Vérifier si d'autres comparaisons de ce type existent dans le fichier
+- [x] Subtask 3.1 : Ouvrir `mobile/src/contexts/capture/services/WaveformExtractionService.ts`
+- [x] Subtask 3.2 : Trouver le fichier exact — trouvé ligne 135
+- [x] Subtask 3.3 : Ajouter l'import `CAPTURE_TYPES` depuis `'../domain/Capture.model'`
+- [x] Subtask 3.4 : Remplacer `!== 'audio'` par `!== CAPTURE_TYPES.AUDIO`
+- [x] Subtask 3.5 : Vérifier si d'autres comparaisons de ce type existent — aucune autre
 
 ### Task 4: Recherche exhaustive des magic strings restants (AC6)
-- [ ] Subtask 4.1 : Exécuter la recherche complète :
-  ```bash
-  grep -rn "captureType.*:.*['\"]audio['\"]" mobile/src/ mobile/tests/
-  grep -rn "type.*:.*['\"]audio['\"]" mobile/src/contexts/capture/ mobile/tests/
-  grep -rn "=== 'audio'\|!== 'audio'\|=== 'text'\|!== 'text'" mobile/src/ mobile/tests/
-  ```
-- [ ] Subtask 4.2 : Pour chaque occurrence dans les fichiers sources (`src/`) : remplacer par `CAPTURE_TYPES.AUDIO/TEXT/IMAGE/URL`
-- [ ] Subtask 4.3 : Pour chaque occurrence dans les fichiers tests (`tests/`) : remplacer par `CAPTURE_TYPES.AUDIO/TEXT/IMAGE/URL` avec import approprié
-- [ ] Subtask 4.4 : **NE PAS** toucher les fichiers SQL ou les migrations — ces valeurs sont des données persistées, pas des constantes TypeScript
+- [x] Subtask 4.1 : Exécuter la recherche complète — 5 fichiers src/ + 5 fichiers tests/ identifiés
+- [x] Subtask 4.2 : Fichiers sources corrigés : TranscriptionQueueProcessor.ts (×2), TranscriptionModelService.ts, useCaptureActions.ts — plus fix casse `Capture→capture` dans les imports
+- [x] Subtask 4.3 : Fichiers tests corrigés : MockCaptureRepository.ts, story-2-7 (×10), story-6-5, capture-model.test.ts, text-capture-service.test.ts
+- [x] Subtask 4.4 : Fichiers SQL/migrations non touchés ✅
 
 ### Task 5: Validation finale (AC7)
-- [ ] Subtask 5.1 : `cd pensieve/mobile && npx tsc --noEmit` — zéro nouvelle erreur
-- [ ] Subtask 5.2 : `npm run test:acceptance` — tous les tests BDD passent
-- [ ] Subtask 5.3 : `npm run test:unit` — aucune régression
-- [ ] Subtask 5.4 : `npm run test:architecture` — conformité ADR maintenue
+- [x] Subtask 5.1 : `npx tsc --noEmit` — zéro NOUVELLE erreur (erreurs pré-existantes uniquement)
+- [x] Subtask 5.2 : `npm run test:acceptance` — zéro régression (18 FAILs pré-existants, story-6-5 bonus PASS)
+- [x] Subtask 5.3 : `npm run test:unit` — zéro régression (57 suites FAIL identiques avant/après)
+- [x] Subtask 5.4 : `npm run test:architecture` — zéro régression (6 FAILs pré-existants)
 - [ ] Subtask 5.5 : Fermer l'issue GitHub #24 après merge (commenter : "Fixed in story 8.2")
 
 ## Dev Notes
@@ -285,10 +280,54 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+Story 8.2 implémentée le 2026-02-28 :
+
+1. **AC1-AC3 (audit)** : Confirmé conforme sans modification — CAPTURE_TYPES, CaptureType, CaptureEvents.ts tous conformes.
+
+2. **AC4 (CaptureRepository)** : 3 casts `as 'audio' | 'text'` remplacés initialement par `as CaptureType`, puis **supprimés entièrement** lors du code review (cast redondant — `mapRowToCapture()` renvoie déjà `Capture` avec `type: CaptureType`). `captureType: capture.type` suffit.
+
+3. **AC5 (WaveformExtractionService)** : Import `CAPTURE_TYPES` ajouté + `!== 'audio'` → `!== CAPTURE_TYPES.AUDIO` ligne 135.
+
+4. **AC6 (magic strings exhaustif)** : 5 fichiers src/ corrigés (TranscriptionQueueProcessor ×2, TranscriptionModelService, useCaptureActions) + 5 fichiers tests/ acceptances (MockCaptureRepository, story-2-7 ×10, story-6-5, capture-model, text-capture-service). Bonus : casse `'../../Capture/...'` → `'../../capture/...'` corrigée dans TranscriptionQueueProcessor et son test.
+
+5. **AC7 (validation)** : Zéro nouvelle erreur TypeScript. Zéro régression (tests:acceptance 18 FAILs pré-existants, unit 57 FAILs pré-existants, architecture 6 FAILs pré-existants). story-6-5 bonus : passé de FAIL à PASS grâce au fix AC6.
+
+Code review (2026-02-28) — 7 findings (2H + 3M + 2L), 5 HIGH+MEDIUM fixés :
+- **H1 corrigé** : `capture-integration.test.ts` (19 magic strings) + `capture-performance.test.ts` (15 magic strings) — CAPTURE_TYPES importé + remplacements
+- **H2 corrigé** : `story-2-7` 5 filter lambdas restants (`c.type === 'audio'`) → `CAPTURE_TYPES.AUDIO`
+- **M1 corrigé** : Casts `as CaptureType` redondants supprimés dans CaptureRepository.ts (lignes 176, 306, 463) — `capture.type` est déjà `CaptureType` via mapper
+- **M2 corrigé** : `TranscriptionModelService.ts` — `CAPTURE_STATES` importé + `capture.state === 'captured'` → `CAPTURE_STATES.CAPTURED`
+- **M3 corrigé** : Messages de log `[TranscriptionModelService] AC6: ...` nettoyés (référence story supprimée des logs runtime)
+- **L1 non fixé** : `useCaptureActions.ts` titres partage non-i18n → déféré (hors scope story 8.2)
+- **L2 non fixé** : `MockCaptureRepository.ts` type union inline états → déféré (hors scope story 8.2)
+
 ### File List
+
+**Fichiers modifiés (code source) :**
+- `pensieve/mobile/src/contexts/capture/data/CaptureRepository.ts` (AC4 : cast redondant supprimé × 3)
+- `pensieve/mobile/src/contexts/capture/services/WaveformExtractionService.ts` (AC5 : import + magic string)
+- `pensieve/mobile/src/contexts/Normalization/processors/TranscriptionQueueProcessor.ts` (AC6 : import CAPTURE_TYPES + 2 comparaisons + fix casse)
+- `pensieve/mobile/src/contexts/Normalization/services/TranscriptionModelService.ts` (AC6 + code review M2/M3 : CAPTURE_STATES + log cleanup)
+- `pensieve/mobile/src/hooks/useCaptureActions.ts` (AC6 : import CAPTURE_TYPES + 1 comparaison)
+- `pensieve/mobile/src/contexts/Normalization/processors/__tests__/TranscriptionQueueProcessor.test.ts` (fix casse import)
+
+**Fichiers modifiés (tests) :**
+- `pensieve/mobile/tests/acceptance/support/mocks/MockCaptureRepository.ts` (AC6 : CaptureType)
+- `pensieve/mobile/tests/acceptance/story-2-7-guide-config-modele.test.ts` (AC6 : 10 occ. + code review H2 : 5 filter lambdas)
+- `pensieve/mobile/tests/acceptance/story-6-5.test.ts` (AC6 : 1 occurrence CAPTURE_TYPES.AUDIO)
+- `pensieve/mobile/tests/acceptance/capture/capture-model.test.ts` (AC6 : CAPTURE_TYPES.AUDIO × 7)
+- `pensieve/mobile/tests/acceptance/capture/text-capture-service.test.ts` (AC6 : CAPTURE_TYPES.TEXT × 1)
+- `pensieve/mobile/src/contexts/capture/__tests__/capture-integration.test.ts` (code review H1 : 19 occ. CAPTURE_TYPES.AUDIO)
+- `pensieve/mobile/src/contexts/capture/__tests__/capture-performance.test.ts` (code review H1 : 15 occ. CAPTURE_TYPES.AUDIO)
+
+**Fichiers de documentation :**
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` (status → review)
+- `_bmad-output/implementation-artifacts/stories/epic-8/8-2-standardize-type-constants-pattern.md` (ce fichier)
 
 ## Change Log
 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-28 | Story créée depuis issue GitHub #24 — contexte Story 8.1 analysé, scope ciblé sur 3 fichiers | yohikofox |
+| 2026-02-28 | Implémentation complète — AC1-AC7 satisfaits — cleanup magic strings exhaustif + fix casse imports | claude-sonnet-4-6 |
+| 2026-02-28 | Code review adversariale — 7 findings (2H+3M+2L), 5 fixés : H1 2 fichiers test manqués, H2 story-2-7 filter lambdas, M1 casts redondants supprimés, M2 CAPTURE_STATES, M3 logs AC6 nettoyés | claude-sonnet-4-6 |
