@@ -85,60 +85,60 @@ development_status:
   epic-4-retrospective: optional
 
   # Epic 5: Gestion des Actions (Tab Actions) (4 stories)
-  epic-5: done  # All 4 stories completed with code reviews (2026-02-06)
-  5-1-affichage-inline-des-todos-dans-le-feed: done  # Code review completed: 33/51 unit tests passing (64.7%), 11/11 BDD tests passing (100%), component verified manually
-  5-2-tab-actions-centralise: done  # Code review completed: 13/14 issues fixed (93%). 39 tests passing (9+4+10+8+8 BDD). AC1-AC8 fully implemented. Performance optimized.
-  5-3-filtres-et-tri-des-actions: done  # Code review completed: 13 issues found (4 HIGH + 6 MEDIUM + 3 LOW), 10/10 HIGH+MEDIUM fixed. 71 unit tests + 10 BDD scenarios. All AC1-AC10 implemented. Critical bugs fixed: findAllWithSource, AsyncStorage rollback, performance optimization.
-  5-4-completion-et-navigation-des-actions: done  # Code review completed: 14 issues found (4 HIGH + 6 MEDIUM + 4 LOW), 9/14 fixed (64%). Error handling, validation, race conditions, animation lifecycle all improved. AC8 partially implemented (params ready, visual highlights deferred). 3 BDD tests passing (AC1, AC2, AC10).
+  epic-5: done # All 4 stories completed with code reviews (2026-02-06)
+  5-1-affichage-inline-des-todos-dans-le-feed: done # Code review completed: 33/51 unit tests passing (64.7%), 11/11 BDD tests passing (100%), component verified manually
+  5-2-tab-actions-centralise: done # Code review completed: 13/14 issues fixed (93%). 39 tests passing (9+4+10+8+8 BDD). AC1-AC8 fully implemented. Performance optimized.
+  5-3-filtres-et-tri-des-actions: done # Code review completed: 13 issues found (4 HIGH + 6 MEDIUM + 3 LOW), 10/10 HIGH+MEDIUM fixed. 71 unit tests + 10 BDD scenarios. All AC1-AC10 implemented. Critical bugs fixed: findAllWithSource, AsyncStorage rollback, performance optimization.
+  5-4-completion-et-navigation-des-actions: done # Code review completed: 14 issues found (4 HIGH + 6 MEDIUM + 4 LOW), 9/14 fixed (64%). Error handling, validation, race conditions, animation lifecycle all improved. AC8 partially implemented (params ready, visual highlights deferred). 3 BDD tests passing (AC1, AC2, AC10).
   epic-5-retrospective: optional
 
   # Epic 6: Synchronisation Multi-Device (4 stories)
   epic-6: in-progress
   6-1-infrastructure-de-synchronisation-watermelondb: done
-  6-2-synchronisation-local-cloud: done  # ✅ Complete: 127/127 tests, code review done, all AC satisfied
+  6-2-synchronisation-local-cloud: done # ✅ Complete: 127/127 tests, code review done, all AC satisfied
   6-3-synchronisation-cloud-local: done
-  6-4-indicateurs-de-statut-de-synchronisation: done  # ✅ Code review: 9/9 fixes (4 HIGH + 5 MEDIUM). Badge AC6 intégré, AC9 modal amélioré, RefreshControl corrigé, ADR-023 conforme. 7/7 BDD tests.
+  6-4-indicateurs-de-statut-de-synchronisation: done # ✅ Code review: 9/9 fixes (4 HIGH + 5 MEDIUM). Badge AC6 intégré, AC9 modal amélioré, RefreshControl corrigé, ADR-023 conforme. 7/7 BDD tests.
   epic-6-retrospective: optional
 
   # Epic 7: Support & Observability (3 stories - Support tools + DevTools)
   epic-7: in-progress
-  7-1-support-mode-avec-permissions-backend: done  # Backend: 13 unit tests, BDD tests created. Mobile: 35 unit tests (repository, service, store). UI Settings conditional display implemented.
-  7-2-logs-devtools-rotation-fifo: done  # Issue GitHub #10 — code review fixes appliqués
-  7-3-llm-logs-analysis-github-issues: done  # Issue GitHub #17 — code review fixes appliqués (H1 Singleton LLM, H2 BDD AC6+AC7, H3 DI SettingsScreen, M4 timeout, M5 coverage, M6 dead code, M7 is:open)
+  7-1-support-mode-avec-permissions-backend: done # Backend: 13 unit tests, BDD tests created. Mobile: 35 unit tests (repository, service, store). UI Settings conditional display implemented.
+  7-2-logs-devtools-rotation-fifo: done # Issue GitHub #10 — code review fixes appliqués
+  7-3-llm-logs-analysis-github-issues: done # Issue GitHub #17 — code review fixes appliqués (H1 Singleton LLM, H2 BDD AC6+AC7, H3 DI SettingsScreen, M4 timeout, M5 coverage, M6 dead code, M7 is:open)
   epic-7-retrospective: optional
 
   # Epic 8: GitHub Issues Resolution (15 stories - Bug fixes + features from GitHub issues + Quick Wins)
   # Source: https://github.com/yohikofox/pensieve/issues
   # Référence issues fermées: _bmad-output/implementation-artifacts/github-issues-closed-reference.md
   # Quick wins ajoutés: 8-13, 8-14, 8-15 (discovery session power user 2026-02-17)
-  epic-8: in-progress  # Sprint immédiat: stories 8-1, 8-2, 8-3
-  8-1-fix-typescript-compilation-errors: done  # Issues #22, #21, #20, #19 - CRITIQUE
-  8-2-standardize-type-constants-pattern: done  # Issue #24 - HAUTE
-  8-3-fix-audio-trim-truncating-transcriptions: done  # Issue #16 - Code review: 5/8 fixes (H2+H3+M1+M2+M3). Test device 49s ✅. AC7 validé.
-  8-4-transcription-native-par-defaut: done  # Issue #12 - Code review: 6 issues H/M corrigées (AC2 robustesse, dead code, test dupliqué, error path tests, auteur)
-  8-5-guide-config-modele-si-absent: done  # Issue #2 - 5/5 BDD + 4/4 unit tests passent. hasLLMModelAvailable store + checkLLMModelAvailability hook + banner AnalysisCard + SettingsScreen label "Aucun modèle"
-  8-6-transcription-live-avec-waveform: done  # Issue #11 - Code review adversarial: 2H+4M corrigés (H1 subscription leak+stale ref, H2 BDD AC1, M1 cancel interface, M2 useCallback deps, M3 langue i18n, M4 saveError i18n). 8/8 BDD + 8/8 unit ✅
-  8-7-download-modeles-en-background: review  # Issue #18 - Story créée 2026-02-28
-  8-8-suggestion-suppression-modeles-inutilises: ready-for-dev  # Issue #8 - Story créée 2026-02-28
-  8-9-verification-maj-modeles: backlog  # Issue #6 - Backlog
-  8-10-ocr-manuscrit-capture-photo: backlog  # Issue #7 - Backlog
-  8-11-suppression-compte-avec-anonymisation: backlog  # Issue #5 - Backlog
-  8-12-export-rgpd-asynchrone: backlog  # Issue #4 - Backlog
+  epic-8: in-progress # Sprint immédiat: stories 8-1, 8-2, 8-3
+  8-1-fix-typescript-compilation-errors: done # Issues #22, #21, #20, #19 - CRITIQUE
+  8-2-standardize-type-constants-pattern: done # Issue #24 - HAUTE
+  8-3-fix-audio-trim-truncating-transcriptions: done # Issue #16 - Code review: 5/8 fixes (H2+H3+M1+M2+M3). Test device 49s ✅. AC7 validé.
+  8-4-transcription-native-par-defaut: done # Issue #12 - Code review: 6 issues H/M corrigées (AC2 robustesse, dead code, test dupliqué, error path tests, auteur)
+  8-5-guide-config-modele-si-absent: done # Issue #2 - 5/5 BDD + 4/4 unit tests passent. hasLLMModelAvailable store + checkLLMModelAvailability hook + banner AnalysisCard + SettingsScreen label "Aucun modèle"
+  8-6-transcription-live-avec-waveform: done # Issue #11 - Code review adversarial: 2H+4M corrigés (H1 subscription leak+stale ref, H2 BDD AC1, M1 cancel interface, M2 useCallback deps, M3 langue i18n, M4 saveError i18n). 8/8 BDD + 8/8 unit ✅
+  8-7-download-modeles-en-background: done # Issue #18 - Story créée 2026-02-28
+  8-8-suggestion-suppression-modeles-inutilises: ready-for-dev # Issue #8 - Story créée 2026-02-28
+  8-9-verification-maj-modeles: backlog # Issue #6 - Backlog
+  8-10-ocr-manuscrit-capture-photo: backlog # Issue #7 - Backlog
+  8-11-suppression-compte-avec-anonymisation: backlog # Issue #5 - Backlog
+  8-12-export-rgpd-asynchrone: backlog # Issue #4 - Backlog
   # Quick Wins Tab Actions (source: discovery session power user 2026-02-17)
-  8-13-supprimer-une-tache: ready-for-dev  # Hard delete d'une tâche (swipe + bouton détail) - Quick Win
-  8-14-abandonner-une-tache: ready-for-dev  # État sémantique "abandonné" (soft state, historique préservé) - Quick Win
-  8-15-priorisation-visuelle-des-taches: ready-for-dev  # Highlights couleur (retard/prioritaire/approchant/normal) - Quick Win
+  8-13-supprimer-une-tache: ready-for-dev # Hard delete d'une tâche (swipe + bouton détail) - Quick Win
+  8-14-abandonner-une-tache: ready-for-dev # État sémantique "abandonné" (soft state, historique préservé) - Quick Win
+  8-15-priorisation-visuelle-des-taches: ready-for-dev # Highlights couleur (retard/prioritaire/approchant/normal) - Quick Win
   # Performance fix (analysis session 2026-02-18)
-  8-16-performance-latence-capture-screen: ready-for-dev  # Latence ~1s premier load CaptureScreen — viole NFR1 (<500ms)
+  8-16-performance-latence-capture-screen: ready-for-dev # Latence ~1s premier load CaptureScreen — viole NFR1 (<500ms)
   # Native transcription bug fix (2026-02-20) — BLOQUANT UX
-  8-20-fix-native-transcription-resultat-tronque: done  # NativeTranscriptionEngine écrase finalText au lieu d'accumuler — audio >15s tronqué au dernier segment
+  8-20-fix-native-transcription-resultat-tronque: done # NativeTranscriptionEngine écrase finalText au lieu d'accumuler — audio >15s tronqué au dernier segment
   # Feature flag Live transcription (2026-02-28) — gap identifié Story 8.6 sans feature flag
-  8-21-feature-flag-live-transcription: ready-for-dev  # Bouton Live OFF par défaut — feature flag live_transcription (pattern Epic 24)
+  8-21-feature-flag-live-transcription: ready-for-dev # Bouton Live OFF par défaut — feature flag live_transcription (pattern Epic 24)
   # Refactoring feature flags orientation capacité produit (2026-03-01)
-  8-22-refactoring-feature-flags-orientation-fonctionnalite: ready-for-dev  # news_tab→news, projects_tab→projects, capture_media_buttons→4 flags granulaires
+  8-22-refactoring-feature-flags-orientation-fonctionnalite: ready-for-dev # news_tab→news, projects_tab→projects, capture_media_buttons→4 flags granulaires
   # Email infrastructure (2026-02-18) — DÉPRÉCIÉE
   # ⚠️ Story 8-17 SUPERSEDÉE par Epic 15 (ADR-029 remplace Supabase Auth entièrement)
-  8-17-configuration-smtp-email-transactionnel: deprecated  # Supersedée par 15-1 — Better Auth + Resend remplace le bandaid SMTP Supabase
+  8-17-configuration-smtp-email-transactionnel: deprecated # Supersedée par 15-1 — Better Auth + Resend remplace le bandaid SMTP Supabase
   epic-8-retrospective: optional
 
   # ============================================================
@@ -151,13 +151,13 @@ development_status:
   # Format: item-id: status  # Description | Question clé | Horizon
 
   discovery:
-    D1-capture-multi-modale-photo-documents: open  # Attacher photo/document à une capture → enrichissement contexte → meilleure extraction | Quel job spécifique ? Photo whiteboard ? Doc administratif ? OCR → texte → digest ? | Horizon: V2
-    D2-apple-watch-android-wear: open  # Déclencher capture audio depuis la montre (sans sortir le téléphone) | Quelle surface ? Juste déclenchement ou aussi écoute transcription ? | Persona fit: Quick Capturer (Bastien en mouvement) | Horizon: V2/V3
-    D3-actualites-metier-contextualisees: open  # Agrégateur actus par domaine (normes BTP, tendances, etc.) | Feature générique ou vertical seulement ? → Interview 2-3 personas différents pour valider | Si générique: pertinente / Si vertical seulement: hors scope | Horizon: V2
-    D4-integrations-externes-crm-facturation: open  # Capture interaction client → création CRM auto ou déclenchement facturation | Quel trigger exact ? Quel CRM (HubSpot, Notion, autre) ? | Alignement: Intégrations V2+ déjà planifiées | Horizon: V2+
-    D5-companion-quotidien-vision: closed-as-philosophy  # "Pensine comme outil pilotage quotidien des pensées" | PAS une feature - philosophie produit | Action: Amender product brief (voir section Positioning Philosophy) | Horizon: N/A (transversal)
-    D6-priorite-url-capture-liens-web: defer-to-roadmap  # Donner priorité à capture URL dans la roadmap | Déjà planifié V1.5 (retiré MVP pour simplifier) | Action: Revoir priorité lors prochain sprint planning V1.5 | Horizon: V1.5
-    D7-github-issues-auto-depuis-logs: enrich-epic-7-3  # LLM local crée GitHub Issue depuis logs d'erreur | Déjà dans backlog Epic 7.3 "LLM logs analysis" | Action: Enrichir spec Epic 7.3 avec ce feedback | Horizon: Epic 7
+    D1-capture-multi-modale-photo-documents: open # Attacher photo/document à une capture → enrichissement contexte → meilleure extraction | Quel job spécifique ? Photo whiteboard ? Doc administratif ? OCR → texte → digest ? | Horizon: V2
+    D2-apple-watch-android-wear: open # Déclencher capture audio depuis la montre (sans sortir le téléphone) | Quelle surface ? Juste déclenchement ou aussi écoute transcription ? | Persona fit: Quick Capturer (Bastien en mouvement) | Horizon: V2/V3
+    D3-actualites-metier-contextualisees: open # Agrégateur actus par domaine (normes BTP, tendances, etc.) | Feature générique ou vertical seulement ? → Interview 2-3 personas différents pour valider | Si générique: pertinente / Si vertical seulement: hors scope | Horizon: V2
+    D4-integrations-externes-crm-facturation: open # Capture interaction client → création CRM auto ou déclenchement facturation | Quel trigger exact ? Quel CRM (HubSpot, Notion, autre) ? | Alignement: Intégrations V2+ déjà planifiées | Horizon: V2+
+    D5-companion-quotidien-vision: closed-as-philosophy # "Pensine comme outil pilotage quotidien des pensées" | PAS une feature - philosophie produit | Action: Amender product brief (voir section Positioning Philosophy) | Horizon: N/A (transversal)
+    D6-priorite-url-capture-liens-web: defer-to-roadmap # Donner priorité à capture URL dans la roadmap | Déjà planifié V1.5 (retiré MVP pour simplifier) | Action: Revoir priorité lors prochain sprint planning V1.5 | Horizon: V1.5
+    D7-github-issues-auto-depuis-logs: enrich-epic-7-3 # LLM local crée GitHub Issue depuis logs d'erreur | Déjà dans backlog Epic 7.3 "LLM logs analysis" | Action: Enrichir spec Epic 7.3 avec ce feedback | Horizon: Epic 7
 
   # Signal Persona (hors scope - pas de story)
   # Use case Artisan / Plombier patron :
@@ -168,19 +168,19 @@ development_status:
 
   # Epic 9: Advanced Notifications & UX (1 story)
   epic-9: backlog
-  9-1-notifications-clarification-audio-texte: backlog  # Issue GitHub #3
+  9-1-notifications-clarification-audio-texte: backlog # Issue GitHub #3
   epic-9-retrospective: optional
 
   # Epic 10: Monetization Strategy (1 story)
   epic-10: backlog
-  10-1-paywall-de-test-avec-tracking: backlog  # Issue GitHub #9
+  10-1-paywall-de-test-avec-tracking: backlog # Issue GitHub #9
   epic-10-retrospective: optional
 
   # Epic 11: Clean Code Enforcement (ADR-024) (2 stories - Technical Excellence)
   # Source: ADR-024 - Standards Clean Code Appliqués au Projet Pensieve
-  epic-11: backlog  # URGENT - Prochain sprint
-  11-1-setup-clean-code-enforcement-tooling: backlog  # 1 jour - ESLint, hooks, CI/CD
-  11-2-migrate-codebase-to-clean-code-standards-opportunistic: backlog  # 2-4 semaines - Migration continue
+  epic-11: backlog # URGENT - Prochain sprint
+  11-1-setup-clean-code-enforcement-tooling: backlog # 1 jour - ESLint, hooks, CI/CD
+  11-2-migrate-codebase-to-clean-code-standards-opportunistic: backlog # 2-4 semaines - Migration continue
   epic-11-retrospective: optional
 
   # Epic 12: Conformité ADR — Priorité Critique 🔴 (4 stories - ADR-026 Backend Data Model)
@@ -188,32 +188,32 @@ development_status:
   # Dépendances internes: 12-1 → 12-2 → 12-3 → 12-4 (séquentielles, ne pas paralléliser)
   # Périmètre: Backend uniquement (NestJS + TypeORM + PostgreSQL)
   epic-12: in-progress
-  12-1-backend-base-entity: done  # Story 12.1: Créer la BaseEntity Partagée Backend — ADR-026 R6. Code review adversariale: 8 findings (2H+3M+3L), 4 fixes: CREATE INDEX migration, 30 ESLint errors, barrel adopté, dead code supprimé.
-  12-2-backend-pk-domaine: done  # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine — ADR-026 R1 (uuidv7, FKs uuid). Code review: 7/7 fixes (3 HIGH + 3 MEDIUM + 1 LOW).
-  12-3-backend-soft-delete: done  # Story 12.3: Code review 2: 5 correctifs (H1 lastModifiedAt, H2 arch tests ADR-026 R4, H3 IdeaRepo BDD, M1 File List, M2 indexes). 5/5 BDD verts, 47/47 acceptance. Action item: AC4 HTTP + arch tests epic-13+.
-  12-4-backend-suppression-cascade: done  # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative — ADR-026 R3 (transaction explicite)
+  12-1-backend-base-entity: done # Story 12.1: Créer la BaseEntity Partagée Backend — ADR-026 R6. Code review adversariale: 8 findings (2H+3M+3L), 4 fixes: CREATE INDEX migration, 30 ESLint errors, barrel adopté, dead code supprimé.
+  12-2-backend-pk-domaine: done # Story 12.2: Remplacer @PrimaryGeneratedColumn par UUID Généré dans le Domaine — ADR-026 R1 (uuidv7, FKs uuid). Code review: 7/7 fixes (3 HIGH + 3 MEDIUM + 1 LOW).
+  12-3-backend-soft-delete: done # Story 12.3: Code review 2: 5 correctifs (H1 lastModifiedAt, H2 arch tests ADR-026 R4, H3 IdeaRepo BDD, M1 File List, M2 indexes). 5/5 BDD verts, 47/47 acceptance. Action item: AC4 HTTP + arch tests epic-13+.
+  12-4-backend-suppression-cascade: done # Story 12.4: Supprimer les Cascades TypeORM et Gérer la Suppression en Couche Applicative — ADR-026 R3 (transaction explicite)
   epic-12-retrospective: optional
 
   # Epic 13: Conformité ADR — Priorité Moyenne 🟡 (4 stories - ADR-021, ADR-023, ADR-026 R2/R5)
   # Source: Rapport d'audit architectural Winston — 2026-02-17 | epics.md#Epic-13
   # Dépendances: 13-2 et 13-3 bloquées sur Epic 12 (BaseEntity + UUID requis)
   # Périmètre: Mobile (13-1, 13-4) + Backend (13-2, 13-3)
-  epic-13: done  # Toutes les 4 stories ADR-021+ADR-023+ADR-026 R2/R5 complètes (2026-02-19)
-  13-1-di-lifecycle-transient-first: done  # Story 13.1: Code review OK — 2H+4M corrigés, 24 tests, BDD Gherkin, device Android validé
-  13-2-backend-statuts-referentiels: done  # Story 13.2: Code review OK — 1C+3H+2M corrigés, 7/7 BDD tests passent
-  13-3-backend-timestamptz: done  # Story 13.3: Code review OK — 2H+3M corrigés, 34 unit tests + 9 BDD passent
-  13-4-result-pattern-generalisation: done  # Story 13.4: Code review OK — 3H+4M corrigés, 6/6 BDD + 15/15 unit + 5/5 hook tests. retryable? ajouté, aliases Result<T>/ResultType, trimSilence supprimé, mock complété.
+  epic-13: done # Toutes les 4 stories ADR-021+ADR-023+ADR-026 R2/R5 complètes (2026-02-19)
+  13-1-di-lifecycle-transient-first: done # Story 13.1: Code review OK — 2H+4M corrigés, 24 tests, BDD Gherkin, device Android validé
+  13-2-backend-statuts-referentiels: done # Story 13.2: Code review OK — 1C+3H+2M corrigés, 7/7 BDD tests passent
+  13-3-backend-timestamptz: done # Story 13.3: Code review OK — 2H+3M corrigés, 34 unit tests + 9 BDD passent
+  13-4-result-pattern-generalisation: done # Story 13.4: Code review OK — 3H+4M corrigés, 6/6 BDD + 15/15 unit + 5/5 hook tests. retryable? ajouté, aliases Result<T>/ResultType, trimSilence supprimé, mock complété.
   epic-13-retrospective: optional
 
   # Epic 14: Conformité ADR — Priorité Basse 🟢 (4 stories - ADR-018, ADR-022, ADR-015, ADR-026 R7)
   # Source: Rapport d'audit architectural Winston — 2026-02-17 | epics.md#Epic-14
   # Traitement opportuniste — peut être parallélisé avec autres epics
   # Périmètre: Docs (14-1), Mobile (14-2), Backend (14-3), Convention (14-4)
-  epic-14: in-progress  # Opportuniste / sprint dette technique — stories prêtes, aucune dépendance bloquante
-  14-1-doc-claude-md-op-sqlite: done  # Story 14.1: Review pass 2 validé — 1M+2L corrigés (observe() sémantique + @nozbe legacy clarified), sprint-status synced
-  14-2-async-storage-audit: done  # Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques — ADR-022 (rapport audit, migration si violations)
-  14-3-observability-sentry-prometheus: done  # Story 14.3: Code review: 2H+4M+2L corrigés. SensitiveDataFilter redact, NestJS intégration tests, AC1 champs pino, LOG_FILE_PATH transport, mock RabbitMQ BDD. 11 unit + 4 intégration + 4 BDD.
-  14-4-renommage-owner-id: done  # Story 14.4: Décision et Migration owner_id (userId → owner_id) — ADR-026 R7 (Option A choisie — migration + rename complets)
+  epic-14: in-progress # Opportuniste / sprint dette technique — stories prêtes, aucune dépendance bloquante
+  14-1-doc-claude-md-op-sqlite: done # Story 14.1: Review pass 2 validé — 1M+2L corrigés (observe() sémantique + @nozbe legacy clarified), sprint-status synced
+  14-2-async-storage-audit: done # Story 14.2: Audit AsyncStorage — Vérifier l'Absence de Données Critiques — ADR-022 (rapport audit, migration si violations)
+  14-3-observability-sentry-prometheus: done # Story 14.3: Code review: 2H+4M+2L corrigés. SensitiveDataFilter redact, NestJS intégration tests, AC1 champs pino, LOG_FILE_PATH transport, mock RabbitMQ BDD. 11 unit + 4 intégration + 4 BDD.
+  14-4-renommage-owner-id: done # Story 14.4: Décision et Migration owner_id (userId → owner_id) — ADR-026 R7 (Option A choisie — migration + rename complets)
   epic-14-retrospective: optional
 
   # Epic 15: Migration Auth — Better Auth Self-Hosted + Resend (ADR-029 + ADR-030)
@@ -221,16 +221,16 @@ development_status:
   # Décision: Supprimer la dépendance Supabase Auth, risque paywall inacceptable
   # Dépendances: 15-1 → 15-2, 15-3 (serveur requis avant clients) | 15-2 et 15-3 parallélisables
   epic-15: in-progress
-  15-1-better-auth-server-nestjs-resend: done  # Code review: 9/9 fixes (2C+3H+3M+1L). Validation secret, pool limité, BDD 12/12 (register/login/logout/admin plugin ajoutés), File List complétée.
-  15-2-mobile-better-auth-client: done  # Code review: 8H+M fixes (DI bypass LoginScreen/ResetPassword, userId hardcodé, getSession cold start, new AuthTokenManager direct, async incohérence, expiresIn hardcodé, File List, IAuthService interface). 8/8 BDD verts.
-  15-3-web-admin-cleanup-supabase: done  # Code review: 3C+3H+2M fixes — tests cassés corrigés (updateFeatures mock), syncUsers tests ajoutés, docs Supabase→BetterAuth, File List complété. 25 tests verts (controller:8, rgpd:17). AC9 web login différé (pas de /dashboard encore)
+  15-1-better-auth-server-nestjs-resend: done # Code review: 9/9 fixes (2C+3H+3M+1L). Validation secret, pool limité, BDD 12/12 (register/login/logout/admin plugin ajoutés), File List complétée.
+  15-2-mobile-better-auth-client: done # Code review: 8H+M fixes (DI bypass LoginScreen/ResetPassword, userId hardcodé, getSession cold start, new AuthTokenManager direct, async incohérence, expiresIn hardcodé, File List, IAuthService interface). 8/8 BDD verts.
+  15-3-web-admin-cleanup-supabase: done # Code review: 3C+3H+2M fixes — tests cassés corrigés (updateFeatures mock), syncUsers tests ajoutés, docs Supabase→BetterAuth, File List complété. 25 tests verts (controller:8, rgpd:17). AC9 web login différé (pas de /dashboard encore)
   epic-15-retrospective: optional
 
   # Epic 16: UX Guards & Feedback (1 story - Processing state guards + visual feedback)
   # Source: Constat terrain — actions conflictuelles possibles pendant traitement
   # Périmètre: Mobile uniquement (React Native)
   epic-16: in-progress
-  16-1-capture-processing-guards-feedback: ready-for-dev  # Guards actions + feedback visuel pendant processing (liste + détail)
+  16-1-capture-processing-guards-feedback: ready-for-dev # Guards actions + feedback visuel pendant processing (liste + détail)
   epic-16-retrospective: optional
 
   # Epic 17: Chiffrement Côté Client Zero-Knowledge (4 stories)
@@ -239,10 +239,10 @@ development_status:
   # Dépendances internes: 17-1 → 17-2, 17-3, 17-4 (17.1 requis avant les autres)
   # Périmètre: Mobile (génération clé, chiffrement OP-SQLite, biométrie, récupération) + Backend (endpoint backup)
   epic-17: backlog
-  17-1-generation-cle-maitre-di: pending  # Refacto IEncryptionService + intégration DI + cycle de vie compte
-  17-2-chiffrement-donnees-op-sqlite: pending  # Chiffrement transparent raw_content/normalized_text/thoughts.content
-  17-3-protection-biometrique-cle: pending  # expo-local-authentication + IBiometricAuthService + Settings toggle
-  17-4-sauvegarde-recuperation-cle: pending  # PBKDF2 backup + POST/GET /users/me/key-backup + KeyRecoveryScreen
+  17-1-generation-cle-maitre-di: pending # Refacto IEncryptionService + intégration DI + cycle de vie compte
+  17-2-chiffrement-donnees-op-sqlite: pending # Chiffrement transparent raw_content/normalized_text/thoughts.content
+  17-3-protection-biometrique-cle: pending # expo-local-authentication + IBiometricAuthService + Settings toggle
+  17-4-sauvegarde-recuperation-cle: pending # PBKDF2 backup + POST/GET /users/me/key-backup + KeyRecoveryScreen
   epic-17-retrospective: optional
 
   # Epic 18: Remote LLM Model Configuration Service (5 stories)
@@ -252,11 +252,11 @@ development_status:
   # Dépendances internes: 18-1 → 18-2, 18-3 | 18-2 → 18-4 → 18-5
   # Note: 18-3 parallélisable avec 18-2 (toutes deux dépendent de 18-1)
   epic-18: backlog
-  18-1-modele-donnees-migrations-backend: backlog  # 3 entités TypeORM (LlmModelConfig, LlmAnalysisPrompt, LlmDeviceTargetingRule) + migration + seed initial
-  18-2-api-synchronisation-mobile: backlog  # POST /api/llm-config/sync — ciblage device + résolution prompts globaux/spécifiques
-  18-3-interface-admin: backlog  # CRUD admin LlmModelConfig + prompts + règles ciblage + page preview
-  18-4-service-sync-mobile: backlog  # DeviceInfoService + ModelConfigSyncService + tables OP-SQLite + fallback SmolLM 135M
-  18-5-integration-configs-remote-pipeline: backlog  # Refacto PostProcessingService + CaptureAnalysisService → configs remote + SamplingParams dynamiques
+  18-1-modele-donnees-migrations-backend: backlog # 3 entités TypeORM (LlmModelConfig, LlmAnalysisPrompt, LlmDeviceTargetingRule) + migration + seed initial
+  18-2-api-synchronisation-mobile: backlog # POST /api/llm-config/sync — ciblage device + résolution prompts globaux/spécifiques
+  18-3-interface-admin: backlog # CRUD admin LlmModelConfig + prompts + règles ciblage + page preview
+  18-4-service-sync-mobile: backlog # DeviceInfoService + ModelConfigSyncService + tables OP-SQLite + fallback SmolLM 135M
+  18-5-integration-configs-remote-pipeline: backlog # Refacto PostProcessingService + CaptureAnalysisService → configs remote + SamplingParams dynamiques
   epic-18-retrospective: optional
 
   # Epic 19: Delegation Core — Fondations, Intégrations, Trust Model (12 stories)
@@ -273,19 +273,19 @@ development_status:
   # Dépendances internes: 19-1 → 19-2 → 19-3, 19-4 → 19-5 → 19-6, 19-7 → 19-8, 19-9, 19-10 → 19-11 → 19-12
   # FRs couverts: FR37-FR49 (sauf FR41 → Epic 21)
   epic-19: backlog
-  19-1-refactoring-action-bc-task-bc: backlog           # Renommage Action BC → Task BC — vocabulaire DDD précis
-  19-2-knowledge-bc-emission-actions: backlog           # Knowledge BC: extractedActions dans CaptureDigested + fallback Todo
-  19-3-task-bc-materialisation-todo: backlog            # Task BC: subscription CaptureDigested → création Todo depuis Action
-  19-4-delegation-bc-execution-job: backlog             # Delegation BC: entité ExecutionJob + machine d'états + persistance OP-SQLite
-  19-5-trust-model-niveau-1: backlog                    # Trust model N1: validation obligatoire + ambiguïté bloquante (NFR19)
-  19-6-ui-actions-en-attente: backlog                   # UI: section "En attente de validation" dans onglet Actions + badge counter
-  19-7-oauth2-google-shared: backlog                    # OAuth2 Google scope partagé Calendar + Gmail
-  19-8-google-calendar-integration: backlog             # Google Calendar: créer un RDV depuis ExecutionJob validé
-  19-9-gmail-delayed-send: backlog                      # Gmail: rédiger + Delayed Send toujours actif (FR42, NFR21)
-  19-10-apple-calendar-reminders: backlog               # Apple Calendar + Apple Reminders via EventKit (iOS)
-  19-11-offline-queue: backlog                          # Offline queue: persistance + retry à la reconnexion (FR48, FR49, NFR20)
-  19-12-trust-model-niveaux-2-3: backlog                # Trust model N2 (délai de grâce) + N3 (fire & forget) + exception email
-  19-13-contact-resolution-pipeline: backlog            # ContactResolver: Google Contacts → local → ambiguous + notification utilisateur
+  19-1-refactoring-action-bc-task-bc: backlog # Renommage Action BC → Task BC — vocabulaire DDD précis
+  19-2-knowledge-bc-emission-actions: backlog # Knowledge BC: extractedActions dans CaptureDigested + fallback Todo
+  19-3-task-bc-materialisation-todo: backlog # Task BC: subscription CaptureDigested → création Todo depuis Action
+  19-4-delegation-bc-execution-job: backlog # Delegation BC: entité ExecutionJob + machine d'états + persistance OP-SQLite
+  19-5-trust-model-niveau-1: backlog # Trust model N1: validation obligatoire + ambiguïté bloquante (NFR19)
+  19-6-ui-actions-en-attente: backlog # UI: section "En attente de validation" dans onglet Actions + badge counter
+  19-7-oauth2-google-shared: backlog # OAuth2 Google scope partagé Calendar + Gmail
+  19-8-google-calendar-integration: backlog # Google Calendar: créer un RDV depuis ExecutionJob validé
+  19-9-gmail-delayed-send: backlog # Gmail: rédiger + Delayed Send toujours actif (FR42, NFR21)
+  19-10-apple-calendar-reminders: backlog # Apple Calendar + Apple Reminders via EventKit (iOS)
+  19-11-offline-queue: backlog # Offline queue: persistance + retry à la reconnexion (FR48, FR49, NFR20)
+  19-12-trust-model-niveaux-2-3: backlog # Trust model N2 (délai de grâce) + N3 (fire & forget) + exception email
+  19-13-contact-resolution-pipeline: backlog # ContactResolver: Google Contacts → local → ambiguous + notification utilisateur
   epic-19-retrospective: optional
 
   # Epic 20: Delegation Triggers — Widget, Back Tap, Siri, Google Actions (5 stories)
@@ -294,11 +294,11 @@ development_status:
   # Note: FR35 (Wake Word) → Spike dédié, hors scope de cet epic
   # Dépendances: Epic 19 (pipeline capture + delegation) | 20-1 → 20-2, 20-3, 20-4, 20-5
   epic-20: backlog
-  20-1-settings-declencheurs: backlog                   # Settings: panneau de configuration des modes de déclenchement (FR36)
-  20-2-widget-ios-android: backlog                      # Widget home screen + lock screen (FR34)
-  20-3-back-tap-quick-tap: backlog                      # Back Tap iOS + Quick Tap Pixel 9/10 Pro Phase 1 (FR33)
-  20-4-siri-app-intents: backlog                        # Siri App Intents Framework (FR32 — iOS)
-  20-5-google-app-actions: backlog                      # Google App Actions + Gemini Pixel (FR32 — Android)
+  20-1-settings-declencheurs: backlog # Settings: panneau de configuration des modes de déclenchement (FR36)
+  20-2-widget-ios-android: backlog # Widget home screen + lock screen (FR34)
+  20-3-back-tap-quick-tap: backlog # Back Tap iOS + Quick Tap Pixel 9/10 Pro Phase 1 (FR33)
+  20-4-siri-app-intents: backlog # Siri App Intents Framework (FR32 — iOS)
+  20-5-google-app-actions: backlog # Google App Actions + Gemini Pixel (FR32 — Android)
   epic-20-retrospective: optional
 
   # Epic 21: Delegation Messaging — Telegram (2 stories)
@@ -307,8 +307,8 @@ development_status:
   # Note: API Telegram Bot gratuite, pas d'OAuth, pas de rollback nécessaire
   # Dépendances: Epic 19 (ExecutionJob + offline queue)
   epic-21: backlog
-  21-1-telegram-bot-send: backlog                       # Telegram Bot: rédiger + envoyer depuis ExecutionJob validé (FR41)
-  21-2-telegram-erreurs-ambiguite: backlog              # Gestion erreurs + ambiguïté destinataire (NFR19)
+  21-1-telegram-bot-send: backlog # Telegram Bot: rédiger + envoyer depuis ExecutionJob validé (FR41)
+  21-2-telegram-erreurs-ambiguite: backlog # Gestion erreurs + ambiguïté destinataire (NFR19)
   epic-21-retrospective: optional
 
   # SPIKE: Wake Word "Hey Pensine" — R&D Custom DSP
@@ -326,7 +326,7 @@ development_status:
   # Statut "Sign in with ChatGPT": Feature OFFICIELLE OpenAI (juin 2025) — OAuth2 PKCE — enregistrement via formulaire développeur requis
   # 22-1 est un spike time-boxé (2-3 jours) avant toute implémentation
   epic-22: backlog
-  22-1-spike-signin-with-chatgpt-oauth: not-started   # Spike: valider OAuth "Sign in with ChatGPT" + portée tokens + adaptation React Native
+  22-1-spike-signin-with-chatgpt-oauth: not-started # Spike: valider OAuth "Sign in with ChatGPT" + portée tokens + adaptation React Native
 
   # Epic 23: Platform Extensions & Smart Integrations — Exploration backlog
   # Source: Session exploration 2026-02-26
@@ -334,36 +334,36 @@ development_status:
   # Priorité: Post-Epic 19 (Delegation BC doit être opérationnel pour la plupart des capabilities)
   # Android-specific: 23-1 (Notification Listener), 23-4 (Quick Settings), 23-5 (Android Auto), 23-6 (Wear OS)
   epic-23: backlog
-  23-1-notification-listener: backlog          # Android NotificationListenerService — capture passive depuis autres apps
-  23-2-camera-multimodal-capture: backlog      # Camera + ML Kit on-device — cartes de visite, tableaux blancs, reçus
-  23-3-location-geofencing: backlog            # Geofencing + enrichissement contextuel des captures avec localisation
-  23-4-quick-settings-tile: backlog            # Tuile Quick Settings Android — capture 1-tap depuis panneau notifications
-  23-5-android-auto: backlog                   # Capture vocale + validation ExecutionJobs mains-libres en voiture
-  23-6-wear-os: backlog                        # Capture + validation ExecutionJobs depuis montre Android
-  23-7-whatsapp-integration: backlog           # Capability WhatsAppMessage — deep link ou Business API (futur)
-  23-8-home-assistant-integration: backlog     # Capability HomeAutomation — API REST HA locale, zero cloud
-  23-9-notion-obsidian-sync: backlog           # Sync ideas → Notion API ou Obsidian via Google Drive
-  23-10-webhook-make-ifttt: backlog            # Capability WebhookSend — bridge universel Make/IFTTT/Zapier/n8n
-  23-11-google-drive-docs: backlog             # Capabilities DriveDocCreate + DriveFileShare — scope drive.file
+  23-1-notification-listener: backlog # Android NotificationListenerService — capture passive depuis autres apps
+  23-2-camera-multimodal-capture: backlog # Camera + ML Kit on-device — cartes de visite, tableaux blancs, reçus
+  23-3-location-geofencing: backlog # Geofencing + enrichissement contextuel des captures avec localisation
+  23-4-quick-settings-tile: backlog # Tuile Quick Settings Android — capture 1-tap depuis panneau notifications
+  23-5-android-auto: backlog # Capture vocale + validation ExecutionJobs mains-libres en voiture
+  23-6-wear-os: backlog # Capture + validation ExecutionJobs depuis montre Android
+  23-7-whatsapp-integration: backlog # Capability WhatsAppMessage — deep link ou Business API (futur)
+  23-8-home-assistant-integration: backlog # Capability HomeAutomation — API REST HA locale, zero cloud
+  23-9-notion-obsidian-sync: backlog # Sync ideas → Notion API ou Obsidian via Google Drive
+  23-10-webhook-make-ifttt: backlog # Capability WebhookSend — bridge universel Make/IFTTT/Zapier/n8n
+  23-11-google-drive-docs: backlog # Capabilities DriveDocCreate + DriveFileShare — scope drive.file
   # — Intelligence proactive & apprentissage —
-  23-12-project-clustering: backlog            # Regroupement sémantique des captures en projets émergents (embeddings on-device)
-  23-13-meeting-prep-assistant: backlog        # Brief contextuel auto avant chaque réunion Google Calendar
-  23-14-follow-up-tracker: backlog             # Détection d'engagements non suivis dans les captures passées
-  23-15-daily-briefing: backlog                # Résumé matinal automatique : todos, réunions, ExecutionJobs, TTS
-  23-22-recurring-pattern-automation: backlog  # Détection de todos récurrentes → proposition d'automatisation
-  23-23-accountability-nudges: backlog         # Nudges contextuels (créneau libre, fin de journée) — pas de rappels bêtes
+  23-12-project-clustering: backlog # Regroupement sémantique des captures en projets émergents (embeddings on-device)
+  23-13-meeting-prep-assistant: backlog # Brief contextuel auto avant chaque réunion Google Calendar
+  23-14-follow-up-tracker: backlog # Détection d'engagements non suivis dans les captures passées
+  23-15-daily-briefing: backlog # Résumé matinal automatique : todos, réunions, ExecutionJobs, TTS
+  23-22-recurring-pattern-automation: backlog # Détection de todos récurrentes → proposition d'automatisation
+  23-23-accountability-nudges: backlog # Nudges contextuels (créneau libre, fin de journée) — pas de rappels bêtes
   # — Nouvelles modalités de capture —
-  23-16-email-action-extraction: backlog       # Gmail read → extraction d'actions attendues de l'utilisateur
-  23-17-url-web-capture: backlog               # Partager une URL → scraping + digest LLM → capture actionnable
-  23-18-pdf-document-analysis: backlog         # Partager un PDF → extraction dates, montants, actions (ML Kit)
-  23-21-speaker-diarization: backlog           # Diarization multi-speaker → attribution actions par locuteur (spike requis)
+  23-16-email-action-extraction: backlog # Gmail read → extraction d'actions attendues de l'utilisateur
+  23-17-url-web-capture: backlog # Partager une URL → scraping + digest LLM → capture actionnable
+  23-18-pdf-document-analysis: backlog # Partager un PDF → extraction dates, montants, actions (ML Kit)
+  23-21-speaker-diarization: backlog # Diarization multi-speaker → attribution actions par locuteur (spike requis)
   # — Intelligence sur les données —
-  23-19-semantic-search: backlog               # Recherche sémantique dans l'historique (embeddings + sqlite-vec)
-  23-20-action-dependency-chaining: backlog    # Détection de séquences → Todos ordonnées avec dépendances
-  23-26-multi-capture-synthesis: backlog       # Synthèse N captures → document structuré → export Notion/GDocs
+  23-19-semantic-search: backlog # Recherche sémantique dans l'historique (embeddings + sqlite-vec)
+  23-20-action-dependency-chaining: backlog # Détection de séquences → Todos ordonnées avec dépendances
+  23-26-multi-capture-synthesis: backlog # Synthèse N captures → document structuré → export Notion/GDocs
   # — Intégrations dev & veille —
-  23-24-rss-web-monitoring: backlog            # Veille automatique RSS/web → captures filtrées par pertinence LLM
-  23-25-github-linear-sync: backlog            # Issues assignées GitHub/Linear → Todos bidirectionnels
+  23-24-rss-web-monitoring: backlog # Veille automatique RSS/web → captures filtrées par pertinence LLM
+  23-25-github-linear-sync: backlog # Issues assignées GitHub/Linear → Todos bidirectionnels
 
   # Epic 24: Beta Distribution Readiness — Feature Flag System + First Launch Automation
   # Source: Session architecture 2026-02-26 — préparation distribution app (frère)
@@ -374,10 +374,10 @@ development_status:
   # Dépendances: Epic 7 (UserFeaturesService existant — remplacé), Epic 1 (auth)
   # Priorité: Avant distribution externe
   epic-24: in-progress
-  24-1-feature-flag-system-backend: done  # Backend: tables features + assignations + FeatureResolutionService (deny-wins) + migration legacy columns
-  24-2-feature-flag-admin-api-ui: done    # Admin API + UI: gestion catalogue features + assignations user/role/permission + trace résolution
-  24-3-feature-flag-mobile-adaptation: done  # Mobile: UserFeatures dynamique + settingsStore refactoré + UI gating tabs + capture media buttons. Code review: 7/7 fixes (1C+3H+3M) — legacy import, isDataMiningEnabled, réactivité features, forceRefresh offline, test toggleDebugMode, commentaires AC.
-  24-4-first-launch-pixel-defaults: done  # Mobile: FirstLaunchInitializer + détection Pixel 9+ + native recognition + Gemma 3 1B + auto-transcription
+  24-1-feature-flag-system-backend: done # Backend: tables features + assignations + FeatureResolutionService (deny-wins) + migration legacy columns
+  24-2-feature-flag-admin-api-ui: done # Admin API + UI: gestion catalogue features + assignations user/role/permission + trace résolution
+  24-3-feature-flag-mobile-adaptation: done # Mobile: UserFeatures dynamique + settingsStore refactoré + UI gating tabs + capture media buttons. Code review: 7/7 fixes (1C+3H+3M) — legacy import, isDataMiningEnabled, réactivité features, forceRefresh offline, test toggleDebugMode, commentaires AC.
+  24-4-first-launch-pixel-defaults: done # Mobile: FirstLaunchInitializer + détection Pixel 9+ + native recognition + Gemma 3 1B + auto-transcription
   epic-24-retrospective: optional
 
   # Epic 25: UX Onboarding & Demo Tour (3 stories)
@@ -388,8 +388,7 @@ development_status:
   #            + Backend Identity (3 colonnes User entity + PATCH /api/users/:userId/tour)
   # Dépendances internes: 25-1 → 25-2 → 25-3
   epic-25: in-progress
-  25-1-tour-demo-ui-overlay-spotlight: ready-for-dev     # TourProvider + SpotlightOverlay custom + steps Capture + CaptureDetail
-  25-2-tour-demo-persistance-sync: ready-for-dev          # Persistance locale OP-SQLite + sync backend (User entity + endpoint)
-  25-3-tour-demo-settings-retrigger: ready-for-dev        # Re-déclenchement manuel depuis Settings + tourVersion
+  25-1-tour-demo-ui-overlay-spotlight: ready-for-dev # TourProvider + SpotlightOverlay custom + steps Capture + CaptureDetail
+  25-2-tour-demo-persistance-sync: ready-for-dev # Persistance locale OP-SQLite + sync backend (User entity + endpoint)
+  25-3-tour-demo-settings-retrigger: ready-for-dev # Re-déclenchement manuel depuis Settings + tourVersion
   epic-25-retrospective: optional
-
