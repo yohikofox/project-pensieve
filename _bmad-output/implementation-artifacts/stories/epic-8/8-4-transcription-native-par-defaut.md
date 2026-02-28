@@ -1,6 +1,6 @@
 # Story 8.4: Transcription Native par Défaut
 
-Status: ready-for-dev
+Status: done
 
 <!-- Validation optionnelle : run validate-create-story avant dev-story -->
 
@@ -87,90 +87,40 @@ Les utilisateurs existants (ceux qui ont déjà lancé l'app, donc `FIRST_LAUNCH
 
 ### Task 1: Modifier `TranscriptionEngineService.ts` — Nouveau défaut + Migration (AC1, AC2, AC4)
 
-- [ ] Subtask 1.1 : Ouvrir `mobile/src/contexts/Normalization/services/TranscriptionEngineService.ts`
-- [ ] Subtask 1.2 : Ajouter les constantes de migration après `STORAGE_KEY` :
+- [x] Subtask 1.1 : Ouvrir `mobile/src/contexts/Normalization/services/TranscriptionEngineService.ts`
+- [x] Subtask 1.2 : Ajouter les constantes de migration après `STORAGE_KEY` :
   ```typescript
   const STORAGE_KEY = '@pensieve/transcription_engine';
   const FIRST_LAUNCH_KEY = '@pensieve/first_launch_completed'; // Même valeur que FirstLaunchInitializer
   const MIGRATION_KEY = '@pensieve/transcription_default_migrated'; // Marquage one-time
   ```
-- [ ] Subtask 1.3 : Remplacer `getSelectedEngineType()` par la logique avec migration :
-  ```typescript
-  async getSelectedEngineType(): Promise<TranscriptionEngineType> {
-    try {
-      // Cas 1 : Préférence explicite déjà définie → retourner telle quelle
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      if (stored === 'native' || stored === 'whisper') {
-        this.currentEngineType = stored;
-        return stored;
-      }
-
-      // Cas 2 : Aucune préférence — vérifier si migration est nécessaire
-      const migrated = await AsyncStorage.getItem(MIGRATION_KEY);
-      if (!migrated) {
-        // Première fois après story 8.4 — détecter si utilisateur existant
-        const firstLaunchDone = await AsyncStorage.getItem(FIRST_LAUNCH_KEY);
-        if (firstLaunchDone === 'true') {
-          // Utilisateur existant sans préférence → préserver 'whisper' implicite
-          await AsyncStorage.setItem(STORAGE_KEY, 'whisper');
-          await AsyncStorage.setItem(MIGRATION_KEY, 'done');
-          this.currentEngineType = 'whisper';
-          return 'whisper';
-        }
-        // Nouvel utilisateur → marquer migration done (FirstLaunchInitializer gère le reste)
-        await AsyncStorage.setItem(MIGRATION_KEY, 'done');
-      }
-    } catch (error) {
-      console.error('[TranscriptionEngineService] Failed to get preference:', error);
-    }
-    return 'native'; // Nouveau défaut : natif pour les nouveaux utilisateurs
-  }
-  ```
-- [ ] Subtask 1.4 : Mettre à jour le commentaire de la ligne `return 'native'` (était `return 'whisper'`)
-- [ ] Subtask 1.5 : Mettre à jour le commentaire JSDoc de `getSelectedEngineType()` pour refléter le nouveau comportement
+- [x] Subtask 1.3 : Remplacer `getSelectedEngineType()` par la logique avec migration
+- [x] Subtask 1.4 : Mettre à jour le commentaire de la ligne `return 'native'` (était `return 'whisper'`)
+- [x] Subtask 1.5 : Mettre à jour le commentaire JSDoc de `getSelectedEngineType()` pour refléter le nouveau comportement
 
 ### Task 2: Modifier `FirstLaunchInitializer.ts` — Étendre à tous les appareils (AC3)
 
-- [ ] Subtask 2.1 : Ouvrir `mobile/src/contexts/identity/services/FirstLaunchInitializer.ts`
-- [ ] Subtask 2.2 : Modifier le bloc `run()` pour appeler `setSelectedEngineType('native')` pour tous les appareils :
-  ```typescript
-  const npuInfo = await this.npuService.detectNPU();
-  if (this.isPixel9Plus(npuInfo)) {
-    // Pixel 9+ : native + Gemma 3 1B (comportement story 24.4 inchangé)
-    await this.engineService.setSelectedEngineType('native');
-    useSettingsStore.getState().setAutoTranscription(true);
-    await this.downloadGemmaWithFallback(onProgress);
-  } else {
-    // Tous les autres appareils : native par défaut (story 8.4)
-    await this.engineService.setSelectedEngineType('native');
-  }
-  ```
-- [ ] Subtask 2.3 : Vérifier que `finally` persiste encore `FIRST_LAUNCH_KEY = 'true'` (comportement existant préservé)
+- [x] Subtask 2.1 : Ouvrir `mobile/src/contexts/identity/services/FirstLaunchInitializer.ts`
+- [x] Subtask 2.2 : Modifier le bloc `run()` pour appeler `setSelectedEngineType('native')` pour tous les appareils
+- [x] Subtask 2.3 : Vérifier que `finally` persiste encore `FIRST_LAUNCH_KEY = 'true'` (comportement existant préservé)
 
 ### Task 3: Tests unitaires `TranscriptionEngineService` (AC6)
 
-- [ ] Subtask 3.1 : Ouvrir ou créer `mobile/src/contexts/Normalization/services/__tests__/TranscriptionEngineService.test.ts`
-- [ ] Subtask 3.2 : Ajouter/mettre à jour les tests pour couvrir les 3 cas de `getSelectedEngineType()` :
-  ```
-  Cas 1 — Préférence explicite 'native' → retourne 'native'
-  Cas 2 — Préférence explicite 'whisper' → retourne 'whisper'
-  Cas 3 — Aucune préférence, FIRST_LAUNCH_KEY = 'true', migration non faite → retourne 'whisper' (migration)
-  Cas 4 — Aucune préférence, FIRST_LAUNCH_KEY = null, migration non faite → retourne 'native'
-  Cas 5 — Aucune préférence, migration déjà faite → retourne 'native'
-  ```
-- [ ] Subtask 3.3 : Mocker `AsyncStorage` (pattern jest.mock existant dans le projet)
+- [x] Subtask 3.1 : Créer `mobile/src/contexts/Normalization/services/__tests__/TranscriptionEngineService.test.ts`
+- [x] Subtask 3.2 : Tests couvrant les 5 cas de `getSelectedEngineType()` — 5/5 passent
+- [x] Subtask 3.3 : AsyncStorage mocké (pattern jest.mock conforme au projet)
 
 ### Task 4: Tests unitaires `FirstLaunchInitializer` — Cas non-Pixel 9+ (AC3, AC6)
 
-- [ ] Subtask 4.1 : Ouvrir `mobile/src/contexts/identity/services/__tests__/FirstLaunchInitializer.test.ts`
-- [ ] Subtask 4.2 : Ajouter le test : "Non-Pixel 9+ device → setSelectedEngineType('native') called"
-- [ ] Subtask 4.3 : Vérifier que le test existant "Pixel 9+ → native + Gemma" passe toujours
+- [x] Subtask 4.1 : Ouvrir `mobile/src/contexts/identity/services/__tests__/FirstLaunchInitializer.test.ts`
+- [x] Subtask 4.2 : Ajouter test "Non-Pixel 9+ → setSelectedEngineType('native') appelé" — PASS
+- [x] Subtask 4.3 : Vérifier que le test "Pixel 9+ → native + Gemma" passe toujours — 16/16 passent
 
 ### Task 5: Tests d'intégration (AC6)
 
-- [ ] Subtask 5.1 : Exécuter `npm run test:unit` dans `pensieve/mobile/` — zéro régression
-- [ ] Subtask 5.2 : Exécuter `npm run test:acceptance` dans `pensieve/mobile/` — zéro régression
-- [ ] Subtask 5.3 : Exécuter `npm run test:architecture` — conformité ADR maintenue
+- [x] Subtask 5.1 : Exécuter `npm run test:unit` — aucune nouvelle régression (57/166 pre-existants)
+- [x] Subtask 5.2 : Exécuter `npm run test:acceptance` — amélioration : 18 échouent (était 19 avant story-24-4 fix)
+- [x] Subtask 5.3 : Exécuter `npm run test:architecture` — failures pre-existantes, aucune nouvelle violation
 
 ### Task 6: Fermeture issue (post-merge)
 
@@ -305,12 +255,34 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+Aucun blocage — implémentation directe conforme aux specs.
+
 ### Completion Notes List
 
+- **AC1** ✅ : `getSelectedEngineType()` retourne 'native' par défaut pour les nouveaux utilisateurs (pas de FIRST_LAUNCH_KEY) et après migration (MIGRATION_KEY = 'done')
+- **AC2** ✅ : Migration one-time silencieuse pour utilisateurs existants (FIRST_LAUNCH_KEY = 'true') → 'whisper' persisté + MIGRATION_KEY = 'done'. Robustesse : retourne 'whisper' même si setItem échoue (fix code-review H1)
+- **AC3** ✅ : `FirstLaunchInitializer.run()` appelle `setSelectedEngineType('native')` pour TOUS les nouveaux appareils (pas seulement Pixel 9+). Pixel 9+ : unchanged (native + auto-transcription + Gemma).
+- **AC4** ✅ : Préférence explicite existante (native ou whisper en AsyncStorage) retournée telle quelle sans modification
+- **AC5** ✅ : `TranscriptionEngineSettingsScreen.tsx` non modifié — UI existante fonctionnelle
+- **AC6** ✅ : 7 tests unitaires TranscriptionEngineService (7/7 — +2 tests erreur path post code-review), 15 tests unitaires FirstLaunchInitializer (15/15 — suppression doublon post code-review), 3 tests BDD story-24-4 (3/3) — tous verts
+- **Bonus** : Correction de la régression story-24-4 BDD (Scénario Samsung mis à jour pour AC3)
+- `FIRST_LAUNCH_KEY` dupliquée intentionnellement dans TranscriptionEngineService pour éviter dépendance circulaire Normalization → identity (conforme ADR-024)
+- `currentEngineType` propriété dead code supprimée post code-review (M1)
+
 ### File List
+
+- `pensieve/mobile/src/contexts/Normalization/services/TranscriptionEngineService.ts` — modifié (constantes migration + logique getSelectedEngineType)
+- `pensieve/mobile/src/contexts/identity/services/FirstLaunchInitializer.ts` — modifié (else branch pour non-Pixel 9+)
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/TranscriptionEngineService.test.ts` — créé (5 tests unitaires AC1-AC4)
+- `pensieve/mobile/src/contexts/identity/services/__tests__/FirstLaunchInitializer.test.ts` — modifié (test AC3 ajouté + Samsung test mis à jour)
+- `pensieve/mobile/tests/acceptance/features/story-24-4-first-launch.feature` — modifié (scénario Samsung → native par défaut)
+- `pensieve/mobile/tests/acceptance/story-24-4.test.ts` — modifié (step definition Samsung mis à jour pour AC3)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` — mis à jour (ready-for-dev → review)
 
 ## Change Log
 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-28 | Story créée depuis issue GitHub #12 — analyse complète du code existant (TranscriptionEngineService, FirstLaunchInitializer), stratégie migration one-time définie | yohikofox |
+| 2026-02-28 | Implémentation complète — TranscriptionEngineService (défaut 'native' + migration), FirstLaunchInitializer (else branch tous appareils), 5 tests unitaires TES + 1 test FLI, fix BDD story-24-4 Samsung scenario (AC3) | yohikofox |
+| 2026-02-28 | Code review — 6 issues HIGH/MEDIUM corrigées : fix AC2 robustesse (setItem.catch), dead code currentEngineType supprimé, test dupliqué FirstLaunchInitializer retiré, 2 tests erreur path ajoutés (7/7 TES, 15/15 FLI), auteur Change Log corrigé | yohikofox |
