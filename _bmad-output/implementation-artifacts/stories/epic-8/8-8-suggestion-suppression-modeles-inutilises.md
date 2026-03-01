@@ -261,7 +261,7 @@ Utilisateur :
 
 ### Task 6 : Mettre à jour les screens (AC4, AC5, AC6, AC7)
 
-- [ ] Subtask 6.1 : Dans `LLMSettingsScreen`, au montage et au focus :
+- [x] Subtask 6.1 : Dans `LLMSettingsScreen`, au montage et au focus :
   ```typescript
   useEffect(() => {
     const checkUnusedModels = async () => {
@@ -274,15 +274,15 @@ Utilisateur :
     checkUnusedModels();
   }, []);
   ```
-- [ ] Subtask 6.2 : Passer `unusedDays` à chaque `LLMModelCard` (0 si pas dans la liste unusedModels)
-- [ ] Subtask 6.3 : Implémenter `handleDeleteUnused(modelId)` :
+- [x] Subtask 6.2 : Passer `unusedDays` à chaque `LLMModelCard` (0 si pas dans la liste unusedModels)
+- [x] Subtask 6.3 : Implémenter `handleDeleteUnused(modelId)` :
   - Alert de confirmation : `Alert.alert("Supprimer le modèle ?", "...", [{text:"Annuler"}, {text:"Supprimer", onPress:...}])`
   - Si confirmé : `llmModelService.deleteModel(modelId)` (qui appellera `clearModelTracking` — Task 2.4)
   - Rafraîchir la liste des modèles
-- [ ] Subtask 6.4 : Implémenter `handleDismissUnused(modelId)` :
+- [x] Subtask 6.4 : Implémenter `handleDismissUnused(modelId)` :
   - `usageTrackingService.dismissSuggestion(modelId, 'llm')`
   - Retirer le modèle de `unusedLLMModels` (mise à jour état local)
-- [ ] Subtask 6.5 : Même logique dans `WhisperSettingsScreen` (avec `'whisper'` et `downloadedModelSizes`)
+- [x] Subtask 6.5 : Même logique dans `WhisperSettingsScreen` (avec `'whisper'` et `downloadedModelSizes`)
 
 ### Task 7 : Tests BDD (AC8)
 
@@ -619,6 +619,16 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+**Task 6 — Intégration screens `LLMSettingsScreen` + `WhisperSettingsScreen` (2026-03-01)**
+
+- `IModelUsageTrackingService` résolu via `container.resolve()` dans les deux screens (pattern `useMemo([])`)
+- `checkUnusedModels` / `checkUnusedWhisperModels` : `useCallback` stable + `useEffect([checkFn])` au montage, mis à jour aussi dans le listener AppState `'active'`
+- `handleDeleteUnused(modelId)` : ouvre `AlertDialog` (pattern `AlertDialog` du projet, pas `Alert.alert`) avec confirmation "Supprimer / Annuler"
+- `confirmDeleteUnused()` : appelle `deleteModel()` → `refreshModels()` → `checkUnusedModels()` → toast success/error
+- `handleDismissUnused(modelId)` : `dismissSuggestion('llm'|'whisper')` + retrait optimiste de `unusedLLMModels`/`unusedWhisperModels` (état local)
+- Props `unusedDays` / `onDeleteUnused` / `onDismissUnused` passées à tous les `LLMModelCard` (TPU + standard) et aux 5 `WhisperModelCard`
+- 11/11 tests `ModelUsageTrackingService` passent, 0 régression acceptance (18 failures pré-existantes confirmées)
+
 **Task 5 — Alerte visuelle `WhisperModelCard` (2026-03-01)**
 
 - 3 props optionnelles ajoutées à `WhisperModelCardProps` : `unusedDays?: number`, `onDeleteUnused?: () => void`, `onDismissUnused?: () => void` (Subtask 5.1 — cohérence avec LLMModelCard, backward compatible)
@@ -702,6 +712,10 @@ claude-sonnet-4-6
 **Fichiers modifiés (Task 5) :**
 - `pensieve/mobile/src/components/whisper/WhisperModelCard.tsx` — ajout props `unusedDays`/`onDeleteUnused`/`onDismissUnused`, couleurs `inactivityAlertBg`/`inactivityAlertBorderColor` theme-aware, bloc alerte inactivité conditionnel dans `status === 'ready'`, mise à jour `formatBytes` pour GB, 8 nouveaux styles
 
+**Fichiers modifiés (Task 6) :**
+- `pensieve/mobile/src/screens/settings/LLMSettingsScreen.tsx` — import `IModelUsageTrackingService`/`MODEL_INACTIVITY_THRESHOLD_DAYS`/`RepositoryResultType`, état `unusedLLMModels`/`showDeleteUnusedDialog`/`pendingDeleteModelId`, résolution `usageTrackingService` (Transient), `checkUnusedModels` au montage + AppState, `handleDeleteUnused`/`confirmDeleteUnused`/`handleDismissUnused`, props `unusedDays`/`onDeleteUnused`/`onDismissUnused` sur toutes les `LLMModelCard` (TPU + standard), `AlertDialog` de confirmation suppression
+- `pensieve/mobile/src/screens/settings/WhisperSettingsScreen.tsx` — import `useMemo` + `container`/`TOKENS`/`IModelUsageTrackingService`/`MODEL_INACTIVITY_THRESHOLD_DAYS`/`RepositoryResultType`, état `unusedWhisperModels`/`showDeleteUnusedDialog`/`pendingDeleteSize`, résolution `usageTrackingService`, `checkUnusedWhisperModels` au montage + AppState, `handleDeleteUnused`/`confirmDeleteUnused`/`handleDismissUnused`, props `unusedDays`/`onDeleteUnused`/`onDismissUnused` sur les 5 `WhisperModelCard`, `AlertDialog` de confirmation suppression
+
 **Fichiers modifiés (Task 3) :**
 - `pensieve/mobile/src/contexts/Normalization/services/TranscriptionModelService.ts` — injection constructeur `@inject`, tracking dans `.done()` + `setSelectedModel()` + `deleteModel()`, ajout `getDownloadedModelSizes()`
 - `pensieve/mobile/src/hooks/useServices.ts` — `useTranscriptionModel()` → `useDI(TranscriptionModelService)` (suppression `useMemo`)
@@ -722,3 +736,4 @@ claude-sonnet-4-6
 | 2026-03-01 | Task 3 implémentée — Injection constructeur @inject(IModelUsageTrackingService), suppression anti-pattern new TranscriptionModelService() sur tous les call sites (useServices, WhisperSettingsScreen, WhisperModelCard, SettingsScreen, TranscriptionWorker), mocks tests mis à jour. 0 régression. | yohikofox |
 | 2026-03-01 | Task 4 implémentée — LLMModelCard : 3 props optionnelles ajoutées (unusedDays, onDeleteUnused, onDismissUnused), bloc alerte inactivité conditionnel (unusedDays >= 15) avec icône warning, texte dynamique, boutons Supprimer/Ignorer délégués au Screen. 11/11 tests unitaires verts, 0 régression. | yohikofox |
 | 2026-03-01 | Task 5 implémentée — WhisperModelCard : même 3 props optionnelles (Subtask 5.1), même bloc alerte conditionnel dans status === 'ready' (Subtask 5.2), couleurs theme-aware inactivityAlertBg + inactivityAlertBorderColor, formatBytes étendu au GB (large-v3 ~3.1 GB), 8 nouveaux styles. 0 régression (199 échecs pré-existants confirmés). | yohikofox |
+| 2026-03-01 | Task 6 implémentée — LLMSettingsScreen + WhisperSettingsScreen : résolution usageTrackingService (Transient), checkUnusedModels au montage + AppState, handlers delete/dismiss avec AlertDialog de confirmation (pattern projet), props unusedDays/onDeleteUnused/onDismissUnused sur toutes les cartes modèles. 11/11 unit tests, 0 régression. | yohikofox |
