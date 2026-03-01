@@ -1,6 +1,6 @@
 # Story 8.9 : Vérification Automatique des Mises à Jour des Modèles
 
-Status: review
+Status: done
 
 <!-- Validation optionnelle : run validate-create-story avant dev-story -->
 
@@ -1015,7 +1015,7 @@ claude-sonnet-4-6
 - `pensieve/mobile/src/contexts/Normalization/services/TranscriptionModelService.ts` (modifié — import + injection IModelUpdateCheckService + appel recordDownload dans .done())
 - `pensieve/mobile/src/contexts/Normalization/services/__tests__/TranscriptionModelService.test.ts` (modifié — import + mock IModelUpdateCheckService)
 - `pensieve/mobile/src/contexts/Normalization/services/__tests__/TranscriptionModelService.retry.test.ts` (modifié — import + mock IModelUpdateCheckService)
-- `pensieve/mobile/src/hooks/useModelUpdateCheck.ts` (créé — hook orchestration vérification mises à jour)
+- `pensieve/mobile/src/hooks/useModelUpdateCheck.ts` (créé + modifié — hook orchestration vérification mises à jour ; fix useEffect deps [modelsKey], comparaisons RepositoryResultType.SUCCESS)
 - `pensieve/mobile/src/components/llm/LLMModelCard.tsx` (modifié — props updateInfo + onUpdate + affichage date/badge update)
 - `pensieve/mobile/src/components/whisper/WhisperModelCard.tsx` (modifié — props updateInfo + onUpdate + affichage date/badge update)
 - `pensieve/mobile/src/screens/settings/LLMSettingsScreen.tsx` (modifié — useModelUpdateCheck, downloadedModelsForCheck state, handleUpdate, bouton header, updateInfo/onUpdate sur LLMModelCard)
@@ -1023,7 +1023,6 @@ claude-sonnet-4-6
 - `pensieve/mobile/tests/acceptance/features/story-8-9-verification-maj-modeles.feature` (créé — 4 scénarios Gherkin BDD)
 - `pensieve/mobile/tests/acceptance/story-8-9-verification-maj-modeles.test.ts` (créé — step definitions BDD, 4/4 tests verts)
 - `pensieve/mobile/src/contexts/Normalization/services/__tests__/ModelUpdateCheckService.test.ts` (créé — 14 tests unitaires, 14/14 verts)
-- `pensieve/mobile/src/hooks/useModelUpdateCheck.ts` (modifié — fix useEffect deps [modelsKey], fix comparaisons RepositoryResultType.SUCCESS, import RepositoryResultType)
 
 ---
 
@@ -1031,6 +1030,7 @@ claude-sonnet-4-6
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2026-03-01 | Code Review adversarial (story 8.9) — 6 issues corrigées (HIGH×3, MEDIUM×3) : [HIGH-1] clearModelTracking au delete dans LLMModelCard+WhisperModelCard ; [HIGH-2] anti-spam notifs dans checkAll (vérif statut prev) ; [HIGH-3] notifyUpdateSuccess (AC6) — interface+implémentation+appel LLM+Whisper handleUpdate ; [MEDIUM-4] RepositoryResultType.SUCCESS (ModelUpdateCheckService.ts + test BDD) ; [MEDIUM-5] refreshModels() dans LLMSettingsScreen.handleUpdate ; [MEDIUM-6] doublon File List supprimé. Story → done. | claude-sonnet-4-6 |
 | 2026-03-01 | Task 10 — Validation finale : 3 bugs corrigés (useEffect deps, RepositoryResultType.SUCCESS casse, backfill migration). Dates affichées sur device Android. Issue #6 fermée. Story → review. | claude-sonnet-4-6 |
 | 2026-03-01 | Task 9 implémentée : `ModelUpdateCheckService.test.ts` — 14 cas unitaires (checkForUpdate ×7, isCheckNeeded ×3, recordDownload ×3, clearModelTracking ×1) — 14/14 verts, zéro régression | claude-sonnet-4-6 |
 | 2026-03-01 | Tasks 7+8 implémentées : LLMSettingsScreen + WhisperSettingsScreen intègrent useModelUpdateCheck + handleUpdate + bouton header ; tests BDD (feature Gherkin + step definitions) créés — 4/4 scénarios verts (AC1, AC3, AC5, AC2). Fix clé KEY_LAST_CHECK dans les tests (model_last_check_date_). | claude-sonnet-4-6 |
