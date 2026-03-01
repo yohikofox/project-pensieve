@@ -293,8 +293,8 @@ Utilisateur :
 
 ### Task 8 : Tests unitaires — `ModelUsageTrackingService` (AC8)
 
-- [ ] Subtask 8.1 : Créer `mobile/src/contexts/Normalization/services/__tests__/ModelUsageTrackingService.test.ts`
-- [ ] Subtask 8.2 : Cas testés :
+- [x] Subtask 8.1 : Créer `mobile/src/contexts/Normalization/services/__tests__/ModelUsageTrackingService.test.ts`
+- [x] Subtask 8.2 : Cas testés :
   ```
   Cas 1 — trackModelUsed → AsyncStorage.setItem appelé avec timestamp ISO valide
   Cas 2 — trackModelUsed → retourne Result SUCCESS
@@ -308,7 +308,7 @@ Utilisateur :
   Cas 10 — hasDismissedSuggestion → false si dismissed mais modèle réutilisé après dismiss
   Cas 11 — clearModelTracking → supprime KEY_LAST_USED et KEY_DISMISSED
   ```
-- [ ] Subtask 8.3 : Mock de `AsyncStorage` via `@react-native-async-storage/async-storage/jest/async-storage-mock`
+- [x] Subtask 8.3 : Mock de `AsyncStorage` via `@react-native-async-storage/async-storage/jest/async-storage-mock`
 
 ### Task 9 : Validation finale (AC8)
 
@@ -619,6 +619,20 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+**Task 8 — Tests unitaires `ModelUsageTrackingService` (2026-03-01)**
+
+- Subtask 8.1 : Fichier `__tests__/ModelUsageTrackingService.test.ts` confirmé existant (créé lors de Task 1, 238 lignes)
+- Subtask 8.2 : 11/11 cas testés présents et verts :
+  - Cas 1-2 : `trackModelUsed()` — timestamp ISO + Result SUCCESS
+  - Cas 3-4 : `getLastUsedDate()` — parsing clé présente + null si absente
+  - Cas 5-6 : `getUnusedModels()` — seuil 15 jours (14j → pas dans liste, 16j → dans liste)
+  - Cas 7 : comportement prudent sans `lastUsed` (modèle ignoré)
+  - Cas 8 : `dismissSuggestion()` — clé KEY_DISMISSED créée avec timestamp
+  - Cas 9-10 : `hasDismissedSuggestion()` — logique temporelle (dismiss après reuse = false)
+  - Cas 11 : `clearModelTracking()` — suppression des deux clés AsyncStorage
+- Subtask 8.3 : Mock AsyncStorage global via `@react-native-async-storage/async-storage/jest/async-storage-mock` (jest-setup.js)
+- `npm run test:unit` : 11/11 tests verts, 199 failures pré-existantes confirmées (0 nouvelle régression)
+
 **Task 7 — Tests BDD (2026-03-01)**
 
 - Fichier feature Gherkin créé : 7 scénarios couvrant AC1 (tracking téléchargement + sélection), AC3 (détection 15 jours, comportement prudent sans lastUsed), AC6 (suppression via clearModelTracking), AC7 (dismissal persisté)
@@ -753,3 +767,4 @@ claude-sonnet-4-6
 | 2026-03-01 | Task 5 implémentée — WhisperModelCard : même 3 props optionnelles (Subtask 5.1), même bloc alerte conditionnel dans status === 'ready' (Subtask 5.2), couleurs theme-aware inactivityAlertBg + inactivityAlertBorderColor, formatBytes étendu au GB (large-v3 ~3.1 GB), 8 nouveaux styles. 0 régression (199 échecs pré-existants confirmés). | yohikofox |
 | 2026-03-01 | Task 6 implémentée — LLMSettingsScreen + WhisperSettingsScreen : résolution usageTrackingService (Transient), checkUnusedModels au montage + AppState, handlers delete/dismiss avec AlertDialog de confirmation (pattern projet), props unusedDays/onDeleteUnused/onDismissUnused sur toutes les cartes modèles. 11/11 unit tests, 0 régression. | yohikofox |
 | 2026-03-01 | Task 7 implémentée — Tests BDD : feature Gherkin (7 scénarios AC1/AC3/AC6/AC7), step definitions avec AsyncStorage mock + jest.spyOn(Date.now), bugfix TypeScript ModelUsageTrackingService.ts (== null au lieu de === null). 7/7 BDD tests verts, 11/11 unit tests verts, 0 régression. | yohikofox |
+| 2026-03-01 | Task 8 formellement validée — Fichier `__tests__/ModelUsageTrackingService.test.ts` (11 cas) confirmé existant et vert (créé en Task 1, jamais coché). `npm run test:unit` : 11/11 verts, 199 failures pré-existantes inchangées (0 régression). | yohikofox |
