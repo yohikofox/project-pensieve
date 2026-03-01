@@ -669,7 +669,7 @@ Utilisateur :
 
 ### Task 9 : Tests unitaires — `ModelUpdateCheckService` (AC7)
 
-- [ ] **Subtask 9.1** : Créer `mobile/src/contexts/Normalization/services/__tests__/ModelUpdateCheckService.test.ts`
+- [x] **Subtask 9.1** : Créer `mobile/src/contexts/Normalization/services/__tests__/ModelUpdateCheckService.test.ts`
 
   Cas à couvrir :
   ```
@@ -998,6 +998,7 @@ claude-sonnet-4-6
 - ✅ Task 6 complète (2026-03-01) : `LLMModelCard.tsx` et `WhisperModelCard.tsx` mis à jour avec props optionnelles `updateInfo?: ModelUpdateInfo` et `onUpdate?: (modelId) => void`. Affichage conditionnel de la date de téléchargement/mise à jour et badge "Mise à jour disponible" avec bouton amber dans la section `status === 'ready'`. Helper `formatDate()` ajouté. Layout existant non cassé (props additives uniquement).
 - ✅ Task 7 complète (2026-03-01) : `LLMSettingsScreen.tsx` intègre `useModelUpdateCheck` + état `downloadedModelsForCheck` (peuplé via `getDownloadedModels()` dans loadSettings/refreshModels) + `handleUpdate(modelId)` (downloadModelWithRetry + recordUpdate + checkAll) + bouton "Vérifier les mises à jour" dans le header (avec spinner `isChecking`) + props `updateInfo`/`onUpdate` sur toutes les LLMModelCard. `WhisperSettingsScreen.tsx` : même intégration avec `downloadedWhisperForCheck` (peuplé via `getDownloadedModelSizes()` + `WHISPER_MODEL_LABELS` + `getModelUrl()`) + `handleUpdate(modelSize)` + bouton header + props sur toutes les 5 WhisperModelCard. Navigation existante inchangée (Subtask 7.3 : aucune modification requise).
 - ✅ Task 8 complète (2026-03-01) : Feature file Gherkin créé (4 scénarios : AC1, AC3, AC5, AC2) avec Contexte (Background). Step definitions créées avec `defineBackgroundSteps` (pattern story-8-8), mocks `expo-notifications` + `fetch` spyOn + `AsyncStorage`. Fix clé `KEY_LAST_CHECK` : `model_last_check_date_` (alignée sur le service). 4/4 tests verts. Aucune régression introduite.
+- ✅ Task 9 complète (2026-03-01) : `ModelUpdateCheckService.test.ts` créé (14 cas). Couvre : checkForUpdate (ETag identique/différent, réseau KO, pas d'ETag stocké, HTTP 404, throttle off/on), isCheckNeeded (jamais vérifié, aujourd'hui, hier), recordDownload (dates + ETag OK/KO), clearModelTracking (5 clés). `jest.useFakeTimers({ now: FIXED_NOW })` pour dates déterministes. 14/14 verts — zéro régression.
 
 ### File List
 
@@ -1020,6 +1021,7 @@ claude-sonnet-4-6
 - `pensieve/mobile/src/screens/settings/WhisperSettingsScreen.tsx` (modifié — useModelUpdateCheck, downloadedWhisperForCheck state, handleUpdate, bouton header, updateInfo/onUpdate sur WhisperModelCard)
 - `pensieve/mobile/tests/acceptance/features/story-8-9-verification-maj-modeles.feature` (créé — 4 scénarios Gherkin BDD)
 - `pensieve/mobile/tests/acceptance/story-8-9-verification-maj-modeles.test.ts` (créé — step definitions BDD, 4/4 tests verts)
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/ModelUpdateCheckService.test.ts` (créé — 14 tests unitaires, 14/14 verts)
 
 ---
 
@@ -1027,6 +1029,7 @@ claude-sonnet-4-6
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2026-03-01 | Task 9 implémentée : `ModelUpdateCheckService.test.ts` — 14 cas unitaires (checkForUpdate ×7, isCheckNeeded ×3, recordDownload ×3, clearModelTracking ×1) — 14/14 verts, zéro régression | claude-sonnet-4-6 |
 | 2026-03-01 | Tasks 7+8 implémentées : LLMSettingsScreen + WhisperSettingsScreen intègrent useModelUpdateCheck + handleUpdate + bouton header ; tests BDD (feature Gherkin + step definitions) créés — 4/4 scénarios verts (AC1, AC3, AC5, AC2). Fix clé KEY_LAST_CHECK dans les tests (model_last_check_date_). | claude-sonnet-4-6 |
 | 2026-03-01 | Tasks 4+5+6 implémentées : TranscriptionModelService injecte IModelUpdateCheckService + recordDownload Whisper, hook useModelUpdateCheck créé (loadStoredInfo + autoCheckAll throttled + checkAll manuel), LLMModelCard et WhisperModelCard étendus (updateInfo + onUpdate props, affichage date + badge mise à jour) | claude-sonnet-4-6 |
 | 2026-03-01 | Tasks 2+3 implémentées : notifyUpdateAvailable() (interface+implémentation+5 tests), useModelDownloadNotificationHandler étendu (model_update_available), LLMModelService injecté IModelUpdateCheckService + recordDownload fire-and-forget dans .done() | claude-sonnet-4-6 |
