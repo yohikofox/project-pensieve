@@ -393,7 +393,7 @@ Utilisateur :
 
 ### Task 2 : Étendre `IModelDownloadNotificationService` et `ModelDownloadNotificationService` (AC5, AC6)
 
-- [ ] **Subtask 2.1** : Ajouter à `IModelDownloadNotificationService.ts` :
+- [x] **Subtask 2.1** : Ajouter à `IModelDownloadNotificationService.ts` :
 
   ```typescript
   /**
@@ -409,7 +409,7 @@ Utilisateur :
   ): Promise<void>;
   ```
 
-- [ ] **Subtask 2.2** : Implémenter `notifyUpdateAvailable()` dans `ModelDownloadNotificationService.ts` :
+- [x] **Subtask 2.2** : Implémenter `notifyUpdateAvailable()` dans `ModelDownloadNotificationService.ts` :
 
   ```typescript
   async notifyUpdateAvailable(modelId: string, modelName: string, screen: ModelDownloadScreen): Promise<void> {
@@ -429,7 +429,7 @@ Utilisateur :
 
   ⚠️ NOTE : `notifyDownloadSuccess` peut être réutilisée pour la fin d'une mise à jour (titre identique "Modèle téléchargé" convient aussi pour "Modèle mis à jour"). Si le titre doit être différent ("Modèle mis à jour"), ajouter un paramètre optionnel `title?: string` à `notifyDownloadSuccess` — à confirmer selon contexte UX.
 
-- [ ] **Subtask 2.3** : Mettre à jour `useModelDownloadNotificationHandler.ts` pour gérer `action: 'update'` dans le tap :
+- [x] **Subtask 2.3** : Mettre à jour `useModelDownloadNotificationHandler.ts` pour gérer `action: 'update'` dans le tap :
   ```typescript
   const { screen, action, modelId } = response.notification.request.content.data;
   if (screen === 'llm') {
@@ -442,9 +442,9 @@ Utilisateur :
 
 ### Task 3 : Intégrer `recordDownload` dans `LLMModelService` (AC4)
 
-- [ ] **Subtask 3.1** : Injecter `IModelUpdateCheckService` dans `LLMModelService` via tsyringe
+- [x] **Subtask 3.1** : Injecter `IModelUpdateCheckService` dans `LLMModelService` via tsyringe
 
-- [ ] **Subtask 3.2** : Dans le handler `.done()` de `downloadModel()` (juste après le fichier est disponible sur disque) :
+- [x] **Subtask 3.2** : Dans le handler `.done()` de `downloadModel()` (juste après le fichier est disponible sur disque) :
   ```typescript
   .done(async ({ location }) => {
     // ... logique existante ...
@@ -991,6 +991,8 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 - ✅ Task 1 complète (2026-03-01) : `IModelUpdateCheckService` (interface + types) et `ModelUpdateCheckService` (implémentation complète avec 6 méthodes : recordDownload, isCheckNeeded, checkForUpdate, recordUpdate, getUpdateInfo, clearModelTracking) créés. Enregistrement DI ajouté dans tokens.ts et container.ts (TRANSIENT, ADR-021 conforme). Zéro régression sur les tests unitaires existants.
+- ✅ Task 2 complète (2026-03-01) : `notifyUpdateAvailable()` ajoutée à l'interface `IModelDownloadNotificationService` (Subtask 2.1) et implémentée dans `ModelDownloadNotificationService` avec vérification de permissions avant envoi et `type: 'model_update_available'` dans data (Subtask 2.2). `useModelDownloadNotificationHandler` étendu pour gérer les notifications `model_update_available` (Subtask 2.3). 5 nouveaux tests unitaires ajoutés (28/28 verts).
+- ✅ Task 3 complète (2026-03-01) : `IModelUpdateCheckService` injecté dans `LLMModelService` via `@inject(TOKENS.IModelUpdateCheckService)` (Subtask 3.1). Appel `recordDownload()` fire-and-forget ajouté dans le handler `.done()` de `downloadModel()` juste après `trackModelUsed` (Subtask 3.2). Zéro régression sur les tests BDD stories 8.7/8.8.
 
 ### File List
 
@@ -998,6 +1000,11 @@ claude-sonnet-4-6
 - `pensieve/mobile/src/contexts/Normalization/services/ModelUpdateCheckService.ts` (créé)
 - `pensieve/mobile/src/infrastructure/di/tokens.ts` (modifié — ajout TOKENS.IModelUpdateCheckService)
 - `pensieve/mobile/src/infrastructure/di/container.ts` (modifié — import + enregistrement ModelUpdateCheckService)
+- `pensieve/mobile/src/contexts/Normalization/domain/IModelDownloadNotificationService.ts` (modifié — ajout méthode notifyUpdateAvailable)
+- `pensieve/mobile/src/contexts/Normalization/services/ModelDownloadNotificationService.ts` (modifié — implémentation notifyUpdateAvailable)
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/ModelDownloadNotificationService.test.ts` (modifié — 5 nouveaux tests pour notifyUpdateAvailable)
+- `pensieve/mobile/src/hooks/initialization/useModelDownloadNotificationHandler.ts` (modifié — support type model_update_available)
+- `pensieve/mobile/src/contexts/Normalization/services/LLMModelService.ts` (modifié — injection IModelUpdateCheckService + appel recordDownload dans .done())
 
 ---
 
@@ -1005,5 +1012,6 @@ claude-sonnet-4-6
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2026-03-01 | Tasks 2+3 implémentées : notifyUpdateAvailable() (interface+implémentation+5 tests), useModelDownloadNotificationHandler étendu (model_update_available), LLMModelService injecté IModelUpdateCheckService + recordDownload fire-and-forget dans .done() | claude-sonnet-4-6 |
 | 2026-03-01 | Task 1 implémentée : IModelUpdateCheckService + ModelUpdateCheckService + DI registration | claude-sonnet-4-6 |
 | 2026-03-01 | Story créée depuis issue GitHub #6 — analyse exhaustive : IModelUsageTrackingService (pattern AsyncStorage story 8.8), ModelDownloadNotificationService (extensions story 8.7), LLMModelConfig.downloadUrl (HEAD request), strategy ETag + Last-Modified fallback, backward compat modèles pré-story-8.9. Architecture : nouveau IModelUpdateCheckService + extension notifService + hook useModelUpdateCheck + UI additif LLMModelCard/WhisperModelCard. | yohikofox |
