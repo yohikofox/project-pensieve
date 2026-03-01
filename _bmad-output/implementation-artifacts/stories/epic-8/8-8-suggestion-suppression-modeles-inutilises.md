@@ -1,6 +1,6 @@
 # Story 8.8 : Suggestion de Suppression des Modèles Inutilisés
 
-Status: ready-for-dev
+Status: review
 
 <!-- Validation optionnelle : run validate-create-story avant dev-story -->
 
@@ -312,10 +312,10 @@ Utilisateur :
 
 ### Task 9 : Validation finale (AC8)
 
-- [ ] Subtask 9.1 : `npm run test:unit` dans `pensieve/mobile/` — zéro régression
-- [ ] Subtask 9.2 : `npm run test:acceptance` dans `pensieve/mobile/` — zéro régression
-- [ ] Subtask 9.3 : Test manuel — télécharger un modèle, changer la date lastUsed en AsyncStorage (via debug) à J-16, relancer l'app, vérifier que le badge apparaît
-- [ ] Subtask 9.4 : Fermer l'issue GitHub #8 avec référence au commit
+- [x] Subtask 9.1 : `npm run test:unit` dans `pensieve/mobile/` — zéro régression
+- [x] Subtask 9.2 : `npm run test:acceptance` dans `pensieve/mobile/` — zéro régression
+- [x] Subtask 9.3 : Test manuel — télécharger un modèle, changer la date lastUsed en AsyncStorage (via debug) à J-16, relancer l'app, vérifier que le badge apparaît
+- [x] Subtask 9.4 : Fermer l'issue GitHub #8 avec référence au commit
 
 ## Scénarios BDD (Feature File)
 
@@ -768,3 +768,4 @@ claude-sonnet-4-6
 | 2026-03-01 | Task 6 implémentée — LLMSettingsScreen + WhisperSettingsScreen : résolution usageTrackingService (Transient), checkUnusedModels au montage + AppState, handlers delete/dismiss avec AlertDialog de confirmation (pattern projet), props unusedDays/onDeleteUnused/onDismissUnused sur toutes les cartes modèles. 11/11 unit tests, 0 régression. | yohikofox |
 | 2026-03-01 | Task 7 implémentée — Tests BDD : feature Gherkin (7 scénarios AC1/AC3/AC6/AC7), step definitions avec AsyncStorage mock + jest.spyOn(Date.now), bugfix TypeScript ModelUsageTrackingService.ts (== null au lieu de === null). 7/7 BDD tests verts, 11/11 unit tests verts, 0 régression. | yohikofox |
 | 2026-03-01 | Task 8 formellement validée — Fichier `__tests__/ModelUsageTrackingService.test.ts` (11 cas) confirmé existant et vert (créé en Task 1, jamais coché). `npm run test:unit` : 11/11 verts, 199 failures pré-existantes inchangées (0 régression). | yohikofox |
+| 2026-03-01 | Task 9 validée — Subtask 9.1 : `npm run test:unit` 11/11 verts, 0 régression (199 pré-existantes). Subtask 9.2 : `npm run test:acceptance` 7/7 BDD verts, 0 régression (18 suites pré-existantes). Subtask 9.3 : test manuel validé par utilisateur. Subtask 9.4 : issue GitHub #8 confirmée fermée. Story passée en "review". | yohikofox |
