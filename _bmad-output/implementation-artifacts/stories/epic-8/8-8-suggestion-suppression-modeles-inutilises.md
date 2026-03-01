@@ -286,10 +286,10 @@ Utilisateur :
 
 ### Task 7 : Tests BDD (AC8)
 
-- [ ] Subtask 7.1 : Créer `mobile/tests/acceptance/features/story-8-8-suggestion-suppression-modeles-inutilises.feature`
-- [ ] Subtask 7.2 : Écrire les scénarios (voir section "Scénarios BDD" ci-dessous)
-- [ ] Subtask 7.3 : Créer `mobile/tests/acceptance/story-8-8-suggestion-suppression-modeles-inutilises.test.ts` avec step definitions
-- [ ] Subtask 7.4 : Mocker `ModelUsageTrackingService`, `LLMModelService`, `TranscriptionModelService`
+- [x] Subtask 7.1 : Créer `mobile/tests/acceptance/features/story-8-8-suggestion-suppression-modeles-inutilises.feature`
+- [x] Subtask 7.2 : Écrire les scénarios (voir section "Scénarios BDD" ci-dessous)
+- [x] Subtask 7.3 : Créer `mobile/tests/acceptance/story-8-8-suggestion-suppression-modeles-inutilises.test.ts` avec step definitions
+- [x] Subtask 7.4 : Mocker `ModelUsageTrackingService`, `LLMModelService`, `TranscriptionModelService`
 
 ### Task 8 : Tests unitaires — `ModelUsageTrackingService` (AC8)
 
@@ -619,6 +619,14 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+**Task 7 — Tests BDD (2026-03-01)**
+
+- Fichier feature Gherkin créé : 7 scénarios couvrant AC1 (tracking téléchargement + sélection), AC3 (détection 15 jours, comportement prudent sans lastUsed), AC6 (suppression via clearModelTracking), AC7 (dismissal persisté)
+- Step definitions créées avec mocks : AsyncStorage globalement mocké via jest-setup.js (`@react-native-async-storage/async-storage/jest/async-storage-mock`), dates fixées via `jest.spyOn(Date, 'now')`, service testé directement (stateless)
+- Correction TypeScript dans `ModelUsageTrackingService.ts` ligne 114 : check `=== null` → `== null` pour couvrir `undefined` (type `data?` optionnel dans `RepositoryResult<T>`)
+- Résultat : 7/7 tests BDD verts, 11/11 tests unitaires verts, 0 régression acceptance (18 failures pré-existantes confirmées inchangées)
+- Note Subtask 7.4 : les mocks nécessaires au niveau service sont uniquement AsyncStorage (déjà global) — `ModelUsageTrackingService` testé directement, `LLMModelService`/`TranscriptionModelService` non requis pour les scénarios purement service
+
 **Task 6 — Intégration screens `LLMSettingsScreen` + `WhisperSettingsScreen` (2026-03-01)**
 
 - `IModelUsageTrackingService` résolu via `container.resolve()` dans les deux screens (pattern `useMemo([])`)
@@ -693,6 +701,13 @@ claude-sonnet-4-6
 
 ### File List
 
+**Fichiers créés (Task 7) :**
+- `pensieve/mobile/tests/acceptance/features/story-8-8-suggestion-suppression-modeles-inutilises.feature`
+- `pensieve/mobile/tests/acceptance/story-8-8-suggestion-suppression-modeles-inutilises.test.ts`
+
+**Fichiers modifiés (Task 7 — bugfix TypeScript) :**
+- `pensieve/mobile/src/contexts/Normalization/services/ModelUsageTrackingService.ts` — ligne 114 : `=== null` → `== null` (couvre `undefined` dans `Result<Date | null>`)
+
 **Fichiers créés (Task 1) :**
 - `pensieve/mobile/src/contexts/Normalization/domain/IModelUsageTrackingService.ts`
 - `pensieve/mobile/src/contexts/Normalization/services/ModelUsageTrackingService.ts`
@@ -737,3 +752,4 @@ claude-sonnet-4-6
 | 2026-03-01 | Task 4 implémentée — LLMModelCard : 3 props optionnelles ajoutées (unusedDays, onDeleteUnused, onDismissUnused), bloc alerte inactivité conditionnel (unusedDays >= 15) avec icône warning, texte dynamique, boutons Supprimer/Ignorer délégués au Screen. 11/11 tests unitaires verts, 0 régression. | yohikofox |
 | 2026-03-01 | Task 5 implémentée — WhisperModelCard : même 3 props optionnelles (Subtask 5.1), même bloc alerte conditionnel dans status === 'ready' (Subtask 5.2), couleurs theme-aware inactivityAlertBg + inactivityAlertBorderColor, formatBytes étendu au GB (large-v3 ~3.1 GB), 8 nouveaux styles. 0 régression (199 échecs pré-existants confirmés). | yohikofox |
 | 2026-03-01 | Task 6 implémentée — LLMSettingsScreen + WhisperSettingsScreen : résolution usageTrackingService (Transient), checkUnusedModels au montage + AppState, handlers delete/dismiss avec AlertDialog de confirmation (pattern projet), props unusedDays/onDeleteUnused/onDismissUnused sur toutes les cartes modèles. 11/11 unit tests, 0 régression. | yohikofox |
+| 2026-03-01 | Task 7 implémentée — Tests BDD : feature Gherkin (7 scénarios AC1/AC3/AC6/AC7), step definitions avec AsyncStorage mock + jest.spyOn(Date.now), bugfix TypeScript ModelUsageTrackingService.ts (== null au lieu de === null). 7/7 BDD tests verts, 11/11 unit tests verts, 0 régression. | yohikofox |
