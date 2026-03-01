@@ -237,7 +237,7 @@ Utilisateur :
 
 ### Task 4 : Mettre à jour `LLMModelCard` — alerte visuelle (AC4, AC6, AC7)
 
-- [ ] Subtask 4.1 : Ajouter des props à `LLMModelCard` :
+- [x] Subtask 4.1 : Ajouter des props à `LLMModelCard` :
   ```typescript
   interface LLMModelCardProps {
     // ... props existantes ...
@@ -246,13 +246,13 @@ Utilisateur :
     onDismissUnused?: () => void;  // callback ignorer l'alerte
   }
   ```
-- [ ] Subtask 4.2 : Implémenter le bloc d'alerte conditionnel (visible uniquement si `unusedDays >= 15`) :
+- [x] Subtask 4.2 : Implémenter le bloc d'alerte conditionnel (visible uniquement si `unusedDays >= 15`) :
   - Badge orange/ambre avec icône `⚠️` ou similaire
   - Texte : `"Non utilisé depuis ${unusedDays} jours"`
   - Bouton primaire : `"Supprimer (${formattedSize})"` → `onDeleteUnused()`
   - Bouton secondaire : `"Ignorer"` → `onDismissUnused()`
-- [ ] Subtask 4.3 : La confirmation avant suppression peut être gérée au niveau du Screen (pas dans la carte)
-- [ ] Subtask 4.4 : **NE PAS** modifier l'interface existante des props (backward compatible — `unusedDays` optionnel)
+- [x] Subtask 4.3 : La confirmation avant suppression peut être gérée au niveau du Screen (pas dans la carte)
+- [x] Subtask 4.4 : **NE PAS** modifier l'interface existante des props (backward compatible — `unusedDays` optionnel)
 
 ### Task 5 : Mettre à jour `WhisperModelCard` — alerte visuelle (AC5, AC6, AC7)
 
@@ -619,6 +619,17 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+**Task 4 — Alerte visuelle `LLMModelCard` (2026-03-01)**
+
+- 3 props optionnelles ajoutées à `LLMModelCardProps` : `unusedDays?: number`, `onDeleteUnused?: () => void`, `onDismissUnused?: () => void` (Subtask 4.1 — backward compatible)
+- Bloc alerte conditionnel implémenté dans `status === 'ready'` uniquement : affiché si `unusedDays !== undefined && unusedDays >= 15` (AC4 — alerte visible seulement si le modèle est téléchargé)
+- Icône `alert-triangle` (Feather) avec couleur `warningText` + texte `"Non utilisé depuis {unusedDays} jours"` (dynamique)
+- Bouton "Supprimer ({formatBytes(config.expectedSize)})" → délègue à `onDeleteUnused` (confirmation Screen, pas dans la carte — Subtask 4.3)
+- Bouton "Ignorer" → délègue à `onDismissUnused`
+- 2 nouvelles couleurs theme-aware : `inactivityAlertBg` (warm orange) + `inactivityAlertBorderColor` (warning border)
+- 6 nouveaux styles : `inactivityAlert`, `inactivityAlertHeader`, `inactivityAlertTitle`, `inactivityAlertButtons`, `inactivityDeleteButton`, `inactivityDismissButton`
+- 11/11 tests `ModelUsageTrackingService` passent, 0 régression
+
 **Task 3 — Intégration du tracking dans `TranscriptionModelService` (2026-03-01, refactorisé)**
 
 - `IModelUsageTrackingService` injecté via `@inject(TOKENS.IModelUsageTrackingService)` dans le constructeur (Subtask 3.1 — pattern identique à `LLMModelService`)
@@ -673,6 +684,9 @@ claude-sonnet-4-6
 - `pensieve/mobile/src/contexts/Normalization/domain/ILLMModelService.ts` — ajout `getDownloadedModelIds(): Promise<string[]>`
 - `pensieve/mobile/src/contexts/Normalization/services/LLMModelService.ts` — injection `IModelUsageTrackingService`, tracking dans `.done()` + `setModelForTask()` + `deleteModel()`, implémentation `getDownloadedModelIds()`
 
+**Fichiers modifiés (Task 4) :**
+- `pensieve/mobile/src/components/llm/LLMModelCard.tsx` — ajout props `unusedDays`/`onDeleteUnused`/`onDismissUnused`, bloc alerte inactivité conditionnel, couleurs theme-aware, styles
+
 **Fichiers modifiés (Task 3) :**
 - `pensieve/mobile/src/contexts/Normalization/services/TranscriptionModelService.ts` — injection constructeur `@inject`, tracking dans `.done()` + `setSelectedModel()` + `deleteModel()`, ajout `getDownloadedModelSizes()`
 - `pensieve/mobile/src/hooks/useServices.ts` — `useTranscriptionModel()` → `useDI(TranscriptionModelService)` (suppression `useMemo`)
@@ -691,3 +705,4 @@ claude-sonnet-4-6
 | 2026-03-01 | Task 1 implémentée — IModelUsageTrackingService + ModelUsageTrackingService + token DI + enregistrement container Transient. 11/11 tests unitaires verts. | yohikofox |
 | 2026-03-01 | Task 2 implémentée — Intégration tracking dans LLMModelService : injection DI, trackModelUsed au téléchargement + sélection, clearModelTracking à la suppression, getDownloadedModelIds() exposé. 0 régression, TypeScript conforme. | yohikofox |
 | 2026-03-01 | Task 3 implémentée — Injection constructeur @inject(IModelUsageTrackingService), suppression anti-pattern new TranscriptionModelService() sur tous les call sites (useServices, WhisperSettingsScreen, WhisperModelCard, SettingsScreen, TranscriptionWorker), mocks tests mis à jour. 0 régression. | yohikofox |
+| 2026-03-01 | Task 4 implémentée — LLMModelCard : 3 props optionnelles ajoutées (unusedDays, onDeleteUnused, onDismissUnused), bloc alerte inactivité conditionnel (unusedDays >= 15) avec icône warning, texte dynamique, boutons Supprimer/Ignorer délégués au Screen. 11/11 tests unitaires verts, 0 régression. | yohikofox |
