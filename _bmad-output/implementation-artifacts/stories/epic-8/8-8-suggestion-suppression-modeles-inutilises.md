@@ -1,6 +1,6 @@
 # Story 8.8 : Suggestion de Suppression des Modèles Inutilisés
 
-Status: review
+Status: done
 
 <!-- Validation optionnelle : run validate-create-story avant dev-story -->
 
@@ -769,3 +769,4 @@ claude-sonnet-4-6
 | 2026-03-01 | Task 7 implémentée — Tests BDD : feature Gherkin (7 scénarios AC1/AC3/AC6/AC7), step definitions avec AsyncStorage mock + jest.spyOn(Date.now), bugfix TypeScript ModelUsageTrackingService.ts (== null au lieu de === null). 7/7 BDD tests verts, 11/11 unit tests verts, 0 régression. | yohikofox |
 | 2026-03-01 | Task 8 formellement validée — Fichier `__tests__/ModelUsageTrackingService.test.ts` (11 cas) confirmé existant et vert (créé en Task 1, jamais coché). `npm run test:unit` : 11/11 verts, 199 failures pré-existantes inchangées (0 régression). | yohikofox |
 | 2026-03-01 | Task 9 validée — Subtask 9.1 : `npm run test:unit` 11/11 verts, 0 régression (199 pré-existantes). Subtask 9.2 : `npm run test:acceptance` 7/7 BDD verts, 0 régression (18 suites pré-existantes). Subtask 9.3 : test manuel validé par utilisateur. Subtask 9.4 : issue GitHub #8 confirmée fermée. Story passée en "review". | yohikofox |
+| 2026-03-15 | Code review adversariale (BMAD workflow:code-review) — 7 problèmes identifiés (3 MEDIUM, 4 LOW), tous corrigés : [M1] fallback FileSystem.getInfoAsync (AC3) implémenté via File.info() SDK 54 + mock jest configurable ; [M2] 2 scénarios BDD AC2 Whisper ajoutés (9/9 verts) ; [M3] step AC6 non-vide ; [L1] validation date corrompue hasDismissedSuggestion ; [L2] WHISPER_MODEL_LABELS extrait en constante module ; [L3] error logging checkUnusedModels/Whisper ; [L4] sizeBytes supprimé de UnusedModel. 22/22 tests verts. Story passée "done". | yohikofox |
