@@ -229,11 +229,11 @@ Utilisateur :
 
 ### Task 3 : Intégrer le tracking dans `TranscriptionModelService` (AC2)
 
-- [ ] Subtask 3.1 : Injecter `IModelUsageTrackingService` dans le constructeur
-- [ ] Subtask 3.2 : Dans le handler de fin de téléchargement, appeler `trackModelUsed(modelSize, 'whisper')`
-- [ ] Subtask 3.3 : Dans `setSelectedModel()`, appeler `trackModelUsed(modelSize, 'whisper')`
-- [ ] Subtask 3.4 : Dans `deleteModel()`, appeler `clearModelTracking(modelSize, 'whisper')`
-- [ ] Subtask 3.5 : Exposer `getDownloadedModelSizes(): Promise<string[]>` — liste des tailles Whisper avec fichier présent
+- [x] Subtask 3.1 : Injecter `IModelUsageTrackingService` dans le constructeur
+- [x] Subtask 3.2 : Dans le handler de fin de téléchargement, appeler `trackModelUsed(modelSize, 'whisper')`
+- [x] Subtask 3.3 : Dans `setSelectedModel()`, appeler `trackModelUsed(modelSize, 'whisper')`
+- [x] Subtask 3.4 : Dans `deleteModel()`, appeler `clearModelTracking(modelSize, 'whisper')`
+- [x] Subtask 3.5 : Exposer `getDownloadedModelSizes(): Promise<string[]>` — liste des tailles Whisper avec fichier présent
 
 ### Task 4 : Mettre à jour `LLMModelCard` — alerte visuelle (AC4, AC6, AC7)
 
@@ -619,6 +619,23 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+**Task 3 — Intégration du tracking dans `TranscriptionModelService` (2026-03-01, refactorisé)**
+
+- `IModelUsageTrackingService` injecté via `@inject(TOKENS.IModelUsageTrackingService)` dans le constructeur (Subtask 3.1 — pattern identique à `LLMModelService`)
+- Suppression de l'anti-pattern `new TranscriptionModelService()` : tous les appels sites (composants React, hooks, worker) migrés vers `useDI` / injection DI :
+  - `useServices.ts` : `useTranscriptionModel()` → `useDI(TranscriptionModelService)` (suppression `useMemo(() => new ...)`)
+  - `WhisperSettingsScreen.tsx` : `const modelService = useTranscriptionModel()` (suppression import classe, ajout import hook)
+  - `WhisperModelCard.tsx` : idem
+  - `SettingsScreen.tsx` : idem
+  - `TranscriptionWorker.ts` : `private whisperModelService` injecté comme paramètre constructeur (suppression `new TranscriptionModelService()` dans le corps)
+  - Tests unitaires : mock `IModelUsageTrackingService` passé au constructeur
+- `trackModelUsed(modelSize, 'whisper')` appelé via `this.usageTrackingService` dans le handler `.done()` de `downloadModel()` (AC2)
+- `trackModelUsed(modelSize, 'whisper')` appelé via `this.usageTrackingService` dans `setSelectedModel()` (AC2)
+- `clearModelTracking(modelSize, 'whisper')` appelé via `this.usageTrackingService` dans `deleteModel()` (AC6)
+- Tous les appels au tracking sont fire-and-forget (`.catch(() => {})`) pour ne pas bloquer le flux principal
+- `getDownloadedModelSizes(): Promise<string[]>` ajouté : itère sur `MODEL_CONFIGS`, retourne les tailles Whisper avec fichier présent sur disque (Subtask 3.5)
+- 0 régression : mêmes suites en échec avant et après (pré-existantes, non liées à cette task)
+
 **Task 2 — Intégration du tracking dans `LLMModelService` (2026-03-01)**
 
 - `IModelUsageTrackingService` injecté via `@inject(TOKENS.IModelUsageTrackingService)` dans le constructeur (Subtask 2.1)
@@ -656,6 +673,16 @@ claude-sonnet-4-6
 - `pensieve/mobile/src/contexts/Normalization/domain/ILLMModelService.ts` — ajout `getDownloadedModelIds(): Promise<string[]>`
 - `pensieve/mobile/src/contexts/Normalization/services/LLMModelService.ts` — injection `IModelUsageTrackingService`, tracking dans `.done()` + `setModelForTask()` + `deleteModel()`, implémentation `getDownloadedModelIds()`
 
+**Fichiers modifiés (Task 3) :**
+- `pensieve/mobile/src/contexts/Normalization/services/TranscriptionModelService.ts` — injection constructeur `@inject`, tracking dans `.done()` + `setSelectedModel()` + `deleteModel()`, ajout `getDownloadedModelSizes()`
+- `pensieve/mobile/src/hooks/useServices.ts` — `useTranscriptionModel()` → `useDI(TranscriptionModelService)` (suppression `useMemo`)
+- `pensieve/mobile/src/screens/settings/WhisperSettingsScreen.tsx` — `useTranscriptionModel()` hook (suppression `new TranscriptionModelService()`)
+- `pensieve/mobile/src/components/whisper/WhisperModelCard.tsx` — `useTranscriptionModel()` hook (suppression `new TranscriptionModelService()`)
+- `pensieve/mobile/src/screens/settings/SettingsScreen.tsx` — `useTranscriptionModel()` hook (suppression `new TranscriptionModelService()`)
+- `pensieve/mobile/src/contexts/Normalization/workers/TranscriptionWorker.ts` — `whisperModelService` injecté via constructeur (suppression `new TranscriptionModelService()`)
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/TranscriptionModelService.test.ts` — mock `IModelUsageTrackingService` passé au constructeur
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/TranscriptionModelService.retry.test.ts` — mock `IModelUsageTrackingService` passé au constructeur
+
 ## Change Log
 
 | Date | Change | Author |
@@ -663,3 +690,4 @@ claude-sonnet-4-6
 | 2026-02-28 | Story créée depuis issue GitHub #8 — analyse exhaustive : aucun tracking lastUsed existant dans LLMModelService ni TranscriptionModelService, service dédié ModelUsageTrackingService créé (SRP ADR-024), AsyncStorage pour cohérence avec les services existants (note ADR-022), Result Pattern ADR-023, Transient ADR-021. UI : extension props LLMModelCard + WhisperModelCard, confirmation Alert.alert, dismiss persisté. | yohikofox |
 | 2026-03-01 | Task 1 implémentée — IModelUsageTrackingService + ModelUsageTrackingService + token DI + enregistrement container Transient. 11/11 tests unitaires verts. | yohikofox |
 | 2026-03-01 | Task 2 implémentée — Intégration tracking dans LLMModelService : injection DI, trackModelUsed au téléchargement + sélection, clearModelTracking à la suppression, getDownloadedModelIds() exposé. 0 régression, TypeScript conforme. | yohikofox |
+| 2026-03-01 | Task 3 implémentée — Injection constructeur @inject(IModelUsageTrackingService), suppression anti-pattern new TranscriptionModelService() sur tous les call sites (useServices, WhisperSettingsScreen, WhisperModelCard, SettingsScreen, TranscriptionWorker), mocks tests mis à jour. 0 régression. | yohikofox |
