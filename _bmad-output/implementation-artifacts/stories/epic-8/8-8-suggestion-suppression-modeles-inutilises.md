@@ -256,8 +256,8 @@ Utilisateur :
 
 ### Task 5 : Mettre à jour `WhisperModelCard` — alerte visuelle (AC5, AC6, AC7)
 
-- [ ] Subtask 5.1 : Même ajout de props que `LLMModelCard` (cohérence)
-- [ ] Subtask 5.2 : Même bloc d'alerte conditionnel
+- [x] Subtask 5.1 : Même ajout de props que `LLMModelCard` (cohérence)
+- [x] Subtask 5.2 : Même bloc d'alerte conditionnel
 
 ### Task 6 : Mettre à jour les screens (AC4, AC5, AC6, AC7)
 
@@ -619,6 +619,18 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+**Task 5 — Alerte visuelle `WhisperModelCard` (2026-03-01)**
+
+- 3 props optionnelles ajoutées à `WhisperModelCardProps` : `unusedDays?: number`, `onDeleteUnused?: () => void`, `onDismissUnused?: () => void` (Subtask 5.1 — cohérence avec LLMModelCard, backward compatible)
+- 2 nouvelles couleurs theme-aware dans `getThemeColors()` : `inactivityAlertBg` (warm orange) + `inactivityAlertBorderColor` (warning border)
+- `formatBytes` étendu pour inclure les GB — nécessaire pour l'affichage de large-v3 (~3.1 GB)
+- Bloc alerte conditionnel implémenté dans `status === 'ready'` uniquement : affiché si `unusedDays !== undefined && unusedDays >= 15` (AC5 — alerte visible seulement si le modèle est téléchargé)
+- Icône `alert-triangle` (Feather) + texte `"Non utilisé depuis {unusedDays} jours"` (dynamique)
+- Bouton "Supprimer ({formatBytes(expectedSize)})" → délègue à `onDeleteUnused` (confirmation au niveau du Screen — cohérence Subtask 4.3)
+- Bouton "Ignorer" → délègue à `onDismissUnused`
+- 8 nouveaux styles : `inactivityAlert`, `inactivityAlertHeader`, `inactivityAlertTitle`, `inactivityAlertButtons`, `inactivityDeleteButton`, `inactivityDeleteButtonText`, `inactivityDismissButton`, `inactivityDismissButtonText`
+- 0 régression — 199 échecs pré-existants confirmés (mêmes avant/après stash)
+
 **Task 4 — Alerte visuelle `LLMModelCard` (2026-03-01)**
 
 - 3 props optionnelles ajoutées à `LLMModelCardProps` : `unusedDays?: number`, `onDeleteUnused?: () => void`, `onDismissUnused?: () => void` (Subtask 4.1 — backward compatible)
@@ -687,6 +699,9 @@ claude-sonnet-4-6
 **Fichiers modifiés (Task 4) :**
 - `pensieve/mobile/src/components/llm/LLMModelCard.tsx` — ajout props `unusedDays`/`onDeleteUnused`/`onDismissUnused`, bloc alerte inactivité conditionnel, couleurs theme-aware, styles
 
+**Fichiers modifiés (Task 5) :**
+- `pensieve/mobile/src/components/whisper/WhisperModelCard.tsx` — ajout props `unusedDays`/`onDeleteUnused`/`onDismissUnused`, couleurs `inactivityAlertBg`/`inactivityAlertBorderColor` theme-aware, bloc alerte inactivité conditionnel dans `status === 'ready'`, mise à jour `formatBytes` pour GB, 8 nouveaux styles
+
 **Fichiers modifiés (Task 3) :**
 - `pensieve/mobile/src/contexts/Normalization/services/TranscriptionModelService.ts` — injection constructeur `@inject`, tracking dans `.done()` + `setSelectedModel()` + `deleteModel()`, ajout `getDownloadedModelSizes()`
 - `pensieve/mobile/src/hooks/useServices.ts` — `useTranscriptionModel()` → `useDI(TranscriptionModelService)` (suppression `useMemo`)
@@ -706,3 +721,4 @@ claude-sonnet-4-6
 | 2026-03-01 | Task 2 implémentée — Intégration tracking dans LLMModelService : injection DI, trackModelUsed au téléchargement + sélection, clearModelTracking à la suppression, getDownloadedModelIds() exposé. 0 régression, TypeScript conforme. | yohikofox |
 | 2026-03-01 | Task 3 implémentée — Injection constructeur @inject(IModelUsageTrackingService), suppression anti-pattern new TranscriptionModelService() sur tous les call sites (useServices, WhisperSettingsScreen, WhisperModelCard, SettingsScreen, TranscriptionWorker), mocks tests mis à jour. 0 régression. | yohikofox |
 | 2026-03-01 | Task 4 implémentée — LLMModelCard : 3 props optionnelles ajoutées (unusedDays, onDeleteUnused, onDismissUnused), bloc alerte inactivité conditionnel (unusedDays >= 15) avec icône warning, texte dynamique, boutons Supprimer/Ignorer délégués au Screen. 11/11 tests unitaires verts, 0 régression. | yohikofox |
+| 2026-03-01 | Task 5 implémentée — WhisperModelCard : même 3 props optionnelles (Subtask 5.1), même bloc alerte conditionnel dans status === 'ready' (Subtask 5.2), couleurs theme-aware inactivityAlertBg + inactivityAlertBorderColor, formatBytes étendu au GB (large-v3 ~3.1 GB), 8 nouveaux styles. 0 régression (199 échecs pré-existants confirmés). | yohikofox |
