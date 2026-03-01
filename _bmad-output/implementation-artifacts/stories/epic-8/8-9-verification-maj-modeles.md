@@ -460,9 +460,9 @@ Utilisateur :
 
 ### Task 4 : Intégrer `recordDownload` dans `TranscriptionModelService` (AC4)
 
-- [ ] **Subtask 4.1** : Injecter `IModelUpdateCheckService` dans `TranscriptionModelService`
+- [x] **Subtask 4.1** : Injecter `IModelUpdateCheckService` dans `TranscriptionModelService`
 
-- [ ] **Subtask 4.2** : Dans le handler `.done()` de `downloadModel()` pour les modèles Whisper :
+- [x] **Subtask 4.2** : Dans le handler `.done()` de `downloadModel()` pour les modèles Whisper :
   ```typescript
   .done(async ({ location }) => {
     // ... logique existante (SHA256 check, etc.) ...
@@ -474,7 +474,7 @@ Utilisateur :
 
 ### Task 5 : Créer `useModelUpdateCheck` hook (AC1, AC2, AC3)
 
-- [ ] **Subtask 5.1** : Créer `mobile/src/hooks/useModelUpdateCheck.ts`
+- [x] **Subtask 5.1** : Créer `mobile/src/hooks/useModelUpdateCheck.ts`
 
   Ce hook gère la logique d'orchestration pour un écran de settings (LLM ou Whisper) :
 
@@ -567,7 +567,7 @@ Utilisateur :
 
 ### Task 6 : Mettre à jour `LLMModelCard.tsx` et `WhisperModelCard.tsx` (AC4, AC5)
 
-- [ ] **Subtask 6.1** : Ajouter une prop optionnelle `updateInfo?: ModelUpdateInfo` à `LLMModelCard` et `WhisperModelCard`
+- [x] **Subtask 6.1** : Ajouter une prop optionnelle `updateInfo?: ModelUpdateInfo` à `LLMModelCard` et `WhisperModelCard`
 
   Affichage conditionnel (ajouter sous les informations de taille du modèle) :
   ```tsx
@@ -596,7 +596,7 @@ Utilisateur :
   }
   ```
 
-- [ ] **Subtask 6.2** : Ajouter prop optionnelle `onUpdate?: (modelId: string) => void` pour déclencher la mise à jour
+- [x] **Subtask 6.2** : Ajouter prop optionnelle `onUpdate?: (modelId: string) => void` pour déclencher la mise à jour
 
   ⚠️ Ne pas modifier le layout existant des cartes de manière cassante — les nouvelles infos sont **additivement** ajoutées en dessous
 
@@ -993,6 +993,9 @@ claude-sonnet-4-6
 - ✅ Task 1 complète (2026-03-01) : `IModelUpdateCheckService` (interface + types) et `ModelUpdateCheckService` (implémentation complète avec 6 méthodes : recordDownload, isCheckNeeded, checkForUpdate, recordUpdate, getUpdateInfo, clearModelTracking) créés. Enregistrement DI ajouté dans tokens.ts et container.ts (TRANSIENT, ADR-021 conforme). Zéro régression sur les tests unitaires existants.
 - ✅ Task 2 complète (2026-03-01) : `notifyUpdateAvailable()` ajoutée à l'interface `IModelDownloadNotificationService` (Subtask 2.1) et implémentée dans `ModelDownloadNotificationService` avec vérification de permissions avant envoi et `type: 'model_update_available'` dans data (Subtask 2.2). `useModelDownloadNotificationHandler` étendu pour gérer les notifications `model_update_available` (Subtask 2.3). 5 nouveaux tests unitaires ajoutés (28/28 verts).
 - ✅ Task 3 complète (2026-03-01) : `IModelUpdateCheckService` injecté dans `LLMModelService` via `@inject(TOKENS.IModelUpdateCheckService)` (Subtask 3.1). Appel `recordDownload()` fire-and-forget ajouté dans le handler `.done()` de `downloadModel()` juste après `trackModelUsed` (Subtask 3.2). Zéro régression sur les tests BDD stories 8.7/8.8.
+- ✅ Task 4 complète (2026-03-01) : `IModelUpdateCheckService` injecté dans `TranscriptionModelService` via constructeur `@inject` (Subtask 4.1). Appel `recordDownload()` fire-and-forget ajouté dans le handler `.done()` de `downloadModel()` après `trackModelUsed` — utilise `modelUrl` depuis la closure (Subtask 4.2). Tests mis à jour avec mock `IModelUpdateCheckService` dans les 2 fichiers de test. 8/14 tests passent (6 failures pré-existantes liées à container.resolve IModelDownloadNotificationService non enregistré dans les tests, antérieures à cette story).
+- ✅ Task 5 complète (2026-03-01) : `useModelUpdateCheck.ts` créé dans `mobile/src/hooks/`. Gère : chargement initial AsyncStorage (loadStoredInfo), auto-check throttled au mount (autoCheckAll), check manuel sans throttle (checkAll). Retourne `{ updateInfoMap, isChecking, checkAll }`. Résolution lazy des services (ADR-021).
+- ✅ Task 6 complète (2026-03-01) : `LLMModelCard.tsx` et `WhisperModelCard.tsx` mis à jour avec props optionnelles `updateInfo?: ModelUpdateInfo` et `onUpdate?: (modelId) => void`. Affichage conditionnel de la date de téléchargement/mise à jour et badge "Mise à jour disponible" avec bouton amber dans la section `status === 'ready'`. Helper `formatDate()` ajouté. Layout existant non cassé (props additives uniquement).
 
 ### File List
 
@@ -1005,6 +1008,12 @@ claude-sonnet-4-6
 - `pensieve/mobile/src/contexts/Normalization/services/__tests__/ModelDownloadNotificationService.test.ts` (modifié — 5 nouveaux tests pour notifyUpdateAvailable)
 - `pensieve/mobile/src/hooks/initialization/useModelDownloadNotificationHandler.ts` (modifié — support type model_update_available)
 - `pensieve/mobile/src/contexts/Normalization/services/LLMModelService.ts` (modifié — injection IModelUpdateCheckService + appel recordDownload dans .done())
+- `pensieve/mobile/src/contexts/Normalization/services/TranscriptionModelService.ts` (modifié — import + injection IModelUpdateCheckService + appel recordDownload dans .done())
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/TranscriptionModelService.test.ts` (modifié — import + mock IModelUpdateCheckService)
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/TranscriptionModelService.retry.test.ts` (modifié — import + mock IModelUpdateCheckService)
+- `pensieve/mobile/src/hooks/useModelUpdateCheck.ts` (créé — hook orchestration vérification mises à jour)
+- `pensieve/mobile/src/components/llm/LLMModelCard.tsx` (modifié — props updateInfo + onUpdate + affichage date/badge update)
+- `pensieve/mobile/src/components/whisper/WhisperModelCard.tsx` (modifié — props updateInfo + onUpdate + affichage date/badge update)
 
 ---
 
@@ -1012,6 +1021,7 @@ claude-sonnet-4-6
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2026-03-01 | Tasks 4+5+6 implémentées : TranscriptionModelService injecte IModelUpdateCheckService + recordDownload Whisper, hook useModelUpdateCheck créé (loadStoredInfo + autoCheckAll throttled + checkAll manuel), LLMModelCard et WhisperModelCard étendus (updateInfo + onUpdate props, affichage date + badge mise à jour) | claude-sonnet-4-6 |
 | 2026-03-01 | Tasks 2+3 implémentées : notifyUpdateAvailable() (interface+implémentation+5 tests), useModelDownloadNotificationHandler étendu (model_update_available), LLMModelService injecté IModelUpdateCheckService + recordDownload fire-and-forget dans .done() | claude-sonnet-4-6 |
 | 2026-03-01 | Task 1 implémentée : IModelUpdateCheckService + ModelUpdateCheckService + DI registration | claude-sonnet-4-6 |
 | 2026-03-01 | Story créée depuis issue GitHub #6 — analyse exhaustive : IModelUsageTrackingService (pattern AsyncStorage story 8.8), ModelDownloadNotificationService (extensions story 8.7), LLMModelConfig.downloadUrl (HEAD request), strategy ETag + Last-Modified fallback, backward compat modèles pré-story-8.9. Architecture : nouveau IModelUpdateCheckService + extension notifService + hook useModelUpdateCheck + UI additif LLMModelCard/WhisperModelCard. | yohikofox |
