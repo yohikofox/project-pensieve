@@ -1,6 +1,6 @@
 # Story 8.15: Priorisation Visuelle des Tâches
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation optionnelle. Lancer validate-create-story pour vérification qualité avant dev-story. -->
 
@@ -77,7 +77,7 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
 ## Tasks / Subtasks
 
 ### Task 1: Créer `getUrgencyLevel()` utility (AC1–AC4)
-- [ ] Subtask 1.1: Créer `mobile/src/contexts/action/utils/getUrgencyLevel.ts`
+- [x] Subtask 1.1: Créer `mobile/src/contexts/action/utils/getUrgencyLevel.ts`
   ```typescript
   import type { Todo } from '../domain/Todo.model';
   import { formatDeadline } from './formatDeadline';
@@ -111,7 +111,7 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
   }
   ```
 
-- [ ] Subtask 1.2: Créer `mobile/src/contexts/action/utils/getUrgencyBorderColor.ts`
+- [x] Subtask 1.2: Créer `mobile/src/contexts/action/utils/getUrgencyBorderColor.ts`
   ```typescript
   import type { UrgencyLevel } from './getUrgencyLevel';
 
@@ -127,7 +127,7 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
     return URGENCY_BORDER_COLORS[level];
   }
   ```
-- [ ] Subtask 1.3: Créer tests unitaires `mobile/src/contexts/action/utils/__tests__/getUrgencyLevel.test.ts`
+- [x] Subtask 1.3: Créer tests unitaires `mobile/src/contexts/action/utils/__tests__/getUrgencyLevel.test.ts`
   - Test overdue (deadline hier)
   - Test prioritaire (priority=high, pas de deadline)
   - Test approaching (deadline dans 24h)
@@ -136,9 +136,9 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
   - Test précédence prioritaire > approaching (todo priority=high + deadline dans 24h → "prioritaire")
 
 ### Task 2: Ajouter left border dans ActionsTodoCard (AC1–AC4)
-- [ ] Subtask 2.1: Ouvrir `mobile/src/contexts/action/ui/ActionsTodoCard.tsx`
-- [ ] Subtask 2.2: Importer `getUrgencyLevel` et `getUrgencyBorderColor`
-- [ ] Subtask 2.3: Modifier le Pressable externe pour inclure la barre gauche :
+- [x] Subtask 2.1: Ouvrir `mobile/src/contexts/action/ui/ActionsTodoCard.tsx`
+- [x] Subtask 2.2: Importer `getUrgencyLevel` et `getUrgencyBorderColor`
+- [x] Subtask 2.3: Modifier le Pressable externe pour inclure la barre gauche :
   - Wrapper la carte avec un `View` contenant la barre colorée :
   ```tsx
   // Outer wrapper avec la barre gauche
@@ -159,11 +159,11 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
   ```
   OU ajouter `borderLeftWidth: 4` et `borderLeftColor` directement sur le Pressable.
   **Recommandé** : utiliser `borderLeftWidth`/`borderLeftColor` pour garder le rounded-lg intègre.
-- [ ] Subtask 2.4: Calculer `urgencyLevel = getUrgencyLevel(todo)` au niveau du composant (mémo si nécessaire)
-- [ ] Subtask 2.5: Vérifier que le styling `abandoned` (story 8.14, si déjà implémentée) n'entre pas en conflit avec la bordure
+- [x] Subtask 2.4: Calculer `urgencyLevel = getUrgencyLevel(todo)` au niveau du composant (mémo si nécessaire)
+- [x] Subtask 2.5: Vérifier que le styling `abandoned` (story 8.14, si déjà implémentée) n'entre pas en conflit avec la bordure
 
 ### Task 3: Ajouter toggle "Prioritaire" rapide dans ActionsTodoCard (AC5)
-- [ ] Subtask 3.1: Créer hook `mobile/src/contexts/action/hooks/useTogglePriority.ts`
+- [x] Subtask 3.1: Créer hook `mobile/src/contexts/action/hooks/useTogglePriority.ts`
   ```typescript
   import { useMutation, useQueryClient } from '@tanstack/react-query';
   import * as Haptics from 'expo-haptics';
@@ -191,7 +191,7 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
     });
   };
   ```
-- [ ] Subtask 3.2: Intégrer le bouton toggle dans `ActionsTodoCard.tsx` :
+- [x] Subtask 3.2: Intégrer le bouton toggle dans `ActionsTodoCard.tsx` :
   - Icône `star` (Feather ou Ionicons : `star-outline` / `star`)
   - Positionné en haut-droite de la carte (absolu ou dans le header row)
   - `star` plein et orange si `todo.priority === 'high'`, `star-outline` gris sinon
@@ -214,9 +214,9 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
   Note : Feather n'a pas `star-fill`, utiliser Ionicons `star` / `star-outline` ou FontAwesome.
 
 ### Task 4: Mettre à jour sortTodos.ts pour AC6 (sort "Priorité")
-- [ ] Subtask 4.1: Ouvrir `mobile/src/contexts/action/utils/sortTodos.ts`
-- [ ] Subtask 4.2: Importer `getUrgencyLevel` dans `sortTodos.ts`
-- [ ] Subtask 4.3: Dans le case `"priority"`, remplacer le tri actuel par le tri basé sur l'urgency level :
+- [x] Subtask 4.1: Ouvrir `mobile/src/contexts/action/utils/sortTodos.ts`
+- [x] Subtask 4.2: Importer `getUrgencyLevel` dans `sortTodos.ts`
+- [x] Subtask 4.3: Dans le case `"priority"`, remplacer le tri actuel par le tri basé sur l'urgency level :
   ```typescript
   const URGENCY_ORDER: Record<UrgencyLevel, number> = {
     overdue:     0,
@@ -237,18 +237,18 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
       return a.createdAt - b.createdAt;
     });
   ```
-- [ ] Subtask 4.4: S'assurer que les tests unitaires existants de `sortTodos.ts` passent toujours
+- [x] Subtask 4.4: S'assurer que les tests unitaires existants de `sortTodos.ts` passent toujours
 
 ### Task 5: Appliquer le left border dans InlineTodoList / TodoItem (AC7)
-- [ ] Subtask 5.1: Ouvrir `mobile/src/contexts/action/ui/TodoItem.tsx` (utilisé dans InlineTodoList pour le Feed)
-- [ ] Subtask 5.2: Appliquer le même pattern left border que dans ActionsTodoCard
+- [x] Subtask 5.1: Ouvrir `mobile/src/contexts/action/ui/TodoItem.tsx` (utilisé dans InlineTodoList pour le Feed)
+- [x] Subtask 5.2: Appliquer le même pattern left border que dans ActionsTodoCard
   - Importer `getUrgencyLevel`, `getUrgencyBorderColor`
   - Ajouter la barre gauche colorée
   - **Pas de toggle star dans le Feed inline** (AC7 demande seulement la cohérence visuelle, pas l'édition)
-- [ ] Subtask 5.3: Si `TodoItem.tsx` n'est pas utilisé dans le Feed et que c'est `InlineTodoList.tsx` qui render directement, adapter `InlineTodoList.tsx`
+- [x] Subtask 5.3: Si `TodoItem.tsx` n'est pas utilisé dans le Feed et que c'est `InlineTodoList.tsx` qui render directement, adapter `InlineTodoList.tsx`
 
 ### Task 6: Tests BDD (AC1–AC5)
-- [ ] Subtask 6.1: Créer `mobile/tests/acceptance/features/story-8-15-priorisation-visuelle-des-taches.feature`
+- [x] Subtask 6.1: Créer `mobile/tests/acceptance/features/story-8-15-priorisation-visuelle-des-taches.feature`
   ```gherkin
   Feature: Priorisation Visuelle des Tâches
     En tant qu'utilisateur
@@ -294,22 +294,22 @@ Le champ `priority: "low" | "medium" | "high"` existe DÉJÀ dans le modèle Tod
       Then the todo card has a red left border (overdue takes precedence)
       And the urgency level is "overdue"
   ```
-- [ ] Subtask 6.2: Créer `mobile/tests/acceptance/story-8-15.test.ts` avec step definitions jest-cucumber
+- [x] Subtask 6.2: Créer `mobile/tests/acceptance/story-8-15.test.ts` avec step definitions jest-cucumber
   - Utiliser les mocks in-memory de `tests/acceptance/support/test-context.ts`
   - Mocker `ITodoRepository.update()` pour le toggle priority
   - Tester `getUrgencyLevel()` directement dans les steps (pas de render React Native dans acceptance tests)
-- [ ] Subtask 6.3: Lancer `npm run test:acceptance` dans `pensieve/mobile` pour valider
-- [ ] Subtask 6.4: Lancer les tests architecture `npm run test:architecture` (ADR compliance)
+- [x] Subtask 6.3: Lancer `npm run test:acceptance` dans `pensieve/mobile` pour valider
+- [x] Subtask 6.4: Lancer les tests architecture `npm run test:architecture` (ADR compliance)
 
 ### Task 7: Non-régression
-- [ ] Subtask 7.1: Vérifier que les tests BDD des stories 5.x (Tab Actions) passent toujours après les modifications de `sortTodos.ts`
-- [ ] Subtask 7.2: Vérifier que les tests unitaires de `filterTodos.ts`, `sortTodos.ts` passent
+- [x] Subtask 7.1: Vérifier que les tests BDD des stories 5.x (Tab Actions) passent toujours après les modifications de `sortTodos.ts`
+- [x] Subtask 7.2: Vérifier que les tests unitaires de `filterTodos.ts`, `sortTodos.ts` passent
 - [ ] Subtask 7.3: Vérifier manuellement sur device que :
   - Tâche dépassée = bordure rouge + texte "En retard de X jours" (déjà existant)
   - Toggle star → bordure orange instantanée
   - Tâche avec deadline dans 24h = bordure amber
   - Mode "Toutes" filtre + tri par urgence correct
-- [ ] Subtask 7.4: Vérifier que `readonly=true` (corbeille) n'active pas le toggle star
+- [x] Subtask 7.4: Vérifier que `readonly=true` (corbeille) n'active pas le toggle star
 
 ## Dev Notes
 
@@ -510,7 +510,34 @@ N/A — Story de création
 
 ### Completion Notes List
 
-Ultimate context engine analysis completed — comprehensive developer guide created.
+**Story créée (contexte)** : Ultimate context engine analysis completed — comprehensive developer guide created.
+
+**Implémentation réalisée (2026-03-04)** :
+
+- ✅ `getUrgencyLevel()` créé avec ordre de précédence correct : overdue > prioritaire > approaching > normal
+- ✅ `getUrgencyBorderColor()` créé avec constantes URGENCY_BORDER_COLORS (ADR-024 conforme)
+- ✅ `useTogglePriority` hook créé suivant le pattern Zustand ADR-038 (et non React Query comme dans la spec — la codebase a migré vers Zustand)
+- ✅ `ActionsTodoCard.tsx` : wrapper View + barre gauche 4dp colorée (Option B style Notion) + bouton star toggle (readonly guard)
+- ✅ `TodoItem.tsx` : même pattern barre gauche appliqué pour cohérence Feed inline (AC7)
+- ✅ `sortTodos.ts` case "priority" : remplacé par tri urgency level (overdue→prioritaire→approaching→normal) avec secondary deadline + tertiary createdAt
+- ✅ 11 tests unitaires `getUrgencyLevel.test.ts` verts (11/11)
+- ✅ 8 tests BDD `story-8-15.test.ts` verts (8/8)
+- ✅ Aucune régression : 22/22 tests sortTodos + 69/69 tests utils action
+
+**Décision technique** : `useTogglePriority` utilise Zustand (`useTodosListStore.onMutation`) au lieu de React Query (obsolète dans cette codebase suite à ADR-038). Conforme au pattern `useDeleteTodo` / `useUpdateTodo`.
+
+**Code Review Adversarial (2026-03-04) — 9 issues corrigées :**
+- H1: `TodoItem.tsx` — `borderTopLeftRadius: 0, borderBottomLeftRadius: 0` sur TouchableOpacity (gap visuel avec barre gauche)
+- H2: `sortTodos.ts` — Pre-compute `urgencyMap` avant le `.sort()` pour passer de O(N log N) à O(N) appels `getUrgencyLevel`
+- H3: `ActionsTodoCard.tsx` — `paddingRight: 40` sur la carte pour éviter overlap avec le bouton star absolu
+- M1: `useTogglePriority.ts` — Optimistic UI ajouté : `useTodosListStore.setState()` immédiat + rollback sur erreur (AC5 compliance)
+- M2: `ActionsTodoCard.tsx` — Indentation `<Pressable>` corrigée (10 espaces, enfant de Swipeable à 8)
+- M3: `getUrgencyBorderColor.test.ts` créé (6 tests, mapping couleurs complet)
+- M4: `useMemo` ajouté pour `urgencyBorderColor` dans `ActionsTodoCard` et `TodoItem`
+- L1: JSDoc `getUrgencyLevel.ts` — note sur comportement "aujourd'hui mais heure passée = approaching"
+- L2: Commentaire `ActionsTodoCard.tsx` — `"Subtask 2.3 + 2.8"` → `"Story 8.14 + 8.15"`
+
+**Subtask 7.3** : Validation manuelle sur device à effectuer lors du code review exploratoire mobile.
 
 **Analyse réalisée :**
 - `priority: "low" | "medium" | "high"` : champ DÉJÀ dans Todo.model.ts — pas de nouveau champ `isPriority: boolean`
@@ -528,4 +555,19 @@ Ultimate context engine analysis completed — comprehensive developer guide cre
 
 ### File List
 
-À compléter par le Dev Agent lors de l'implémentation.
+**Nouveaux fichiers créés :**
+- `pensieve/mobile/src/contexts/action/utils/getUrgencyLevel.ts`
+- `pensieve/mobile/src/contexts/action/utils/getUrgencyBorderColor.ts`
+- `pensieve/mobile/src/contexts/action/hooks/useTogglePriority.ts`
+- `pensieve/mobile/src/contexts/action/utils/__tests__/getUrgencyLevel.test.ts`
+- `pensieve/mobile/tests/acceptance/features/story-8-15-priorisation-visuelle-des-taches.feature`
+- `pensieve/mobile/tests/acceptance/story-8-15.test.ts`
+
+**Fichiers modifiés :**
+- `pensieve/mobile/src/contexts/action/ui/ActionsTodoCard.tsx`
+- `pensieve/mobile/src/contexts/action/ui/TodoItem.tsx`
+- `pensieve/mobile/src/contexts/action/utils/sortTodos.ts`
+- `pensine/_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+**Fichiers ajoutés lors du code review :**
+- `pensieve/mobile/src/contexts/action/utils/__tests__/getUrgencyBorderColor.test.ts`
