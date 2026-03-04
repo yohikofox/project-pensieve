@@ -233,7 +233,7 @@ development_status:
   # Périmètre: Mobile uniquement (React Native)
   epic-16: in-progress
   16-1-capture-processing-guards-feedback: ready-for-dev # Guards actions + feedback visuel pendant processing (liste + détail)
-  16-2-text-capture-digestion-pipeline: ready-for-dev # Bug: captures texte ne déclenchent pas pipeline IA (sync → RabbitMQ → GPT manquant)
+  16-2-text-capture-digestion-pipeline: done # Bug: captures texte ne déclenchent pas pipeline IA — fix SyncService → DigestionJobPublisher (AC1-AC6)
   epic-16-retrospective: optional
 
   # Epic 17: Chiffrement Côté Client Zero-Knowledge (4 stories)

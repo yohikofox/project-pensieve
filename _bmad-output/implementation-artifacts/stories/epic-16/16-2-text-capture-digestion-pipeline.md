@@ -1,6 +1,6 @@
 # Story 16.2: Text Capture — Déclenchement Pipeline IA (Digestion + Extraction)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -116,6 +116,14 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- **Code Review (adversarial)** : 3H + 3M + 2L identifiés et corrigés —
+  H1: ICaptureRepository.create() interface étendue (normalizedText, fileSize) ;
+  H2: mock ICaptureRepository dans 2 tests (findBySyncStatus inexistante → supprimée, méthodes manquantes ajoutées, syncStatus supprimé) ;
+  H3: CaptureRepository.enqueue() payload inclut normalizedText ;
+  M1: CaptureEventsHandler dead code documenté (commentaire TODO registration) ;
+  M2: last_modified_at → lastModifiedAt (camelCase TypeORM) dans applyCapturePushInTransaction ;
+  L1: assertion captureId ajoutée dans test AC1.
+
 - **Task 1 (AC1)** : `SyncService.processPush()` collecte les IDs des nouvelles captures texte pendant la transaction et appelle `DigestionJobPublisher.publishJobForTextCapture()` APRÈS le commit (évite publication RabbitMQ orpheline en cas de rollback). `applyCapturePushInTransaction()` retourne `newTextCaptureId` si `clientRecord.type === 'text'` et capture nouvelle.
 - **Task 2 (AC2)** : `ContentExtractorService` était déjà correct — branche `type === 'TEXT'` confirme envoi direct `rawContent` à GPT sans transcription. Test `capture-events-handler.spec.ts` ajouté.
 - **Task 3 (AC3/AC4 — correction)** : 3 bugs mobiles identifiés et corrigés :
@@ -129,9 +137,12 @@ claude-sonnet-4-6
 
 - `pensieve/backend/src/modules/sync/application/services/sync.service.ts` (modifié)
 - `pensieve/backend/src/modules/sync/sync.module.ts` (modifié)
-- `pensieve/backend/src/modules/sync/__tests__/sync.service.spec.ts` (modifié)
-- `pensieve/backend/src/modules/knowledge/application/handlers/capture-events-handler.spec.ts` (créé)
-- `pensieve/mobile/src/contexts/capture/data/CaptureRepository.ts` (modifié — normalized_text dans INSERT)
+- `pensieve/backend/src/modules/sync/__tests__/sync.service.spec.ts` (modifié — code review: vérification captureId ajoutée)
+- `pensieve/backend/src/modules/knowledge/application/handlers/capture-events-handler.spec.ts` (créé — code review: commentaire dead code ajouté)
+- `pensieve/backend/src/modules/knowledge/application/handlers/transcription-completed.handler.ts` (modifié — code review: commentaire TODO enregistrement)
+- `pensieve/mobile/src/contexts/capture/domain/ICaptureRepository.ts` (modifié — code review: normalizedText + fileSize dans create())
+- `pensieve/mobile/src/contexts/capture/data/CaptureRepository.ts` (modifié — normalized_text dans INSERT + normalizedText dans enqueue payload)
 - `pensieve/mobile/src/contexts/capture/services/TextCaptureService.ts` (modifié — state READY)
+- `pensieve/mobile/src/contexts/capture/services/__tests__/TextCaptureService.test.ts` (modifié — code review: mock aligné ICaptureRepository, syncStatus supprimé)
 - `pensieve/mobile/src/stores/captureDetailStore.ts` (modifié — isReady étendu pour text+captured)
-- `pensieve/mobile/tests/acceptance/capture/text-capture-service.test.ts` (modifié)
+- `pensieve/mobile/tests/acceptance/capture/text-capture-service.test.ts` (modifié — code review: mock complet, syncStatus supprimé)
