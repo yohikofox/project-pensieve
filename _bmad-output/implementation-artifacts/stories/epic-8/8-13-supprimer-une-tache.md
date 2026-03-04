@@ -1,6 +1,6 @@
 # Story 8.13: Supprimer une Tâche
 
-Status: review
+Status: done
 
 <!-- Note: Validation optionnelle. Lancer validate-create-story pour vérification qualité avant dev-story. -->
 
@@ -319,4 +319,20 @@ Ultimate context engine analysis completed — comprehensive developer guide cre
 
 ### File List
 
-N/A — À compléter par le Dev Agent lors de l'implémentation
+**Fichiers modifiés :**
+- `mobile/src/contexts/action/ui/ActionsTodoCard.tsx` — Swipeable wrapper + renderRightActions + handleDeleteWithConfirmation
+- `mobile/src/contexts/action/ui/TodoDetailPopover.tsx` — Retrait condition debugMode sur delete button + handleDelete
+- `mobile/src/database/index.ts` — Ajout méthode `execute()` publique (support tests)
+- `mobile/jest.config.acceptance.js` — Configuration ts-jest pour les tests acceptance
+- `mobile/package.json` — Ajout dépendance `better-sqlite3` (dev)
+- `mobile/package-lock.json` — Lock file mis à jour
+
+**Nouveaux fichiers :**
+- `mobile/__mocks__/@op-engineering/op-sqlite.ts` — Mock in-memory better-sqlite3 pour les tests acceptance
+- `mobile/tests/acceptance/features/story-8-13-supprimer-une-tache.feature` — Scénarios Gherkin (4 scénarios)
+- `mobile/tests/acceptance/story-8-13.test.ts` — Step definitions jest-cucumber
+
+**Corrections code review (post-review) :**
+- `mobile/src/contexts/action/hooks/useDeleteTodo.ts` — Ajout Alert user-friendly dans onError + JSDoc mis à jour
+- `mobile/src/contexts/action/ui/TodoDetailPopover.tsx` — Haptic/onClose déplacés dans onSuccess
+- `mobile/src/contexts/action/ui/ActionsTodoCard.tsx` — Haptic déplacé dans onSuccess + rightThreshold={40}
