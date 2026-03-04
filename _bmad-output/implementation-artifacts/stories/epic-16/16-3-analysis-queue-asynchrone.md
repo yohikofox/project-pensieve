@@ -1,6 +1,6 @@
 # Story 16.3: Queue d'Analyses Asynchrone
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -91,38 +91,38 @@ afin de **ne plus subir de crashs lors d'analyses simultanées, de recevoir une 
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1 — Créer `AnalysisQueueService` (AC1, AC2, AC3, AC6)**
-  - [ ] 1.1 — Créer `mobile/src/contexts/Normalization/services/AnalysisQueueService.ts`
-  - [ ] 1.2 — Implémenter l'interface : `enqueue(captureId, type)`, `getQueueStatus(captureId)`, `isInQueue(captureId, type)`
-  - [ ] 1.3 — Worker interne : boucle séquentielle `while(queue.length) { await process(next) }` avec flag `isProcessing`
-  - [ ] 1.4 — Dédoublonnage : vérifier `captureId+type` avant d'enqueuer
-  - [ ] 1.5 — Enregistrer comme singleton dans `container.ts` via TSyringe
+- [x] **Task 1 — Créer `AnalysisQueueService` (AC1, AC2, AC3, AC6)**
+  - [x] 1.1 — Créer `mobile/src/contexts/Normalization/services/AnalysisQueueService.ts`
+  - [x] 1.2 — Implémenter l'interface : `enqueue(captureId, type)`, `getQueueStatus(captureId)`, `isInQueue(captureId, type)`
+  - [x] 1.3 — Worker interne : boucle séquentielle avec flag `isProcessing` (processNext récursif via `.then/.catch/.finally`)
+  - [x] 1.4 — Dédoublonnage : vérifier `captureId+type` avant d'enqueuer (pending + currentItem)
+  - [x] 1.5 — Enregistrer comme singleton dans `container.ts` via TSyringe
 
-- [ ] **Task 2 — Intégrer EventBus pour les notifications de complétion (AC4)**
-  - [ ] 2.1 — Définir les événements : `AnalysisCompletedEvent { captureId, analysisType, result }` et `AnalysisFailedEvent { captureId, analysisType, error }`
-  - [ ] 2.2 — Émettre via `EventBus.publish('analysis.completed', ...)` à la fin de chaque item traité
-  - [ ] 2.3 — Émettre `analysis.failed` sur erreur, puis continuer la queue (ne pas bloquer)
+- [x] **Task 2 — Intégrer EventBus pour les notifications de complétion (AC4)**
+  - [x] 2.1 — Définir les événements : `AnalysisCompletedEvent { captureId, analysisType, result }` et `AnalysisFailedEvent { captureId, analysisType, error }` dans `AnalysisEvents.ts`
+  - [x] 2.2 — Émettre via `eventBus.publish(event)` à la fin de chaque item traité
+  - [x] 2.3 — Émettre `AnalysisFailed` sur erreur catch, puis continuer la queue (ne pas bloquer)
 
-- [ ] **Task 3 — Adapter `useAnalyses` pour enqueuer plutôt qu'exécuter (AC1, AC5)**
-  - [ ] 3.1 — Remplacer `analysisService.analyze()` par `queueService.enqueue(captureId, type)` dans `handleGenerateAnalysis`
-  - [ ] 3.2 — Remplacer `analysisService.analyzeAll()` par 4 appels `queueService.enqueue()` dans `handleAnalyzeAll`
-  - [ ] 3.3 — Adapter les états de chargement : `analysisLoading[type] = true` quand en queue, `false` à la complétion via EventBus
-  - [ ] 3.4 — Souscrire à `analysis.completed` et `analysis.failed` dans `useAnalyses` via `useEffect` + `EventBus.on()`
-  - [ ] 3.5 — Désabonnement propre dans le `return` du `useEffect` (éviter les fuites mémoire)
+- [x] **Task 3 — Adapter `useAnalyses` pour enqueuer plutôt qu'exécuter (AC1, AC5)**
+  - [x] 3.1 — Remplacer `analysisService.analyze()` par `queueService.enqueue(captureId, type)` dans `handleGenerateAnalysis`
+  - [x] 3.2 — Remplacer `analysisService.analyzeAll()` par 4 appels `queueService.enqueue()` dans `handleAnalyzeAll`
+  - [x] 3.3 — Adapter les états de chargement : `analysisLoading[type] = true` + `queueStatus = 'queued'` à l'enqueue, `false`/`'idle'` à la complétion via EventBus
+  - [x] 3.4 — Souscrire à `AnalysisCompleted` et `AnalysisFailed` dans `useAnalyses` via `useEffect` + `eventBus.subscribe()`
+  - [x] 3.5 — Désabonnement propre dans le `return` du `useEffect` (éviter les fuites mémoire)
 
-- [ ] **Task 4 — Indicateur "En attente" dans l'UI (AC5)**
-  - [ ] 4.1 — Exposer `queueService.getQueueStatus(captureId)` depuis `useAnalyses` (ou via store)
-  - [ ] 4.2 — Dans `AnalysisCard` : afficher spinner + "En attente..." si `isInQueue && !isLoading`
-  - [ ] 4.3 — Différencier visuellement "en queue" (gris) vs "en cours" (bleu/spinner actif)
+- [x] **Task 4 — Indicateur "En attente" dans l'UI (AC5)**
+  - [x] 4.1 — Exposer `analysisQueueStatus: Record<AnalysisType, AnalysisQueueStatus>` depuis `useAnalyses`
+  - [x] 4.2 — Dans `AnalysisSection` + `AnalysisCard` + `IdeasSection` : afficher spinner gris + "En attente..." si `queueStatus === 'queued'`
+  - [x] 4.3 — Différencier visuellement "en queue" (spinner gris + "En attente...") vs "en cours" (spinner bleu)
 
-- [ ] **Task 5 — Tests BDD** (AC8)
-  - [ ] 5.1 — Créer `mobile/tests/acceptance/features/story-16-3-analysis-queue.feature`
-  - [ ] 5.2 — Créer `mobile/tests/acceptance/story-16-3.test.ts` avec step definitions
-  - [ ] 5.3 — Scénarios : enqueue simple, dédoublonnage, traitement séquentiel, notification complétion, gestion erreur
+- [x] **Task 5 — Tests BDD** (AC8)
+  - [x] 5.1 — Créer `mobile/tests/acceptance/features/story-16-3-analysis-queue.feature`
+  - [x] 5.2 — Créer `mobile/tests/acceptance/story-16-3.test.ts` avec step definitions
+  - [x] 5.3 — Scénarios : enqueue simple, dédoublonnage, traitement séquentiel, notification complétion, gestion erreur
 
-- [ ] **Task 6 — Tests unitaires `AnalysisQueueService`** (AC8)
-  - [ ] 6.1 — Créer `mobile/src/contexts/Normalization/services/__tests__/AnalysisQueueService.test.ts`
-  - [ ] 6.2 — Tests : `enqueue` ajoute à la queue, `isInQueue` retourne true, doublon ignoré, worker séquentiel (mock CaptureAnalysisService), événements émis
+- [x] **Task 6 — Tests unitaires `AnalysisQueueService`** (AC8)
+  - [x] 6.1 — Créer `mobile/src/contexts/Normalization/services/__tests__/AnalysisQueueService.test.ts`
+  - [x] 6.2 — Tests : `enqueue` ajoute à la queue, `isInQueue` retourne true, doublon ignoré, worker séquentiel (mock CaptureAnalysisService), événements émis
 
 ## Dev Notes
 
@@ -169,11 +169,13 @@ export class AnalysisQueueService {
 | Fichier | Action |
 |---------|--------|
 | `mobile/src/contexts/Normalization/services/AnalysisQueueService.ts` | **Créer** — service queue + worker |
+| `mobile/src/contexts/Normalization/events/AnalysisEvents.ts` | **Créer** — types événements DomainEvent |
 | `mobile/src/contexts/Normalization/services/__tests__/AnalysisQueueService.test.ts` | **Créer** — tests unitaires |
 | `mobile/src/infrastructure/di/container.ts` | **Modifier** — enregistrer `AnalysisQueueService` en singleton |
-| `mobile/src/infrastructure/di/tokens.ts` | **Modifier si nécessaire** — ajouter token si résolution par interface |
 | `mobile/src/hooks/useAnalyses.ts` | **Modifier** — enqueue + subscribe EventBus |
-| `mobile/src/components/capture/AnalysisCard.tsx` (ou équivalent) | **Modifier** — afficher état "en queue" |
+| `mobile/src/components/capture/AnalysisCard.tsx` | **Modifier** — afficher état "en queue" |
+| `mobile/src/components/capture/AnalysisSection.tsx` | **Modifier** — prop `queueStatus`, spinner gris "En attente..." |
+| `mobile/src/components/capture/IdeasSection.tsx` | **Modifier** — prop `queueStatus`, spinner gris "En attente..." |
 | `mobile/tests/acceptance/features/story-16-3-analysis-queue.feature` | **Créer** — scénarios Gherkin |
 | `mobile/tests/acceptance/story-16-3.test.ts` | **Créer** — step definitions |
 
@@ -236,8 +238,36 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
-TBD
+- **Task 1** : `AnalysisQueueService` créé avec worker séquentiel (`.then/.catch/.finally` récursif), flag `isProcessing`, `currentItem` pour tracker l'item en cours. `getItemStatus()` + `getQueueStatus()` exposés. Singleton enregistré dans `container.ts`.
+- **Task 2** : `AnalysisEvents.ts` créé dans `Normalization/events/` avec `AnalysisCompletedEvent` (type `'AnalysisCompleted'`) et `AnalysisFailedEvent` (type `'AnalysisFailed'`), conformes à l'interface `DomainEvent`.
+- **Task 3** : `useAnalyses` refactorisé — `handleGenerateAnalysis` et `handleAnalyzeAll` sont désormais synchrones (non-bloquants). L'état `analysisLoading` est piloté par les événements EventBus via `useEffect` avec cleanup. Nouvel état `analysisQueueStatus` exposé dans le return du hook.
+- **Task 4** : `AnalysisSection`, `IdeasSection`, `AnalysisCard` mis à jour avec prop `queueStatus`. Affichage différencié : spinner gris + "En attente..." (queued) vs spinner bleu (processing).
+- **Task 5** : 5 scénarios BDD (Gherkin + step definitions) — tous verts. Mock avec `neverResolve: true` pour éviter les fuites async.
+- **Task 6** : 11 tests unitaires couvrant enqueue, isInQueue, déduplication, séquentialité, événements AnalysisCompleted/AnalysisFailed, getItemStatus. Tous verts, 0 warnings.
+- **Décision architecture** : `processNext()` implémenté avec `.then/.catch/.finally` plutôt que `async/await` dans le service lui-même pour éviter les problèmes avec `@singleton()` et les cycles async non contrôlés.
 
 ### File List
 
-TBD
+- `pensieve/mobile/src/contexts/Normalization/services/AnalysisQueueService.ts` — **CRÉÉ** (+ `AnalysisStartedEvent` émis)
+- `pensieve/mobile/src/contexts/Normalization/events/AnalysisEvents.ts` — **CRÉÉ** (+ `AnalysisStartedEvent` ajouté)
+- `pensieve/mobile/src/contexts/Normalization/services/__tests__/AnalysisQueueService.test.ts` — **CRÉÉ**
+- `pensieve/mobile/src/contexts/Normalization/services/CaptureAnalysisService.ts` — **MODIFIÉ** (injection EventBus + émission summary implicite)
+- `pensieve/mobile/src/infrastructure/di/container.ts` — **MODIFIÉ** (CaptureAnalysisService → singleton + AnalysisQueueService singleton)
+- `pensieve/mobile/src/hooks/useAnalyses.ts` — **MODIFIÉ** (init queue + AnalysisStarted + guard captureId)
+- `pensieve/mobile/src/components/capture/AnalysisCard.tsx` — **MODIFIÉ** (queueStatus + UI "En attente" + fix processing action_items)
+- `pensieve/mobile/src/components/capture/AnalysisSection.tsx` — **MODIFIÉ** (prop queueStatus + styles)
+- `pensieve/mobile/src/components/capture/IdeasSection.tsx` — **MODIFIÉ** (prop queueStatus + styles)
+- `pensieve/mobile/tests/acceptance/features/story-16-3-analysis-queue.feature` — **CRÉÉ**
+- `pensieve/mobile/tests/acceptance/story-16-3.test.ts` — **CRÉÉ** (refactorisé scénario 5)
+
+## Change Log
+
+- 2026-03-04 — Implémentation complète Story 16.3 : AnalysisQueueService (worker séquentiel in-memory), AnalysisEvents, refactoring useAnalyses, UI "En attente..." dans AnalysisSection/AnalysisCard/IdeasSection. 5 BDD + 11 unit tests verts.
+- 2026-03-04 — Code review adversarial (10 issues : 3 HIGH, 4 MEDIUM, 3 LOW). Corrections appliquées :
+  - **H1** : `useAnalyses` init `analysisQueueStatus` depuis `AnalysisQueueService.getQueueStatus()` au mount + re-sync sur changement captureId (AC3/AC5)
+  - **H2** : `CaptureAnalysisService` → `registerSingleton` dans container (évite double-instance backend LLM)
+  - **H3** : `CaptureAnalysisService` injection EventBus + émission `AnalysisCompleted` pour summary généré implicitement lors de `highlights`/`action_items`
+  - **M1** : Test BDD scénario 5 refactorisé — `makeSelectiveFailingAnalysisService()` remplace le hack `(queueService as any).analysisService`
+  - **M2** : Section `action_items` dans `AnalysisCard` — ajout condition `processing` pour spinner bleu (cohérence avec `AnalysisSection`)
+  - **M3** : Guard `captureId` snapshot dans les `.then()` de `handleGenerateAnalysis` et `handleAnalyzeAll`
+  - **M4** : `AnalysisStartedEvent` ajouté — émis par `AnalysisQueueService` avant chaque inférence, souscrit dans `useAnalyses` pour transition `queued → processing`

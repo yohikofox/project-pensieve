@@ -234,7 +234,7 @@ development_status:
   epic-16: in-progress
   16-1-capture-processing-guards-feedback: ready-for-dev # Guards actions + feedback visuel pendant processing (liste + détail)
   16-2-text-capture-digestion-pipeline: done # Bug: captures texte ne déclenchent pas pipeline IA — fix SyncService → DigestionJobPublisher (AC1-AC6)
-  16-3-analysis-queue-asynchrone: ready-for-dev # Queue séquentielle analyses LLM — crash concurrent unload/generate + notification complétion via EventBus
+  16-3-analysis-queue-asynchrone: done # Queue séquentielle analyses LLM — crash concurrent unload/generate + notification complétion via EventBus
   epic-16-retrospective: optional
 
   # Epic 17: Chiffrement Côté Client Zero-Knowledge (4 stories)
