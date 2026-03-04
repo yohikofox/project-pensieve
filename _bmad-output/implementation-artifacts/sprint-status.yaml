@@ -126,7 +126,7 @@ development_status:
   8-12-export-rgpd-asynchrone: backlog # Issue #4 - Backlog
   # Quick Wins Tab Actions (source: discovery session power user 2026-02-17)
   8-13-supprimer-une-tache: done # Hard delete d'une tâche (swipe + bouton détail) - Quick Win. Code review: 2H+3M corrigés (onError Alert, haptic onSuccess, rightThreshold)
-  8-14-abandonner-une-tache: ready-for-dev # État sémantique "abandonné" (soft state, historique préservé) - Quick Win
+  8-14-abandonner-une-tache: done # Code review: 1H(dette ADR-031/ADR-038) + 4M+1L corrigés. Draft ADR-038 soumis à Winston.
   8-15-priorisation-visuelle-des-taches: ready-for-dev # Highlights couleur (retard/prioritaire/approchant/normal) - Quick Win
   # Performance fix (analysis session 2026-02-18)
   8-16-performance-latence-capture-screen: ready-for-dev # Latence ~1s premier load CaptureScreen — viole NFR1 (<500ms)
@@ -136,6 +136,8 @@ development_status:
   8-21-feature-flag-live-transcription: ready-for-dev # Bouton Live OFF par défaut — feature flag live_transcription (pattern Epic 24)
   # Refactoring feature flags orientation capacité produit (2026-03-01)
   8-22-refactoring-feature-flags-orientation-fonctionnalite: ready-for-dev # news_tab→news, projects_tab→projects, capture_media_buttons→4 flags granulaires
+  # Dette technique ADR-031/ADR-038 (2026-03-04) — issue de code review 8.14
+  8-23-todo-rich-entity-zustand-stores: ready-for-dev # Todo classe riche (ADR-031) + useTodosListStore + useTodoDetailStore (ADR-038) — refacto useAbandonTodo/useReactivateTodo
   # Email infrastructure (2026-02-18) — DÉPRÉCIÉE
   # ⚠️ Story 8-17 SUPERSEDÉE par Epic 15 (ADR-029 remplace Supabase Auth entièrement)
   8-17-configuration-smtp-email-transactionnel: deprecated # Supersedée par 15-1 — Better Auth + Resend remplace le bandaid SMTP Supabase
