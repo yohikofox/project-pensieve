@@ -1,6 +1,6 @@
 # Story 8.23: Migration Todo Classe Riche + Zustand Stores (ADR-031 / ADR-038)
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation optionnelle. Lancer validate-create-story pour vérification qualité avant dev-story. -->
 
@@ -327,11 +327,27 @@ Ordre impératif :
 2. Task 4 (refacto hooks) APRÈS Task 3 (detail store opérationnel)
 3. Task 5 (suppression useQuery) APRÈS Task 2 (list store opérationnel)
 
+**Code Review Adversarial — 2026-03-04 (8 issues fixés) :**
+
+- **[H1 FIX]** `useTodoDetailStore.abandon()` / `reactivate()` : `set({ todo })` avec la même référence ne déclenchait pas de re-render Zustand. Correction : `set({ todo: Todo.fromSnapshot(todo.toSnapshot()) })` crée une nouvelle référence.
+- **[H2 FIX]** `useTodoDetailStore.abandon()` / `reactivate()` : si `repo.save()` échouait après mutation in-place, l'entité en mémoire restait dans un état incohérent. Correction : snapshot pré-mutation + rollback via `Todo.fromSnapshot(preSnapshot)` sur échec.
+- **[H3 FIX]** `TodoRepository.save()` : absence de vérification `rowsAffected` — succès silencieux si le todo n'existait pas en DB. Correction : `notFound()` si `rowsAffected === 0`.
+- **[M1 FIX]** `story-8-14.test.ts` ajouté au File List (modifié mais omis).
+- **[M2 FIX]** `src/stores/index.ts` créé (Tasks 2.3 + 3.2 non réalisées).
+- **[M3 FIX]** BDD tests Story 8.14 — scénarios 1/2/3 mis à jour pour utiliser `entity.abandon()` + `repo.save()` (ancien chemin `repository.update()` deprecated).
+- **[M4 FIX]** `useTodosListStore.hydrate()` : ajout try/catch + état `error: string | null` — `isLoading` ne reste plus bloqué à `true` sur exception.
+- **[M5 FIX]** `useTodosListStore.hydrate()` : séquence counter `_hydrateSeq` pour ignorer les réponses obsolètes lors d'appels concurrents.
+
+**Issues LOW (action items non bloquants) :**
+- `TodoRepository.update()` : dead code — check `fields.length === 1` impossible (devrait être `=== 2`)
+- `ITodoRepository.update()` : signature `Partial<Todo>` sémantiquement incorrecte (devrait être `Partial<TodoSnapshot>`)
+
 ### File List
 
 **Nouveaux fichiers :**
 - `pensieve/mobile/src/stores/useTodosListStore.ts`
 - `pensieve/mobile/src/stores/useTodoDetailStore.ts`
+- `pensieve/mobile/src/stores/index.ts`
 
 **Fichiers modifiés :**
 - `pensieve/mobile/src/contexts/action/domain/Todo.model.ts`
@@ -339,5 +355,6 @@ Ordre impératif :
 - `pensieve/mobile/src/contexts/action/data/TodoRepository.ts`
 - `pensieve/mobile/src/contexts/action/hooks/useAbandonTodo.ts`
 - `pensieve/mobile/src/contexts/action/hooks/useReactivateTodo.ts`
+- `pensieve/mobile/tests/acceptance/story-8-14.test.ts`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
 - `_bmad-output/implementation-artifacts/stories/epic-8/8-23-todo-rich-entity-zustand-stores.md`
