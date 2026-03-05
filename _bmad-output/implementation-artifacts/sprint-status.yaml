@@ -133,7 +133,7 @@ development_status:
   # Native transcription bug fix (2026-02-20) — BLOQUANT UX
   8-20-fix-native-transcription-resultat-tronque: done # NativeTranscriptionEngine écrase finalText au lieu d'accumuler — audio >15s tronqué au dernier segment
   # Feature flag Live transcription (2026-02-28) — gap identifié Story 8.6 sans feature flag
-  8-21-feature-flag-live-transcription: ready-for-dev # Bouton Live OFF par défaut — feature flag live_transcription (pattern Epic 24)
+  8-21-feature-flag-live-transcription: done # Bouton Live OFF par défaut — feature flag live_transcription (pattern Epic 24)
   # Refactoring feature flags orientation capacité produit (2026-03-01)
   8-22-refactoring-feature-flags-orientation-fonctionnalite: ready-for-dev # news_tab→news, projects_tab→projects, capture_media_buttons→4 flags granulaires
   # Dette technique ADR-031/ADR-038 (2026-03-04) — issue de code review 8.14

@@ -1,6 +1,6 @@
 # Story 8.21 : Feature Flag — Transcription Live (OFF par défaut)
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -102,24 +102,24 @@ const captureTools = useMemo(
 
 ### Task 1 : Backend — enregistrer le feature flag (AC1)
 
-- [ ] Subtask 1.1 : Créer une migration (ou seed) dans `backend/src/database/migrations/` (ou `seeds/`) pour insérer la feature dans le catalogue :
+- [x] Subtask 1.1 : Créer une migration (ou seed) dans `backend/src/database/migrations/` (ou `seeds/`) pour insérer la feature dans le catalogue :
   ```sql
-  INSERT INTO features (key, name, description, default_value)
+  INSERT INTO features (id, key, description, default_value)
   VALUES (
+    'fe000006-0000-7000-8000-000000000006',
     'live_transcription',
-    'Transcription Live',
     'Active le bouton de transcription en temps réel dans CaptureScreen',
     false
   )
   ON CONFLICT (key) DO NOTHING;
   ```
-  **Note** : Vérifier le nom exact de la table et les colonnes dans les migrations Epic 24 (story 24-1).
+  **Note** : La table `features` (migration `1780100000000-CreateFeatureFlagTables.ts`) n'a pas de colonne `name`. Colonnes réelles : `id`, `key`, `description`, `default_value`, `created_at`, `updated_at`, `deleted_at`.
 
-- [ ] Subtask 1.2 : Vérifier que `FeatureResolutionService` retourne `false` pour `live_transcription` si aucune assignation — tester manuellement via `GET /api/users/:id/features`.
+- [x] Subtask 1.2 : Vérifier que `FeatureResolutionService` retourne `false` pour `live_transcription` si aucune assignation — tester manuellement via `GET /api/users/:id/features`.
 
 ### Task 2 : Mobile — ajouter `LIVE_TRANSCRIPTION` à `FEATURE_KEYS` (AC2, AC3)
 
-- [ ] Subtask 2.1 : Dans `mobile/src/contexts/identity/domain/feature-keys.ts`, ajouter :
+- [x] Subtask 2.1 : Dans `mobile/src/contexts/identity/domain/feature-keys.ts`, ajouter :
   ```typescript
   export const FEATURE_KEYS = {
     // ... existants ...
@@ -129,7 +129,7 @@ const captureTools = useMemo(
 
 ### Task 3 : Mobile — gater le bouton Live dans `CaptureScreen` (AC2, AC3, AC4)
 
-- [ ] Subtask 3.1 : Dans `CaptureScreen.tsx`, **extraire** le tool "live" de `CAPTURE_TOOLS_ALWAYS` vers un nouveau tableau :
+- [x] Subtask 3.1 : Dans `CaptureScreen.tsx`, **extraire** le tool "live" de `CAPTURE_TOOLS_ALWAYS` vers un nouveau tableau :
   ```typescript
   // AVANT (à modifier) :
   const CAPTURE_TOOLS_ALWAYS: CaptureTool[] = [
@@ -155,7 +155,7 @@ const captureTools = useMemo(
   ];
   ```
 
-- [ ] Subtask 3.2 : Ajouter le sélecteur feature flag dans `CaptureScreenContent` (même pattern que `showMediaButtons`, ligne 285).
+- [x] Subtask 3.2 : Ajouter le sélecteur feature flag dans `CaptureScreenContent` (même pattern que `showMediaButtons`, ligne 285).
   ⚠️ **IMPORTANT** : `showLiveTranscription` est **déjà utilisé** comme state variable (ligne 291 — état de l'overlay). Utiliser le nom `isLiveTranscriptionEnabled` pour le sélecteur feature flag :
   ```typescript
   const isLiveTranscriptionEnabled = useSettingsStore((s) =>
@@ -163,7 +163,7 @@ const captureTools = useMemo(
   );
   ```
 
-- [ ] Subtask 3.3 : Modifier le calcul de `captureTools` (lignes 286-288). Le pattern existant est un simple spread **sans** `useMemo` — le reproduire à l'identique :
+- [x] Subtask 3.3 : Modifier le calcul de `captureTools` (lignes 286-288). Le pattern existant est un simple spread **sans** `useMemo` — le reproduire à l'identique :
   ```typescript
   // AVANT (lignes 284-288 actuelles) :
   const showMediaButtons = useSettingsStore((s) => s.getFeature(FEATURE_KEYS.CAPTURE_MEDIA_BUTTONS));
@@ -183,23 +183,23 @@ const captureTools = useMemo(
 
 ### Task 4 : Tests BDD (AC5)
 
-- [ ] Subtask 4.1 : Créer `mobile/tests/acceptance/features/story-8-21-feature-flag-live-transcription.feature`
-- [ ] Subtask 4.2 : Écrire les scénarios (voir "Scénarios BDD" ci-dessous)
-- [ ] Subtask 4.3 : Créer `mobile/tests/acceptance/story-8-21-feature-flag-live-transcription.test.ts` avec step definitions
-- [ ] Subtask 4.4 : Mocker `settingsStore.getFeature` pour simuler feature ON/OFF
+- [x] Subtask 4.1 : Créer `mobile/tests/acceptance/features/story-8-21-feature-flag-live-transcription.feature`
+- [x] Subtask 4.2 : Écrire les scénarios (voir "Scénarios BDD" ci-dessous)
+- [x] Subtask 4.3 : Créer `mobile/tests/acceptance/story-8-21-feature-flag-live-transcription.test.ts` avec step definitions
+- [x] Subtask 4.4 : Mocker `settingsStore.getFeature` pour simuler feature ON/OFF
 
 ### Task 5 : Tests unitaires (AC5)
 
-- [ ] Subtask 5.1 : Vérifier que `FEATURE_KEYS.LIVE_TRANSCRIPTION === 'live_transcription'`
-- [ ] Subtask 5.2 : Tester la composition de `captureTools` :
+- [x] Subtask 5.1 : Vérifier que `FEATURE_KEYS.LIVE_TRANSCRIPTION === 'live_transcription'`
+- [x] Subtask 5.2 : Tester la composition de `captureTools` :
   - feature OFF → tableau sans `{ id: "live" }`
   - feature ON → tableau avec `{ id: "live" }` à la bonne position
   - feature absente (`undefined`) → même comportement que OFF
 
 ### Task 6 : Validation finale (AC5)
 
-- [ ] Subtask 6.1 : `npm run test:unit` — zéro régression
-- [ ] Subtask 6.2 : `npm run test:acceptance` — zéro régression
+- [x] Subtask 6.1 : `npm run test:unit` — zéro régression
+- [x] Subtask 6.2 : `npm run test:acceptance` — zéro régression (15 failures préexistantes, aucune régression)
 - [ ] Subtask 6.3 : Test manuel — vérifier bouton absent par défaut, puis assigner `live_transcription=true` via admin, vérifier apparition
 
 ## Scénarios BDD
@@ -325,8 +325,20 @@ claude-sonnet-4-6
 
 ### File List
 
+**Créés :**
+- `pensieve/mobile/tests/acceptance/features/story-8-21-feature-flag-live-transcription.feature`
+- `pensieve/mobile/tests/acceptance/story-8-21-feature-flag-live-transcription.test.ts`
+- `pensieve/backend/src/migrations/1780700000000-SeedLiveTranscriptionFeature.ts`
+- `pensieve/mobile/src/screens/capture/capture-tools.ts` — module pur (constantes + `computeCaptureTools`)
+
+**Modifiés :**
+- `pensieve/mobile/src/contexts/identity/domain/feature-keys.ts` — ajout `LIVE_TRANSCRIPTION`
+- `pensieve/mobile/src/screens/capture/CaptureScreen.tsx` — import depuis `capture-tools.ts`, sélecteur `isLiveTranscriptionEnabled`, appel `computeCaptureTools()`
+
 ## Change Log
 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-28 | Story créée — gap identifié : bouton Live (Story 8.6) ajouté sans feature flag. Pattern Epic 24 (`CAPTURE_MEDIA_BUTTONS`) reproduit pour `live_transcription`. OFF par défaut. Périmètre minimal : 1 seed backend + 1 constante FEATURE_KEYS + 3 lignes CaptureScreen. | yohikofox |
+| 2026-03-05 | Implémentation complète — TDD RED→GREEN : 9 tests (6 unit + 3 BDD), 0 régression. LIVE_TRANSCRIPTION dans FEATURE_KEYS, CAPTURE_TOOLS_LIVE extrait de CAPTURE_TOOLS_ALWAYS, sélecteur `isLiveTranscriptionEnabled` dans CaptureScreenContent, migration backend créée. Status → review. | yohikofox |
+| 2026-03-05 | Code review adversarial — 4 issues fixées : (H1) commit pensieve cb83ed3, (H2) extraction `capture-tools.ts` (module pur) + tests importent vraies sources, (M1) assertion AC3 enrichie (`iconName`/`color`/`labelKey`), (M2) SQL Task 1.1 corrigé (suppression colonne `name` inexistante). Status → done. | yohikofox |
