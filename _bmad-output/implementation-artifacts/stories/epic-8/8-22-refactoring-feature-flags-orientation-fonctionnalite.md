@@ -1,6 +1,6 @@
 # Story 8.22 : Refactoring Feature Flags — Orientation Capacité Produit
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -134,7 +134,7 @@ Rappel du système existant :
 
 ### Task 1 : Backend — migration catalogue (AC1)
 
-- [ ] Subtask 1.1 : Créer une migration TypeORM dans `backend/src/migrations/` (ou seed si le pattern Epic 24 utilise des seeds). Vérifier le pattern exact en consultant les fichiers de Story 24-1.
+- [x] Subtask 1.1 : Créer une migration TypeORM dans `backend/src/migrations/` (ou seed si le pattern Epic 24 utilise des seeds). Vérifier le pattern exact en consultant les fichiers de Story 24-1.
 
   Insérer les 6 nouveaux flags :
   ```sql
@@ -148,7 +148,7 @@ Rappel du système existant :
   ON CONFLICT (key) DO NOTHING;
   ```
 
-- [ ] Subtask 1.2 : Marquer les 3 anciens flags comme dépréciés (ajouter colonne `deprecated` si absente, ou utiliser le champ `description`) :
+- [x] Subtask 1.2 : Marquer les 3 anciens flags comme dépréciés (ajouter colonne `deprecated` si absente, ou utiliser le champ `description`) :
   ```sql
   UPDATE features SET deprecated = true
   WHERE key IN ('news_tab', 'projects_tab', 'capture_media_buttons');
@@ -157,7 +157,7 @@ Rappel du système existant :
 
 ### Task 2 : Backend — migration des assignations (AC2)
 
-- [ ] Subtask 2.1 : Dans la même migration (ou une migration suivante), copier les assignations existantes.
+- [x] Subtask 2.1 : Dans la même migration (ou une migration suivante), copier les assignations existantes.
 
   Vérifier la structure de la table d'assignations (Story 24-1 — probablement `feature_assignments` avec colonnes `feature_key`, `subject_type`, `subject_id`, `value`).
 
@@ -202,7 +202,7 @@ Rappel du système existant :
 
 ### Task 3 : Mobile — mettre à jour `FEATURE_KEYS` (AC3, AC4, AC5)
 
-- [ ] Subtask 3.1 : Dans `mobile/src/contexts/identity/domain/feature-keys.ts`, remplacer le contenu :
+- [x] Subtask 3.1 : Dans `mobile/src/contexts/identity/domain/feature-keys.ts`, remplacer le contenu :
 
   ```typescript
   /**
@@ -240,7 +240,7 @@ Rappel du système existant :
 
 ### Task 4 : Mobile — mettre à jour `registry.ts` (AC3, AC4)
 
-- [ ] Subtask 4.1 : Dans `mobile/src/screens/registry.ts`, mettre à jour les `featureKey` des tabs :
+- [x] Subtask 4.1 : Dans `mobile/src/screens/registry.ts`, mettre à jour les `featureKey` des tabs :
   ```typescript
   // AVANT :
   News:     { featureKey: FEATURE_KEYS.NEWS_TAB, ... }
@@ -253,7 +253,7 @@ Rappel du système existant :
 
 ### Task 5 : Mobile — éclater `CAPTURE_TOOLS_MEDIA` dans `CaptureScreen` (AC5, AC6)
 
-- [ ] Subtask 5.1 : Remplacer le tableau `CAPTURE_TOOLS_MEDIA` par 4 tableaux individuels :
+- [x] Subtask 5.1 : Remplacer le tableau `CAPTURE_TOOLS_MEDIA` par 4 tableaux individuels :
 
   ```typescript
   // SUPPRIMER ce tableau :
@@ -281,7 +281,7 @@ Rappel du système existant :
   }];
   ```
 
-- [ ] Subtask 5.2 : Dans `CaptureScreenContent`, remplacer les sélecteurs et le calcul de `captureTools` :
+- [x] Subtask 5.2 : Dans `CaptureScreenContent`, remplacer les sélecteurs et le calcul de `captureTools` :
 
   ```typescript
   // AVANT (ligne ~285) :
@@ -309,18 +309,18 @@ Rappel du système existant :
 
   **Note** : `isLiveTranscriptionEnabled` est normalement ajouté par Story 8.21. Si Story 8.21 n'est pas encore déployée, l'inclure ici également.
 
-- [ ] Subtask 5.3 : Mettre à jour le commentaire JSDoc du bloc de configuration des outils (lignes 61-70) pour refléter la nouvelle architecture.
+- [x] Subtask 5.3 : Mettre à jour le commentaire JSDoc du bloc de configuration des outils (lignes 61-70) pour refléter la nouvelle architecture.
 
 ### Task 6 : Tests BDD (AC7)
 
-- [ ] Subtask 6.1 : Créer `mobile/tests/acceptance/features/story-8-22-feature-flags-capacite-produit.feature`
-- [ ] Subtask 6.2 : Écrire les scénarios (voir "Scénarios BDD" ci-dessous)
-- [ ] Subtask 6.3 : Créer `mobile/tests/acceptance/story-8-22-feature-flags-capacite-produit.test.ts`
+- [x] Subtask 6.1 : Créer `mobile/tests/acceptance/features/story-8-22-feature-flags-capacite-produit.feature`
+- [x] Subtask 6.2 : Écrire les scénarios (voir "Scénarios BDD" ci-dessous)
+- [x] Subtask 6.3 : Créer `mobile/tests/acceptance/story-8-22-feature-flags-capacite-produit.test.ts`
 
 ### Task 7 : Tests unitaires (AC7)
 
-- [ ] Subtask 7.1 : Vérifier que les nouvelles constantes `FEATURE_KEYS` ont les bonnes valeurs string
-- [ ] Subtask 7.2 : Tester la composition de `captureTools` pour chaque combinaison de flags :
+- [x] Subtask 7.1 : Vérifier que les nouvelles constantes `FEATURE_KEYS` ont les bonnes valeurs string
+- [x] Subtask 7.2 : Tester la composition de `captureTools` pour chaque combinaison de flags :
   - Tous à false → [voice, text] uniquement
   - Uniquement `url_capture=true` → [voice, text, url]
   - `photo_capture=true` + `document_capture=true` → [voice, text, photo, document]
@@ -328,9 +328,9 @@ Rappel du système existant :
 
 ### Task 8 : Validation finale (AC7)
 
-- [ ] Subtask 8.1 : `npm run test:unit` — zéro régression
-- [ ] Subtask 8.2 : `npm run test:acceptance` — zéro régression
-- [ ] Subtask 8.3 : `npm run test:architecture` — aucune violation ADR introduite
+- [x] Subtask 8.1 : `npm run test:unit` — zéro régression (56 suites en échec pré-existantes non liées à cette story)
+- [x] Subtask 8.2 : `npm run test:acceptance` — 23/23 nouveaux tests + 0 régression sur story-8-21 et story-24-3
+- [x] Subtask 8.3 : `npm run test:architecture` — violations pré-existantes (ADR-031 interfaces vs classes), aucune violation introduite
 - [ ] Subtask 8.4 : Test manuel — vérifier que sans aucun flag, l'app est identique à avant (voice + text uniquement, pas de tabs News/Projects)
 - [ ] Subtask 8.5 : Test manuel — activer `url_capture` uniquement via admin, vérifier que seul le bouton URL apparaît dans CaptureScreen
 
@@ -487,12 +487,37 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+- Problème ts-jest : `registry.ts` importe des composants React Native (JSX) — incompatible avec les acceptance tests (ts-jest/node). Résolu en testant uniquement les constantes FEATURE_KEYS dans les BDD tests.
+- Connecteurs français (`qu'`, `que`) dans les steps Gherkin strippés par jest-cucumber — corrigé en retirant les connecteurs du feature file.
+
 ### Completion Notes List
 
+- **Task 1+2** : Migration TypeORM `1780800000000-SeedCapacityProductFeatureFlags.ts` créée. Ajoute colonne `deprecated`, insère 6 nouveaux flags (fe000007-fe000012), déprécie 3 anciens (fe000003-fe000005), copie toutes les assignations user/role/permission via UUID déterministes.
+- **Task 3** : `feature-keys.ts` étendu avec 6 nouvelles constantes (NEWS, PROJECTS, URL_CAPTURE, PHOTO_CAPTURE, DOCUMENT_CAPTURE, CLIPBOARD_CAPTURE). 3 anciennes constantes marquées `@deprecated` mais conservées pour rollback.
+- **Task 4** : `registry.ts` mis à jour — `FEATURE_KEYS.NEWS_TAB` → `FEATURE_KEYS.NEWS`, `FEATURE_KEYS.PROJECTS_TAB` → `FEATURE_KEYS.PROJECTS`.
+- **Task 5** : `capture-tools.ts` refactorisé — `CAPTURE_TOOLS_MEDIA` remplacé par 4 tableaux individuels. `computeCaptureTools` migre de 2 params (isLive + showMediaButtons) vers 5 params optionnels (isLive + isUrl + isPhoto + isDocument + isClipboard). Rétrocompatibilité assurée (appels story-8-21 à 2 params toujours fonctionnels).
+- **Task 5** cont : `CaptureScreen.tsx` — sélecteur `showMediaButtons` remplacé par 4 sélecteurs individuels + appel `computeCaptureTools` mis à jour.
+- **Task 6+7** : 23 tests (17 unitaires + 6 BDD) — tous verts. Tests story-8-21 (9) et story-24-3 (8) toujours verts (zéro régression).
+- **Code review (adversarial)** : 5 issues corrigées (H1: registry test créé `src/screens/__tests__/story-8-22-registry.test.ts` — 9 tests AC3/AC4/AC6 ; H2: commentaires BDD AC3/AC4 mis à jour ; M1: boucles migration passées en queries paramétrées `$1` ; M2: `down()` réécrit avec DELETE ciblés via sous-requêtes JOIN pour préserver les assignations post-migration ; M3: titre scénario BDD corrigé "Tous les flags capture média activés — hors live transcription").
+
 ### File List
+
+**Fichiers créés :**
+- `pensieve/backend/src/migrations/1780800000000-SeedCapacityProductFeatureFlags.ts`
+- `pensieve/mobile/tests/acceptance/features/story-8-22-feature-flags-capacite-produit.feature`
+- `pensieve/mobile/tests/acceptance/story-8-22-feature-flags-capacite-produit.test.ts`
+- `pensieve/mobile/src/screens/__tests__/story-8-22-registry.test.ts`
+
+**Fichiers modifiés :**
+- `pensieve/mobile/src/contexts/identity/domain/feature-keys.ts`
+- `pensieve/mobile/src/screens/registry.ts`
+- `pensieve/mobile/src/screens/capture/capture-tools.ts`
+- `pensieve/mobile/src/screens/capture/CaptureScreen.tsx`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
 
 ## Change Log
 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-02-28 | Story créée — refactoring feature flags UI-oriented → capacité produit. Analyse code réel : FEATURE_KEYS (5 flags), registry.ts (featureKey sur News/Projects), MainNavigator (filtre dynamique), CaptureScreen (CAPTURE_TOOLS_MEDIA en bloc). Migration : 6 nouveaux flags + copie assignations + deprecated sur 3 anciens. Convention nommage documentée. | yohikofox |
+| 2026-03-06 | Implémentation complète — migration backend (1780800000000), FEATURE_KEYS étendu, registry.ts mis à jour, capture-tools.ts refactorisé (4 tableaux individuels + signature computeCaptureTools), CaptureScreen.tsx mis à jour (5 sélecteurs). 23/23 tests passent. | yohikofox |
