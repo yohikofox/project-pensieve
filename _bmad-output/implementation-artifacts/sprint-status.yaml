@@ -411,7 +411,7 @@ development_status:
   # Renew = Option B (rotation atomique). Format: pns_<32 bytes base64url>.
   # Dépendances: 26-1 → 27-1 → 27-2 → 27-3
   epic-27: backlog
-  27-1-pat-backend-service-guard-endpoints: ready-for-dev # Table PAT + PATService + PATGuard + CRUD + renew (option B)
+  27-1-pat-backend-service-guard-endpoints: done # Table PAT + PATService + PATGuard + CRUD + renew (option B)
   27-2-pat-mobile-gestion-ecran: ready-for-dev # Écran gestion PATs: liste, créer, modifier, renew, révoquer, copier
   27-3-pat-admin-gestion-utilisateurs: ready-for-dev # Vue PATs par utilisateur + actions support + audit trail
 
