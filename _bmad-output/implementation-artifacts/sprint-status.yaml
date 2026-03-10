@@ -45,7 +45,7 @@ development_status:
   1-1-project-foundation-infrastructure-setup-v2: done
   1-2-auth-integration-supabase-v2: done
   1-3-rgpd-compliance-v2: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: done
 
   # DEPRECATED (replaced by v2 stories above):
   # 1-1-project-foundation-infrastructure-setup: deprecated (rewritten as 1-1-v2 with Supabase Cloud + MinIO)
@@ -64,7 +64,7 @@ development_status:
   2-6-consultation-de-transcription: done
   2-7-guide-config-modele: done
   2-8-bouton-retry-transcription: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: done
 
   # Epic 3: Consultation & Navigation des Captures (4 stories + 2 sub-stories)
   epic-3: done # All stories completed (2026-02-03)
@@ -74,7 +74,7 @@ development_status:
   3-2c-navigation-et-interactions: done # Sub-story: Swipe + context menu (AC6, AC7, AC8)
   3-3-distinction-visuelle-des-captures-en-attente: done
   3-4-navigation-et-interactions-dans-le-feed: done # Code review fixes applied (AC2, AC4, AC5 implemented)
-  epic-3-retrospective: optional
+  epic-3-retrospective: done
 
   # Epic 4: Digestion IA & Extraction d'Insights (4 stories)
   epic-4: done # All 4 stories completed (2026-02-05)
@@ -93,7 +93,7 @@ development_status:
   epic-5-retrospective: optional
 
   # Epic 6: Synchronisation Multi-Device (4 stories)
-  epic-6: in-progress
+  epic-6: done
   6-1-infrastructure-de-synchronisation-watermelondb: done
   6-2-synchronisation-local-cloud: done # ✅ Complete: 127/127 tests, code review done, all AC satisfied
   6-3-synchronisation-cloud-local: done
@@ -377,12 +377,12 @@ development_status:
   #           optimale au premier lancement sur Pixel 9+ (native recognition + Gemma 3 1B MediaPipe).
   # Dépendances: Epic 7 (UserFeaturesService existant — remplacé), Epic 1 (auth)
   # Priorité: Avant distribution externe
-  epic-24: in-progress
+  epic-24: done
   24-1-feature-flag-system-backend: done # Backend: tables features + assignations + FeatureResolutionService (deny-wins) + migration legacy columns
   24-2-feature-flag-admin-api-ui: done # Admin API + UI: gestion catalogue features + assignations user/role/permission + trace résolution
   24-3-feature-flag-mobile-adaptation: done # Mobile: UserFeatures dynamique + settingsStore refactoré + UI gating tabs + capture media buttons. Code review: 7/7 fixes (1C+3H+3M) — legacy import, isDataMiningEnabled, réactivité features, forceRefresh offline, test toggleDebugMode, commentaires AC.
   24-4-first-launch-pixel-defaults: done # Mobile: FirstLaunchInitializer + détection Pixel 9+ + native recognition + Gemma 3 1B + auto-transcription
-  epic-24-retrospective: optional
+  epic-24-retrospective: done
 
   # Epic 25: UX Onboarding & Demo Tour (3 stories)
   # Source: Session architecturale 2026-02-26 — Winston (Architect) + yohikofox
@@ -402,7 +402,7 @@ development_status:
   # Objectif: Traçabilité cross-app via X-Trace-ID + AsyncLocalStorage + Pino mixin.
   # Prérequis pour Epic 27 (PAT) et Epic 28 (MCP).
   # Dépendances: aucune
-  epic-26: backlog
+  epic-26: done
   26-1-distributed-tracing-trace-context: done # TraceMiddleware + TraceContext (AsyncLocalStorage) + Pino enrichissement
 
   # Epic 27: Personal Access Tokens (3 stories)
@@ -410,9 +410,9 @@ development_status:
   # Objectif: PATs révocables + expiry absolue + scopes granulaires. Self-service mobile + support admin.
   # Renew = Option B (rotation atomique). Format: pns_<32 bytes base64url>.
   # Dépendances: 26-1 → 27-1 → 27-2 → 27-3
-  epic-27: backlog
+  epic-27: in-progress
   27-1-pat-backend-service-guard-endpoints: done # Table PAT + PATService + PATGuard + CRUD + renew (option B)
-  27-2-pat-mobile-gestion-ecran: ready-for-dev # Écran gestion PATs: liste, créer, modifier, renew, révoquer, copier
+  27-2-pat-mobile-gestion-ecran: done # Écran gestion PATs: liste, créer, modifier, renew, révoquer, copier — code review adversariale: 2C+3H+3M corrigés
   27-3-pat-admin-gestion-utilisateurs: ready-for-dev # Vue PATs par utilisateur + actions support + audit trail
 
   # Epic 28: MCP Server — Accès Captures & Knowledge (2 stories)
