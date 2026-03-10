@@ -396,3 +396,31 @@ development_status:
   25-2-tour-demo-persistance-sync: ready-for-dev # Persistance locale OP-SQLite + sync backend (User entity + endpoint)
   25-3-tour-demo-settings-retrigger: ready-for-dev # Re-déclenchement manuel depuis Settings + tourVersion
   epic-25-retrospective: optional
+
+  # Epic 26: Distributed Tracing & Request Context (1 story)
+  # Source: Session architecturale 2026-03-10 — dev agent + yohikofox
+  # Objectif: Traçabilité cross-app via X-Trace-ID + AsyncLocalStorage + Pino mixin.
+  # Prérequis pour Epic 27 (PAT) et Epic 28 (MCP).
+  # Dépendances: aucune
+  epic-26: backlog
+  26-1-distributed-tracing-trace-context: ready-for-dev # TraceMiddleware + TraceContext (AsyncLocalStorage) + Pino enrichissement
+
+  # Epic 27: Personal Access Tokens (3 stories)
+  # Source: Session architecturale 2026-03-10 — dev agent + yohikofox
+  # Objectif: PATs révocables + expiry absolue + scopes granulaires. Self-service mobile + support admin.
+  # Renew = Option B (rotation atomique). Format: pns_<32 bytes base64url>.
+  # Dépendances: 26-1 → 27-1 → 27-2 → 27-3
+  epic-27: backlog
+  27-1-pat-backend-service-guard-endpoints: ready-for-dev # Table PAT + PATService + PATGuard + CRUD + renew (option B)
+  27-2-pat-mobile-gestion-ecran: ready-for-dev # Écran gestion PATs: liste, créer, modifier, renew, révoquer, copier
+  27-3-pat-admin-gestion-utilisateurs: ready-for-dev # Vue PATs par utilisateur + actions support + audit trail
+
+  # Epic 28: MCP Server — Accès Captures & Knowledge (2 stories)
+  # Source: Session architecturale 2026-03-10 — dev agent + yohikofox
+  # Objectif: Package mcp/ standalone. Auth via PAT. Logique d'accès centralisée dans backend.
+  # Transport: stdio (local) + HTTP+SSE (clients distants).
+  # Dépendances: 26-1 + 27-1 → 28-1 → 28-2
+  epic-28: backlog
+  28-1-backend-endpoints-mcp-ready: ready-for-dev # Endpoints /api/mcp/ captures+thoughts+ideas+todos (auth PAT + scopes)
+  28-2-mcp-server-package: ready-for-dev # Package mcp/ + tools + stdio/HTTP + propagation X-Trace-ID
+  epic-28-retrospective: optional

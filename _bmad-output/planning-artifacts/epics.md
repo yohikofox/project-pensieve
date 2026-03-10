@@ -3687,3 +3687,66 @@ So that **no message is ever sent to the wrong person or silently dropped**.
 - Code review adversariale complète
 
 ---
+
+## Epic 26: Distributed Tracing & Request Context
+
+**Priorité**: Critique — Prérequis pour Epic 27 et Epic 28
+
+**Objectif**: Implémenter un système de traçabilité cross-applicatif permettant de suivre chaque requête de sa réception jusqu'à sa réponse, avec propagation du contexte entre applications (MCP → Backend) et enrichissement automatique des logs.
+
+**Valeur métier**: Debuggabilité totale en production. Un `traceId` permet de retrouver instantanément tous les logs associés à une requête, quelle que soit son origine.
+
+**Stories:**
+- Story 26.1 — Backend : TraceMiddleware + TraceContext + Pino enrichissement
+
+**Acceptance Criteria (Epic):**
+- Chaque requête backend possède un `traceId` unique (généré ou propagé via `X-Trace-ID`)
+- L'origine de la requête est loguée (`X-Request-Source`: mcp, mobile, web, admin)
+- Tous les logs d'une requête partagent le même `traceId` (via AsyncLocalStorage)
+- `grep <traceId>` retourne toute la vie d'une requête
+
+---
+
+## Epic 27: Personal Access Tokens (PAT)
+
+**Priorité**: Haute — Prérequis pour Epic 28 (MCP)
+
+**Objectif**: Implémenter un système de PAT permettant à chaque utilisateur de générer des clés d'accès à durée de vie absolue, révocables à tout moment, avec scopes granulaires. Gérable en self-service depuis l'app mobile et depuis l'interface admin pour le support.
+
+**Valeur métier**: Sécurité et traçabilité des accès API. Chaque client MCP dispose d'un token dédié, révocable indépendamment, sans exposer les credentials Better Auth.
+
+**Stories:**
+- Story 27.1 — Backend : Table PAT + PATService + PATGuard + endpoints CRUD + renew
+- Story 27.2 — Mobile : Écran gestion PATs (liste, créer, modifier, renew, révoquer, copier)
+- Story 27.3 — Admin : Vue PATs par utilisateur + actions support
+
+**Acceptance Criteria (Epic):**
+- Un utilisateur peut créer un PAT avec nom, scopes et durée depuis l'app mobile
+- Le token est affiché une seule fois à la création (copie clipboard)
+- Un PAT peut être révoqué immédiatement (invalidation sans délai)
+- Le renew génère un nouveau token et révoque l'ancien atomiquement (Option B)
+- L'admin peut gérer les PATs de tout utilisateur
+- Chaque requête authentifiée via PAT est tracée (`last_used_at`, `traceId`)
+
+---
+
+## Epic 28: MCP Server — Accès Captures & Knowledge
+
+**Priorité**: Haute
+
+**Objectif**: Créer un serveur MCP (`pensieve/mcp/`) permettant à Claude Code (et tout client MCP compatible) d'interagir avec les captures, thoughts, ideas et todos de l'utilisateur via son PAT. Architecture centralisée : toute la logique d'accès reste dans le backend existant.
+
+**Valeur métier**: Permet à l'IA d'accéder au contenu de Pensine pour des workflows augmentés (recherche dans les captures, extraction d'insights, gestion des todos via langage naturel).
+
+**Stories:**
+- Story 28.1 — Backend : Endpoints MCP-ready (captures, thoughts, ideas, todos — auth PAT)
+- Story 28.2 — MCP : Package `mcp/` + server stdio/HTTP + tools + propagation X-Trace-ID
+
+**Acceptance Criteria (Epic):**
+- Un client MCP authentifié via PAT peut lister/rechercher ses captures
+- Un client MCP peut accéder aux thoughts, ideas et todos associés
+- Toutes les requêtes MCP sont tracées end-to-end via `X-Trace-ID`
+- Le MCP server peut être lancé en mode stdio (local) et HTTP+SSE (clients distants)
+- Les scopes PAT sont respectés (lecture seule par défaut)
+
+---
