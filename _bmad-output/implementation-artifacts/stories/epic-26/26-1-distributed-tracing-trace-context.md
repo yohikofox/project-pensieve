@@ -1,6 +1,6 @@
 # Story 26.1: Distributed Tracing — TraceMiddleware + TraceContext + Pino enrichissement
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -201,12 +201,16 @@ configure(consumer: MiddlewareConsumer) {
 **Fichiers créés :**
 - `backend/src/common/trace/trace.context.ts`
 - `backend/src/common/trace/trace.middleware.ts`
+- `backend/src/common/trace/trace.middleware.spec.ts`
 - `backend/src/common/trace/trace.module.ts`
 - `backend/src/common/trace/trace.context.spec.ts`
+- `backend/src/common/trace/index.ts`
+- `backend/test/acceptance/features/story-26-1-distributed-tracing.feature`
+- `backend/test/acceptance/story-26-1.test.ts`
 
 **Fichiers modifiés :**
 - `backend/src/app.module.ts`
-- `backend/src/main.ts` (ou config pino)
+- `backend/src/config/logger.config.ts`
 
 ## Change Log
 

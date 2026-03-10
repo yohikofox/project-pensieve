@@ -403,7 +403,7 @@ development_status:
   # Prérequis pour Epic 27 (PAT) et Epic 28 (MCP).
   # Dépendances: aucune
   epic-26: backlog
-  26-1-distributed-tracing-trace-context: ready-for-dev # TraceMiddleware + TraceContext (AsyncLocalStorage) + Pino enrichissement
+  26-1-distributed-tracing-trace-context: done # TraceMiddleware + TraceContext (AsyncLocalStorage) + Pino enrichissement
 
   # Epic 27: Personal Access Tokens (3 stories)
   # Source: Session architecturale 2026-03-10 — dev agent + yohikofox
