@@ -1,6 +1,6 @@
 # Story 27.3: PAT Admin — Gestion des PATs par utilisateur (support)
 
-Status: review
+Status: done
 
 ## Story
 
@@ -156,6 +156,12 @@ CREATE TABLE "pat_audit_logs" (
 - `backend/src/app.module.ts`
 - `backend/test/acceptance/story-27-1.test.ts`
 - `backend/test/jest-acceptance.json`
+- `backend/src/common/trace/trace.context.spec.ts`
+- `backend/src/common/trace/trace.middleware.spec.ts`
+- `backend/src/migrations/1780700000000-SeedLiveTranscriptionFeature.ts`
+- `backend/src/migrations/1780800000000-SeedCapacityProductFeatureFlags.ts`
+- `backend/src/migrations/1781000000000-CreatePersonalAccessTokensTable.ts`
+- `backend/test/__mocks__/expo-server-sdk.js`
 
 **Admin UI (nouveaux):**
 - `admin/app/(dashboard)/users/[userId]/page.tsx`
@@ -164,9 +170,32 @@ CREATE TABLE "pat_audit_logs" (
 - `admin/app/(dashboard)/users/page.tsx`
 - `admin/lib/api-client.ts`
 
+## Senior Developer Review (AI)
+
+**Date :** 2026-03-11 | **Reviewer :** yohikofox (adversarial review)
+
+### Issues trouvés et corrigés (4H + 4M)
+
+**HIGH — corrigés :**
+- **H2 [Fixed]** `pat.service.ts:renew()` — audit log déplacé DANS la transaction TypeORM via `queryRunner.manager.insert()`. Avant : si le log échouait après `commitTransaction()`, la rotation était effectuée sans trace. Maintenant : atomique — rotation et audit réussissent ou échouent ensemble.
+- **H4 [Fixed]** `admin/users/[userId]/page.tsx` — page n'affichait que l'UUID brut. Ajout d'un appel à `getUserDetails()` pour afficher l'email de l'utilisateur cible dans l'en-tête.
+- **H3 [Fixed - AC1]** Colonne `prefix` manquante dans le tableau des PATs. L'AC1 spécifie "(prefix, scopes, expiry, last_used_at, état)". Ajout de la colonne + champ `prefix` et `userId` dans `PatView` (api-client.ts).
+- **H1 [Analysé, non-issue]** `pat.admin` permission : bien présente dans le seed et assignée au rôle admin. Faux positif initial.
+
+**MEDIUM — corrigés :**
+- **M1 [Fixed]** `handleRevoke()` — erreur silencieuse (`console.error` uniquement). Ajout de `revokeError` state + affichage dans le dialog de confirmation.
+- **M2 [Fixed]** Pagination `GET /api/auth/pat/audit` — `findByUserId()` retournait tous les logs sans limite. Ajout `limit` param (défaut 100, max 500) dans repo, service, et controller.
+- **M3 [Fixed]** `useEffect` sans cleanup — risque de setState sur composant démonté. Pattern `cancelled` flag ajouté dans l'effet d'initialisation.
+- **M4 [Fixed]** 6 fichiers modifiés non documentés dans la File List (trace.*.spec.ts, migrations 1780700000000/1780800000000/1781000000000, expo-server-sdk mock).
+
+**LOW — action items :**
+- **L1** Type `action` dans `PATAuditLog` entity reste `string` (commentaire documente l'union type mais pas appliqué). Acceptable pour l'entité TypeORM, le typage fort est au niveau du service.
+- **L2** AC1 et AC7 non couverts par BDD. AC1 couvert indirectement (chaque scénario charge la liste). AC7 (recherche depuis `/admin/users`) vérifié manuellement.
+
 ## Change Log
 
 | Date | Change | Author |
 |------|--------|--------|
 | 2026-03-10 | Story créée | yohikofox |
 | 2026-03-11 | Implémentation complète — statut passé à review | dev agent |
+| 2026-03-11 | Code review adversarial — 4H+4M corrigés, story done | yohikofox |

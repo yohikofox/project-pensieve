@@ -413,7 +413,7 @@ development_status:
   epic-27: in-progress
   27-1-pat-backend-service-guard-endpoints: done # Table PAT + PATService + PATGuard + CRUD + renew (option B)
   27-2-pat-mobile-gestion-ecran: done # Écran gestion PATs: liste, créer, modifier, renew, révoquer, copier — code review adversariale: 2C+3H+3M corrigés
-  27-3-pat-admin-gestion-utilisateurs: review # Vue PATs par utilisateur + actions support + audit trail — 5/5 BDD + 40/40 unit tests ✅
+  27-3-pat-admin-gestion-utilisateurs: done # Vue PATs par utilisateur + actions support + audit trail — 5/5 BDD + 40/40 unit tests ✅ — code review: 4H+4M corrigés
 
   # Epic 28: MCP Server — Accès Captures & Knowledge (2 stories)
   # Source: Session architecturale 2026-03-10 — dev agent + yohikofox
