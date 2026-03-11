@@ -413,7 +413,7 @@ development_status:
   epic-27: in-progress
   27-1-pat-backend-service-guard-endpoints: done # Table PAT + PATService + PATGuard + CRUD + renew (option B)
   27-2-pat-mobile-gestion-ecran: done # Écran gestion PATs: liste, créer, modifier, renew, révoquer, copier — code review adversariale: 2C+3H+3M corrigés
-  27-3-pat-admin-gestion-utilisateurs: ready-for-dev # Vue PATs par utilisateur + actions support + audit trail
+  27-3-pat-admin-gestion-utilisateurs: review # Vue PATs par utilisateur + actions support + audit trail — 5/5 BDD + 40/40 unit tests ✅
 
   # Epic 28: MCP Server — Accès Captures & Knowledge (2 stories)
   # Source: Session architecturale 2026-03-10 — dev agent + yohikofox
@@ -424,3 +424,32 @@ development_status:
   28-1-backend-endpoints-mcp-ready: ready-for-dev # Endpoints /api/mcp/ captures+thoughts+ideas+todos (auth PAT + scopes)
   28-2-mcp-server-package: ready-for-dev # Package mcp/ + tools + stdio/HTTP + propagation X-Trace-ID
   epic-28-retrospective: optional
+
+  # Epic 29: Project & Git Integration (8 stories)
+  # Source: Session architecturale 2026-03-11 — Winston (Architect) + yohikofox
+  # Objectif: Créer des Projects intentionnellement, lier des repos GitHub, générer des
+  #           issues GitHub depuis les captures via LLM, persister les références localement.
+  # Nouveau BC: Integration (CodeRepository, ProjectIssue, IssueTrackerPort + GitHubAdapter)
+  # Décisions clés:
+  #   - Project ↔ CodeRepository : N:M (un repo peut appartenir à plusieurs Projects)
+  #   - PAT stocké en clair en MVP (Story 29-8 chiffre après 29-6)
+  #   - Manifest discovery : Tier 1 (auto .pensine/context.md → AGENTS.md → README) → Tier 2 (LLM backend TTL 7j)
+  #   - RepoSelector : 1 repo → auto | N repos → suggestion LLM via manifests
+  #   - IssueGenerator : tâche LLM backend (GPT-4o-mini / Claude Haiku) → draft éditable → push GitHub
+  #   - Sync status : polling manuel MVP (webhook post-MVP)
+  #   - repositoryLayout sur Project : hint pour outillage futur (monorepo vs polyrepo)
+  #   - IssueTypes extensibles : 'bug'|'feature'|'analysis'|'other' + customIssueTypes post-MVP
+  # Dépendances internes: 29-1 → 29-2 → 29-3 | 29-2 + 29-3 + 29-4 → 29-5 → 29-6 → 29-7
+  #                       29-8 à implémenter APRÈS 29-6, PAS AVANT
+  # Feature flag: `projects` (existant depuis Story 8-22) — gate toute la feature
+  # Permissions RBAC requises: project:create | project:repository:manage | project:issue:create
+  epic-29: backlog
+  29-1-top-down-project-creation: backlog       # Création intentionnelle d'un Project (Top-Down) — S
+  29-2-gestion-code-repositories: backlog       # Lier/gérer les CodeRepositories d'un Project — M
+  29-3-indexation-repo-manifest: backlog        # Manifest discovery (Tier 1 auto + Tier 2 LLM backend) — M
+  29-4-issue-generator-llm-task: backlog        # LLM génère draft issue (titre + body) depuis capture — M
+  29-5-repo-selector-intelligent: backlog       # 1 repo → auto | N repos → suggestion LLM manifest — S
+  29-6-push-github-issue-persistance-locale: backlog  # Push GitHub + persist ProjectIssue local — M
+  29-7-issue-status-sync: backlog               # Polling manuel statut issues (open/closed/labels) — S
+  29-8-chiffrement-credentials-backend: backlog # Chiffrement AES-256-GCM des PAT en DB — S (après 29-6)
+  epic-29-retrospective: optional
