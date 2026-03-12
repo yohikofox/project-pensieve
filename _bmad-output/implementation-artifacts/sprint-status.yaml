@@ -67,13 +67,14 @@ development_status:
   epic-2-retrospective: done
 
   # Epic 3: Consultation & Navigation des Captures (4 stories + 2 sub-stories)
-  epic-3: done # All stories completed (2026-02-03)
+  epic-3: in-progress # Story 3.5 ajoutée — UX amélioration vue détail texte (retour utilisateur 2026-03-12)
   3-1-feed-chronologique-des-captures: done
   3-2-vue-detail-dune-capture: done # Story 3.2 complete with all sub-stories
   3-2b-audio-player-et-waveform: done # Sub-story: Audio UI components (AC2 complete)
   3-2c-navigation-et-interactions: done # Sub-story: Swipe + context menu (AC6, AC7, AC8)
   3-3-distinction-visuelle-des-captures-en-attente: done
   3-4-navigation-et-interactions-dans-le-feed: done # Code review fixes applied (AC2, AC4, AC5 implemented)
+  3-5-vue-detail-capture-texte-layout-dedie: in-review # Implémentation complète 2026-03-12 — code review adversariale à faire
   epic-3-retrospective: done
 
   # Epic 4: Digestion IA & Extraction d'Insights (4 stories)
