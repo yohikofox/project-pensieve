@@ -74,7 +74,7 @@ development_status:
   3-2c-navigation-et-interactions: done # Sub-story: Swipe + context menu (AC6, AC7, AC8)
   3-3-distinction-visuelle-des-captures-en-attente: done
   3-4-navigation-et-interactions-dans-le-feed: done # Code review fixes applied (AC2, AC4, AC5 implemented)
-  3-5-vue-detail-capture-texte-layout-dedie: in-review # Implémentation complète 2026-03-12 — code review adversariale à faire
+  3-5-vue-detail-capture-texte-layout-dedie: done # Code review 2H+3M+3L corrigés 2026-03-12
   epic-3-retrospective: done
 
   # Epic 4: Digestion IA & Extraction d'Insights (4 stories)

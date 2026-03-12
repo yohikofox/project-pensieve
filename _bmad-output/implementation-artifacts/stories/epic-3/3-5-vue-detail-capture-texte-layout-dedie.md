@@ -1,6 +1,6 @@
 # Story 3.5: Vue Détail d'une Capture Texte — Layout Dédié & Édition Inline
 
-Status: in-review
+Status: done
 
 ## Contexte
 
@@ -100,4 +100,4 @@ So that **I can read and correct my content without navigating through unintuiti
 - [x] Save et Cancel fonctionnels
 - [x] Zéro régression sur les captures audio
 - [x] Tests BDD écrits et passants
-- [ ] Code review adversariale complétée
+- [x] Code review adversariale complétée
